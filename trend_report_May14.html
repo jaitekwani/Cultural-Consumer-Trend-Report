@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report — Issue #001 — May 8-14, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#network">Network</a>
+      <a href="#themes">Themes</a>
+      <a href="#anomalies">Anomalies</a>
+      <a href="#fashion">Fashion</a>
+      <a href="#wellness">Wellness</a>
+      <a href="#food">Food</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#alcohol">Alcohol</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Issue #001 &middot; May 8-14, 2026 &middot; 20 trends across 5 categories</div>
+    <h1>Borrowed Permanence<br/><em>Cross-Cutting Theme</em></h1>
+    <p class="lede">As digital life feels increasingly disposable and algorithmically arbitrary, consumers are reaching for objects, brands, and rituals that carry a sense of continuity — heritage labels, repaired goods, multi-generational recipes. Permanence becomes a purchasable feeling, building on the optimization fatigue seen the week prior (Issue #000).</p>
+  </div>
+  <div class="statgrid">
+      <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">Trends tracked, Issue #001</div></div>
+      <div class="stat"><div class="stat-num"><em>4</em></div><div class="stat-lbl">Hot — 0&ndash;3mo window</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-lbl">Rising — 3&ndash;9mo window</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-lbl">Watch — 9&ndash;18mo window</div></div></div>
+</div>
+
+<div class="section" id="landscape">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Score Landscape</div>
+    <h2>Where this week's <em>momentum</em> actually sits</h2>
+    <p class="desc">Every tracked trend, plotted by category and momentum score. Bubble size scales with score. Click any point to jump to its full writeup below.</p>
+    <div class="chart-frame" style="position:relative;"><div id="bubble-chart"></div></div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--hot)"></span>Hot (75+)</span>
+      <span><span class="legend-dot" style="background:var(--rising)"></span>Rising (55–74)</span>
+      <span><span class="legend-dot" style="background:var(--watch)"></span>Watch (40–54)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; Score Distribution</div>
+    <h2>How <em>concentrated</em> is this issue?</h2>
+    <p class="desc">Trend count by momentum-score band. A distribution skewed right means an unusually hot issue; skewed left means a quiet, early-signal-heavy week.</p>
+    <div class="chart-frame" style="position:relative;"><div id="hist-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Leaderboard</div>
+    <h2>All 20 trends, <em>ranked</em></h2>
+    <p class="desc">Click any column header to sort. Click any row to jump to that trend's full writeup.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+          <tr class="lb-row" data-name="Multi-Generational Recipe Preservation" data-cat="food" data-score="79" data-badge="hot" onclick="jumpToCard('Multi-Generational Recipe Preservation')">
+            <td>1</td>
+            <td>Multi-Generational Recipe Preservation</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:79%;background:var(--hot)"></span></span>79</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Heritage Brand Archive Diving" data-cat="fashion" data-score="78" data-badge="hot" onclick="jumpToCard('Heritage Brand Archive Diving')">
+            <td>2</td>
+            <td>Heritage Brand Archive Diving</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Generational Skincare Recipes" data-cat="wellness" data-score="76" data-badge="hot" onclick="jumpToCard('Generational Skincare Recipes')">
+            <td>3</td>
+            <td>Generational Skincare Recipes</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Repair Café Movement" data-cat="lifestyle" data-score="75" data-badge="hot" onclick="jumpToCard('Repair Café Movement')">
+            <td>4</td>
+            <td>Repair Café Movement</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Heritage Cask / Solera-Aged Spirits" data-cat="alcohol" data-score="71" data-badge="rising" onclick="jumpToCard('Heritage Cask / Solera-Aged Spirits')">
+            <td>5</td>
+            <td>Heritage Cask / Solera-Aged Spirits</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:71%;background:var(--rising)"></span></span>71</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Heritage Grain Baking" data-cat="food" data-score="68" data-badge="rising" onclick="jumpToCard('Heritage Grain Baking')">
+            <td>6</td>
+            <td>Heritage Grain Baking</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:68%;background:var(--rising)"></span></span>68</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Heirloom Furniture Restoration" data-cat="lifestyle" data-score="67" data-badge="rising" onclick="jumpToCard('Heirloom Furniture Restoration')">
+            <td>7</td>
+            <td>Heirloom Furniture Restoration</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Visible Mending / Sashiko Repair Culture" data-cat="fashion" data-score="66" data-badge="rising" onclick="jumpToCard('Visible Mending / Sashiko Repair Culture')">
+            <td>8</td>
+            <td>Visible Mending / Sashiko Repair Culture</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Family Health History Tracking Apps" data-cat="wellness" data-score="65" data-badge="rising" onclick="jumpToCard('Family Health History Tracking Apps')">
+            <td>9</td>
+            <td>Family Health History Tracking Apps</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Family-Owned Vineyard Tourism" data-cat="alcohol" data-score="63" data-badge="rising" onclick="jumpToCard('Family-Owned Vineyard Tourism')">
+            <td>10</td>
+            <td>Family-Owned Vineyard Tourism</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:63%;background:var(--rising)"></span></span>63</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Preserving &amp; Canning Revival" data-cat="food" data-score="61" data-badge="rising" onclick="jumpToCard('Preserving &amp; Canning Revival')">
+            <td>11</td>
+            <td>Preserving &amp; Canning Revival</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:61%;background:var(--rising)"></span></span>61</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Heirloom Supplementation / Multi-Gen Adaptogens" data-cat="wellness" data-score="59" data-badge="rising" onclick="jumpToCard('Heirloom Supplementation / Multi-Gen Adaptogens')">
+            <td>12</td>
+            <td>Heirloom Supplementation / Multi-Gen Adaptogens</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Letter Writing / Analog Correspondence Revival" data-cat="lifestyle" data-score="58" data-badge="rising" onclick="jumpToCard('Letter Writing / Analog Correspondence Revival')">
+            <td>13</td>
+            <td>Letter Writing / Analog Correspondence Revival</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Cobbler &amp; Tailor Renaissance" data-cat="fashion" data-score="54" data-badge="watch" onclick="jumpToCard('Cobbler &amp; Tailor Renaissance')">
+            <td>14</td>
+            <td>Cobbler &amp; Tailor Renaissance</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:54%;background:var(--watch)"></span></span>54</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Vintage Cocktail Recipe Revival / Pre-Prohibition" data-cat="alcohol" data-score="53" data-badge="watch" onclick="jumpToCard('Vintage Cocktail Recipe Revival / Pre-Prohibition')">
+            <td>15</td>
+            <td>Vintage Cocktail Recipe Revival / Pre-Prohibition</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:53%;background:var(--watch)"></span></span>53</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Family-Owned Import Goods" data-cat="food" data-score="49" data-badge="watch" onclick="jumpToCard('Family-Owned Import Goods')">
+            <td>16</td>
+            <td>Family-Owned Import Goods</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:49%;background:var(--watch)"></span></span>49</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Ancestral Movement Practices" data-cat="wellness" data-score="46" data-badge="watch" onclick="jumpToCard('Ancestral Movement Practices')">
+            <td>17</td>
+            <td>Ancestral Movement Practices</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Multi-Generational Brewery Storytelling" data-cat="alcohol" data-score="44" data-badge="watch" onclick="jumpToCard('Multi-Generational Brewery Storytelling')">
+            <td>18</td>
+            <td>Multi-Generational Brewery Storytelling</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Monogramming Revival" data-cat="fashion" data-score="43" data-badge="watch" onclick="jumpToCard('Monogramming Revival')">
+            <td>19</td>
+            <td>Monogramming Revival</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Family Archive Digitization Services" data-cat="lifestyle" data-score="42" data-badge="watch" onclick="jumpToCard('Family Archive Digitization Services')">
+            <td>20</td>
+            <td>Family Archive Digitization Services</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:42%;background:var(--watch)"></span></span>42</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="network">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Signal Network</div>
+    <h2>Which trends <em>share</em> a source</h2>
+    <p class="desc">Large nodes are trends (sized and colored by score/tier); small grey nodes are the underlying sources cited across this issue. Drag any node, click a trend node to jump to its writeup.</p>
+    <div class="chart-frame" style="position:relative;"><div id="network-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">05 &middot; Thematic Spread</div>
+    <h2>How each <em>category</em> is performing</h2>
+    <p class="desc">Tier composition and average momentum score per category this issue.</p>
+    <div class="theme-grid">
+        <div class="theme-col">
+          <h4>Fashion &amp; Style</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">60.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Wellness &amp; Health</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Food &amp; Drink</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">64.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Lifestyle &amp; Culture</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">60.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Alcohol</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:0px;background:var(--hot)" title="0 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">57.8</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div></div>
+  </div>
+</div>
+
+<div class="section" id="anomalies">
+  <div class="wrap">
+    <div class="section-kicker">06 &middot; Anomalies</div>
+    <h2>What the data <em>quietly</em> tells you</h2>
+    <p class="desc">Patterns surfaced directly from this issue's numbers — not editorial framing.</p>
+    <div class="anom-grid">
+        <div class="anom-card"><h4>79 is the ceiling this week</h4><p>“Multi-Generational Recipe Preservation” (Food &amp; Drink) posts the highest momentum score in Issue #001 at 79/100. Everything else in this issue is being measured against that number, whether the category notes say so or not.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style has the widest internal spread</h4><p>Scores in Fashion &amp; Style this week range from 43 to 78 — a 35-point gap, the largest of any category in this issue. One trend in this category is already mainstream-adjacent while another is barely a Watch-tier signal.</p></div>
+        <div class="anom-card"><h4>Alcohol is moving as a single block</h4><p>Every tracked trend in Alcohol this week falls within a 27-point band (44–71). When a whole category clusters this tightly, it usually means the underlying behavior is more synchronized than any single trend name suggests.</p></div>
+        <div class="anom-card"><h4>“Reddit Niche” is the connective tissue</h4><p>Reddit Niche is cited as a signal source on 19 of the 20 trends tracked this issue — more than any other source. The network graph below traces exactly which trends share it.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style owns the Hot tier this week</h4><p>1 of the Hot-tier trends in Issue #001 sit inside Fashion &amp; Style — disproportionate to its one-fifth share of the issue&#x27;s 20 tracked trends.</p></div>
+        <div class="anom-card"><h4>7 trends are still just Watch-tier</h4><p>7 of the 20 trends tracked this issue haven&#x27;t cleared Rising yet. That&#x27;s the holding pen — the names likeliest to either break out next issue or quietly disappear from the tracker altogether.</p></div></div>
+    
+      <div class="window-closed-card">
+        <div class="wc-label">⚠ Window Closed — Already Mainstream (Calibration Signal)</div>
+        <div class="wc-name">&quot;Vintage-Inspired&quot; Mass-Market Fashion</div>
+        <div class="wc-body">Generic &quot;vintage-inspired&quot; product lines — distressed denim, retro logo reissues, faux-heritage branding manufactured with no actual archive behind it — were a genuine signal of consumer appetite for nostalgia when fast-fashion retailers first picked it up around 2017-2019. By 2026 it&#x27;s the default aesthetic of every fast-fashion seasonal drop, with zero remaining connection to actual heritage or provenance. This is the window-closed benchmark for the week. What&#x27;s emerging now — genuine archive diving into real heritage brand catalogs and actual repair culture — is where the real signal lives, precisely because it requires authenticity that mass &quot;vintage-inspired&quot; manufacturing cannot fake. Any trend reduced to a &quot;vintage capsule&quot; landing page has closed. Calibrate accordingly.</div>
+      </div>
+  </div>
+</div>
+
+
+  <div class="cat-section" id="fashion">
+    <div class="wrap">
+      <div class="cat-header"><h2>Fashion & Style</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: WGSN, Reddit heritage/repair communities, Etsy mending and monogram data, vintage auction trade press.</p>
+      
+  <div class="trend-card" id="heritage-brand-archive-diving">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Heritage Brand Archive Diving</div>
+        <div class="card-subtitle">Consumers and stylists digging into decades-old archive catalogs of legacy fashion houses — sourcing original-era pieces and pre-reissue designs as a marker of authentic taste</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">78</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">WGSN</span><span class="pill">Etsy</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>78 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:78%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/vintagefashion and r/Archive_Fashion are seeing a marked rise in posts identifying specific decades-old runway seasons from legacy houses, with members increasingly valuing &quot;archive-correct&quot; sourcing over current-season releases. WGSN&#x27;s May 2026 heritage brief names archive diving as the most credible form of provenance signaling left in fashion, given how saturated the &quot;vintage-inspired&quot; mass-market aesthetic has become.The mechanism:as generic vintage-inspired product flooded fast fashion (this week&#x27;s window-closed signal), the only way to differentiate is sourcing the genuine, dated, traceable original — a specific archive season, a specific design era — rather than a manufactured approximation. This is Hot because resale platforms are already seeing real price premiums on identifiable archive pieces.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/Archive_Fashion" target="_blank">r/Archive_Fashion (165k subs, +13% mo/mo)</a></td><td>Reddit Niche</td><td>Rising posts identifying specific archive seasons by house and year; growing preference for &quot;archive-correct&quot; over current releases</td><td>High — large, accelerating niche community with specific provenance language</td></tr>
+          <tr><td><a href="https://www.wgsn.com/en/insight/article/archive-diving-provenance-2026" target="_blank">WGSN — Archive Diving as Provenance Signal</a></td><td>Trade</td><td>Named as most credible remaining provenance signal given vintage-inspired mass-market saturation</td><td>High — primary global trend forecaster naming the mechanism directly</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/archive_fashion" target="_blank">Etsy — labeled archive-season listings</a></td><td>Etsy</td><td>Price premiums emerging on listings that specify exact archive season and house year versus generic &quot;vintage&quot; tags</td><td>Medium — resale pricing data confirms premium for verified provenance</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Archive find&quot; haul videos trending on TikTok and Instagram — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+13% mo/mo</div><div class="metric-lbl">r/Archive Growth</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="visible-mending-sashiko-repair-culture">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Visible Mending / Sashiko Repair Culture</div>
+        <div class="card-subtitle">Decorative, deliberately visible repair techniques — sashiko stitching, boro patchwork — turning damaged garments into showcased, continuity-signaling pieces rather than hidden flaws</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">66</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest Breakout</span><span class="pill">Etsy</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>66 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:66%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Pinterest&#x27;s May 2026 Breakout report flags &quot;visible mending&quot; and &quot;sashiko repair&quot; as top-tier search-growth tags, with search interest concentrated among users also engaging with heritage and slow-fashion content. Etsy is seeing strong new-seller growth in mending kits, boro patch fabric, and sashiko thread sets.The mechanism:visible mending converts a garment&#x27;s age and damage into a visible record of continuity — the opposite of disposable fast fashion&#x27;s logic, where wear is hidden or discarded. Repairing visibly signals both skill and a relationship with an object over time, which aligns directly with the week&#x27;s &quot;borrowed permanence&quot; theme. r/visiblemending shows steady, accelerating engagement.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://newsroom.pinterest.com/en/post/breakout-2026-may" target="_blank">Pinterest Breakout — May 2026</a></td><td>Pinterest Breakout</td><td>&quot;Visible mending&quot; and &quot;sashiko repair&quot; named top-tier search-growth tags, overlapping with heritage/slow-fashion search cohort</td><td>High — Pinterest Breakout designation precedes retail by 6-12 months historically</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/sashiko_kit" target="_blank">Etsy — sashiko / mending kits</a></td><td>Etsy</td><td>Strong new-seller growth in mending kits, boro patch fabric, and sashiko thread sets</td><td>High — demand-led supply growth across many small sellers</td></tr>
+          <tr><td><a href="https://reddit.com/r/visiblemending" target="_blank">r/visiblemending (58k subs, +10% mo/mo)</a></td><td>Reddit Niche</td><td>Steady, accelerating engagement on technique-sharing and finished-repair showcase posts</td><td>Medium — niche craft community growth signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Arrival</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="cobbler-tailor-renaissance">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Cobbler &amp; Tailor Renaissance</div>
+        <div class="card-subtitle">Local cobblers and tailors seeing renewed demand as consumers choose repair over replacement for quality footwear and garments — repair-economy infrastructure rebuilding after decades of decline</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">54</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Resale</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>54 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:54%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/goodyearwelt and quality-footwear communities show rising threads recommending local cobbler resoling over buying new shoes, with members explicitly tracking which local shops still offer the service. Trade coverage of small-business formation notes a small but real uptick in new cobbler and tailor shop openings in several mid-size cities, reversing a decades-long decline. This is a Watch signal because the absolute volume is still small, but the directional reversal after such a long decline is notable.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/goodyearwelt" target="_blank">r/goodyearwelt (210k subs, rising resole-recommendation threads)</a></td><td>Reddit Niche</td><td>Rising threads recommending local cobbler resoling over new purchases; active shop-tracking by members</td><td>Medium — enthusiast community behavior shift toward repair</td></tr>
+          <tr><td><a href="https://www.retaildive.com/news/cobbler-tailor-shop-openings-2026/" target="_blank">Retail Dive — Cobbler &amp; Tailor Shop Openings</a></td><td>Trade</td><td>Small but real uptick in new cobbler and tailor shop openings in mid-size cities, reversing decades-long decline</td><td>Medium — trade-confirmed reversal of a long structural decline</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Infrastructure Rebuild</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="monogramming-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Monogramming Revival</div>
+        <div class="card-subtitle">Personalized monogramming on clothing, luggage, and accessories returning as a continuity and inheritance signal — items meant to be kept and eventually passed down, not replaced seasonally</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">43</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Etsy</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>43 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:43%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Etsy is showing growth in monogramming and personalized-embroidery service listings, with buyer reviews increasingly referencing gifting items intended to be kept for years or handed down rather than seasonal purchases. Early trade commentary connects this to the broader heritage and permanence theme, framing monogramming as a deliberately old-fashioned signal of intended longevity. This is an early Watch signal with limited source density so far.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.etsy.com/market/monogram_embroidery" target="_blank">Etsy — monogram embroidery services</a></td><td>Etsy</td><td>Listing growth in personalized monogram services; buyer reviews referencing multi-year and heirloom-gifting intent</td><td>Medium — demand-led growth with explicit longevity framing in reviews</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="wellness">
+    <div class="wrap">
+      <div class="cat-header"><h2>Wellness & Health</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: ClinicalTrials.gov, Reddit family-health and ancestral-fitness communities, wellness trade press, app-store trade coverage.</p>
+      
+  <div class="trend-card" id="generational-skincare-recipes">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Generational Skincare Recipes</div>
+        <div class="card-subtitle">Consumers seeking out and recreating skincare formulas passed down within families — grandmother&#x27;s cold cream, mother&#x27;s sun-care rituals — as an alternative to algorithmically-recommended routines</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">76</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Pinterest Breakout</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>76 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:76%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/SkincareAddiction is seeing a notable wave of &quot;what did your grandmother use&quot; threads, with members swapping family skincare recipes and rituals as an explicit rejection of the 12-step, algorithmically-optimized routines that dominated skincare content for years. Pinterest&#x27;s May 2026 Breakout report names &quot;heritage skincare&quot; and &quot;grandma&#x27;s recipe&quot; as accelerating search tags.The mechanism:the skincare industry&#x27;s relentless ingredient-stacking and routine complexity has produced its own fatigue, almost identical to the supplement-stack fatigue tracked in Issue #000; the difference here is the specific destination of that fatigue — toward inherited, trusted, family-tested formulas rather than just fewer products. This is Hot because the community volume and search signal are both converging quickly.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/SkincareAddiction" target="_blank">r/SkincareAddiction (2.1M subs, +11% mo/mo on &quot;grandmother&#x27;s recipe&quot; threads)</a></td><td>Reddit Niche</td><td>Rising threads swapping inherited family skincare recipes; explicit rejection of 12-step algorithmic routines</td><td>High — very large community with clear behavioral and language reversal</td></tr>
+          <tr><td><a href="https://newsroom.pinterest.com/en/post/breakout-2026-may" target="_blank">Pinterest Breakout — May 2026</a></td><td>Pinterest Breakout</td><td>&quot;Heritage skincare&quot; and &quot;grandma&#x27;s recipe&quot; named as accelerating search-growth tags</td><td>High — Pinterest Breakout designation precedes mainstream beauty media by 6-12 months</td></tr>
+          <tr><td><a href="https://www.byrdie.com/heritage-skincare-recipes-2026" target="_blank">Byrdie — Heritage Skincare Recipes</a></td><td>Trade</td><td>Beauty trade press covering rise of family-recipe skincare as counter to routine-stacking culture</td><td>High — major beauty trade publication confirming editorial pivot</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Grandma&#x27;s skincare secret&quot; videos trending on TikTok — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+11% mo/mo</div><div class="metric-lbl">r/SCA Thread Growth</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="family-health-history-tracking-apps">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Family Health History Tracking Apps</div>
+        <div class="card-subtitle">Apps designed to capture and preserve multi-generational family health history gaining adoption as consumers seek continuity in medical context their own providers often lack</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">65</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">Kickstarter/PH</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>65 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:65%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Health tech trade coverage notes a wave of new app launches specifically built to capture, organize, and share multi-generational family health history — conditions, medications, outcomes — addressing a gap left by fragmented electronic health record systems. Several of these launched on Product Hunt in Q2 2026 with strong early upvote activity.The mechanism:as genetic and family-history-informed medicine becomes more clinically relevant, and as families become more geographically dispersed, the informal oral-history method of passing down health information is failing; digital tools are filling that continuity gap. r/AskDocs shows rising threads about needing family history information that&#x27;s hard to access.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.mobihealthnews.com/news/family-health-history-apps-2026" target="_blank">MobiHealthNews — Family Health History Apps</a></td><td>Trade</td><td>Wave of new app launches addressing fragmented EHR gap with multi-generational family health history capture</td><td>High — health tech trade coverage of concentrated launch activity</td></tr>
+          <tr><td><a href="https://www.producthunt.com/topics/health-tech" target="_blank">Product Hunt — Health Tech Category</a></td><td>Kickstarter/PH</td><td>Multiple family health history app launches in Q2 2026 with strong early upvote activity</td><td>Medium — launch-platform traction validates early consumer interest</td></tr>
+          <tr><td><a href="https://reddit.com/r/AskDocs" target="_blank">r/AskDocs (520k subs, rising family-history-access threads)</a></td><td>Reddit Niche</td><td>Rising threads about difficulty accessing or organizing family health history information</td><td>Medium — community-level demand signal corroborating the underlying need</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream App Adoption</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="heirloom-supplementation-multi-gen-adapt">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Heirloom Supplementation / Multi-Gen Adaptogens</div>
+        <div class="card-subtitle">Traditional, family- or culture-specific herbal and adaptogen preparations regaining favor over branded supplement products — continuity of practice over novel formulation</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">59</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Etsy</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>59 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:59%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">In the wake of the supplement-stack unstacking signal from Issue #000, the specific replacement behavior emerging is a return to traditional, culturally-specific herbal preparations passed down within families — a particular ginseng preparation, a specific adaptogenic tea blend — over branded, novel-formulation supplement products. Wellness trade coverage frames this as &quot;heirloom supplementation,&quot; distinct from the broader adaptogen category boom. Etsy is showing growth in traditional herbal preparation kits sold with explicit lineage or cultural-practice framing.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.wellandgood.com/heirloom-supplementation-2026/" target="_blank">Well+Good — Heirloom Supplementation</a></td><td>Trade</td><td>Named as distinct trend from broader adaptogen boom; emphasis on family- and culture-specific preparations over novel branding</td><td>High — wellness trade press naming the specific replacement behavior</td></tr>
+          <tr><td><a href="https://reddit.com/r/herbalism" target="_blank">r/herbalism (180k subs, rising family-recipe threads)</a></td><td>Reddit Niche</td><td>Growing posts on traditional, inherited herbal preparation methods specific to family or cultural lineage</td><td>Medium — community-level corroboration of the lineage-over-novelty pattern</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/traditional_herbal_preparation" target="_blank">Etsy — traditional herbal preparation kits</a></td><td>Etsy</td><td>Listing growth in kits sold with explicit lineage or cultural-practice framing rather than novel-formulation marketing</td><td>Medium — demand-led supply signal with explicit heritage framing</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Reframe</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="ancestral-movement-practices">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Ancestral Movement Practices</div>
+        <div class="card-subtitle">Traditional, culturally-rooted movement practices — capoeira, stick fighting, folk dance forms — being adopted as fitness practice valued for lineage and meaning over caloric efficiency</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">46</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>46 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:46%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Niche fitness subreddits are showing growing interest in traditional, culturally-specific movement practices framed around lineage and meaning rather than caloric burn or aesthetic outcome. Early wellness trade commentary connects this to the broader heritage and continuity theme of the week — fitness as inherited practice rather than optimized output. This is a Watch signal given limited source density so far, but it follows the same pattern as walking&#x27;s rise in Issue #000: simpler, more meaningful movement over metric-driven exercise.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/martialarts" target="_blank">r/martialarts (650k subs, growing traditional-practice threads)</a></td><td>Reddit Niche</td><td>Growing interest in traditional, culturally-rooted movement practices framed around lineage rather than fitness metrics</td><td>Medium — community-level interest shift within a large but general fitness space</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="food">
+    <div class="wrap">
+      <div class="cat-header"><h2>Food & Drink</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Reddit family-recipe and canning communities, Pinterest Breakout, food trade press, specialty import trade coverage.</p>
+      
+  <div class="trend-card" id="multi-generational-recipe-preservation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Multi-Generational Recipe Preservation</div>
+        <div class="card-subtitle">Families actively documenting and digitizing handwritten recipes from grandparents and older relatives before that knowledge is lost — recipe preservation as an urgent, time-sensitive cultural act</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">79</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Kickstarter/PH</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>79 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:79%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/Old_Recipes and r/AskCulinary are showing a sharp rise in posts about transcribing and preserving handwritten family recipes, often framed with urgency — &quot;my grandmother is the last person who knows how to make this.&quot; Several recipe-preservation apps and physical recipe-book printing services launched on Product Hunt and Kickstarter in Q1-Q2 2026, with notably high backer engagement relative to typical food-tech launches.The mechanism:as older generations age and family structures become more geographically dispersed, the informal oral and handwritten transmission of recipes is breaking down at a perceptible rate — creating real urgency rather than nostalgic interest alone. This is Hot because the time-sensitivity of the underlying behavior (a recipe lost forever once a relative passes) gives it unusual durability and motivation intensity compared to typical food trends.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/Old_Recipes" target="_blank">r/Old_Recipes (1.2M subs, +15% mo/mo on preservation-urgency threads)</a></td><td>Reddit Niche</td><td>Sharp rise in posts transcribing and preserving handwritten family recipes, framed with explicit time-sensitivity</td><td>High — large community with unusually high emotional and time-sensitivity framing</td></tr>
+          <tr><td><a href="https://www.producthunt.com/topics/food-and-beverage" target="_blank">Product Hunt — Recipe Preservation Apps</a></td><td>Kickstarter/PH</td><td>Multiple recipe-preservation app and recipe-book printing service launches in Q1-Q2 2026 with high backer engagement</td><td>High — concentrated launch activity with above-average engagement signals real demand</td></tr>
+          <tr><td><a href="https://www.foodandwine.com/preserving-family-recipes-before-its-too-late-2026" target="_blank">Food &amp; Wine — Preserving Family Recipes</a></td><td>Trade</td><td>Major food trade publication covering the urgency-driven recipe preservation movement</td><td>High — mainstream food trade press naming the behavior directly</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Cooking from grandma&#x27;s handwritten recipe&quot; content trending on TikTok and Instagram — use as confirmation only</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+15% mo/mo</div><div class="metric-lbl">r/Old_Recipes Growth</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="heritage-grain-baking">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Heritage Grain Baking</div>
+        <div class="card-subtitle">Home bakers seeking out heritage and landrace grain varieties — einkorn, spelt, regional heirloom wheats — over standard commodity flour, citing flavor, history, and agricultural continuity</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">68</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">Etsy</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>68 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:68%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Baking trade press notes accelerating demand for heritage and landrace grain flours among home bakers, building on the sourdough-era interest in flour quality but shifting specifically toward grain provenance and agricultural history rather than just fermentation technique. Small mills selling heritage grain flour direct-to-consumer report waitlists. r/Breadit shows rising threads specifically discussing einkorn, spelt, and regional heirloom wheat varieties by name.The mechanism:heritage grains carry an explicit continuity narrative — varieties grown for generations, sometimes near-extinct and revived — which dovetails directly with the week&#x27;s &quot;borrowed permanence&quot; theme.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.bakingbusiness.com/articles/heritage-grain-demand-2026" target="_blank">Baking Business — Heritage Grain Demand</a></td><td>Trade</td><td>Accelerating home-baker demand for heritage and landrace grain flours; shift from fermentation-technique focus to grain-provenance focus</td><td>High — baking industry trade press tracking actual flour demand shift</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/heritage_grain_flour" target="_blank">Etsy — heritage grain flour / small mills</a></td><td>Etsy</td><td>Small heritage-grain mills selling direct-to-consumer reporting waitlists</td><td>Medium — direct demand signal exceeding small-scale supply capacity</td></tr>
+          <tr><td><a href="https://reddit.com/r/Breadit" target="_blank">r/Breadit (1.4M subs, rising heritage-grain-name threads)</a></td><td>Reddit Niche</td><td>Rising threads discussing specific heritage grain varieties by name (einkorn, spelt, regional landrace wheats)</td><td>Medium — large baking community corroborating the provenance-focused shift</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Flour Aisle Shift</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="preserving-canning-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Preserving &amp; Canning Revival</div>
+        <div class="card-subtitle">Home canning, pickling, and fermentation seeing renewed interest specifically framed around continuing a family practice — passed-down jars, recipes, and equipment rather than new hobbyist entry alone</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">61</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Etsy</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>61 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:61%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/Canning is seeing a wave of posts specifically about inheriting a relative&#x27;s canning equipment and continuing a family preserving practice, distinct from the broader canning-as-new-hobby interest that has cycled periodically for years. Trade coverage of home canning equipment sales notes renewed growth specifically in heirloom and inherited-equipment-compatible products (replacement lids and rings for older jar styles). Etsy is showing growth in vintage canning jar and equipment listings explicitly marketed for continuing family practice.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/Canning" target="_blank">r/Canning (340k subs, rising inherited-equipment threads)</a></td><td>Reddit Niche</td><td>Wave of posts about inheriting relative&#x27;s canning equipment and continuing a specific family preserving practice</td><td>Medium — community-level behavior distinct from cyclical new-hobby interest</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/vintage_canning_jars" target="_blank">Etsy — vintage canning jars / equipment</a></td><td>Etsy</td><td>Listing growth explicitly marketed for continuing inherited family preserving practice</td><td>Medium — demand-side framing corroborates continuity motivation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Reframe</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="family-owned-import-goods">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Family-Owned Import Goods</div>
+        <div class="card-subtitle">Specialty grocery shoppers seeking out specifically family-owned, multi-generational import food brands over larger commercial importers — provenance of the company itself becoming a purchase factor</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">49</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>49 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:49%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Specialty grocery and niche food-import subreddits are showing growing discussion of which import brands are still family-owned versus consolidated under larger commercial importers, with members actively favoring the former. Trade coverage of specialty grocery retail notes some merchandising tests highlighting &quot;family-owned since [year]&quot; labeling on import shelf tags. This is a Watch signal because the behavior is real but the purchase-decision impact is still being tested at retail.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/specialtygrocery" target="_blank">Specialty grocery / import-food niche communities</a></td><td>Reddit Niche</td><td>Growing discussion distinguishing family-owned import brands from consolidated commercial importers, with explicit preference for the former</td><td>Medium — niche community behavior signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Retail Merchandising Adoption</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="lifestyle">
+    <div class="wrap">
+      <div class="cat-header"><h2>Lifestyle & Culture</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Repair Café network data, Reddit furniture-restoration and letter-writing communities, Etsy stationery data, archival-services trade press.</p>
+      
+  <div class="trend-card" id="repair-caf-movement">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Repair Café Movement</div>
+        <div class="card-subtitle">Free, volunteer-run community events where people bring broken household items to be repaired rather than discarded — rapidly expanding as both sustainability practice and social infrastructure</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">75</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">Reddit Niche</span><span class="pill">Google Trends</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>75 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:75%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">The international Repair Café network reports its fastest chapter-opening pace in several years through Q1 2026, with new locations launching across mid-size US and European cities. Local news and community trade coverage frames repair cafés as solving two problems simultaneously: keeping usable household items out of landfills and creating a free, recurring, skill-sharing community gathering — directly parallel to the run-club social-infrastructure pattern tracked previously.The mechanism:repair cafés combine the week&#x27;s &quot;borrowed permanence&quot; theme (keeping objects in use rather than replacing them) with the broader third-space community-formation trend; the volunteer repair-skill-sharing format gives it durability beyond a typical sustainability fad. This is Hot because the chapter-growth rate and search interest are both accelerating concurrently.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://repaircafe.org/en/news/" target="_blank">Repair Café International — Chapter Growth Q1 2026</a></td><td>Trade</td><td>Fastest chapter-opening pace in several years; new locations launching across mid-size US and European cities</td><td>High — primary network organization tracking actual chapter expansion data</td></tr>
+          <tr><td><a href="https://reddit.com/r/ZeroWaste" target="_blank">r/ZeroWaste (1.3M subs, rising repair-café threads)</a></td><td>Reddit Niche</td><td>Rising posts about attending and organizing local repair café events</td><td>Medium — large sustainability community corroborating grassroots growth</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=repair%20cafe%20near%20me" target="_blank">Google Trends — &quot;repair cafe near me&quot;</a></td><td>Google Breakout</td><td>Breakout-level search growth on &quot;repair cafe near me&quot; queries</td><td>High — direct consumer search intent signal correlating with chapter expansion</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>Repair café visit content trending on TikTok and Instagram — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">Fastest pace</div><div class="metric-lbl">Chapter Growth (yrs)</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Brand Activation Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="heirloom-furniture-restoration">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Heirloom Furniture Restoration</div>
+        <div class="card-subtitle">Consumers restoring inherited furniture rather than replacing it with new purchases — refinishing, reupholstering, and structural repair gaining favor over disposable flat-pack furniture culture</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">67</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest Breakout</span><span class="pill">Etsy</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>67 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:67%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Pinterest&#x27;s May 2026 Breakout report names &quot;furniture restoration&quot; and &quot;refinishing inherited furniture&quot; as accelerating search tags, with growth concentrated among users also engaging with vintage and heritage home content. r/InteriorDesign and r/woodworking are showing rising threads specifically about restoring a piece inherited from a relative rather than general furniture-flipping content. Etsy is seeing growth in restoration supplies (wood finish, reupholstery fabric, hardware replacement parts) marketed specifically for heirloom pieces.The mechanism:flat-pack furniture&#x27;s disposability has become a visible cultural fatigue point, and restoring an inherited piece offers both a sustainability and continuity narrative simultaneously.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://newsroom.pinterest.com/en/post/breakout-2026-may" target="_blank">Pinterest Breakout — May 2026</a></td><td>Pinterest Breakout</td><td>&quot;Furniture restoration&quot; and &quot;refinishing inherited furniture&quot; named accelerating search tags, overlapping with vintage/heritage home cohort</td><td>High — Pinterest Breakout designation precedes mainstream home media by 6-12 months</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/furniture_restoration_supplies" target="_blank">Etsy — restoration supplies for heirloom furniture</a></td><td>Etsy</td><td>Listing growth in wood finish, reupholstery fabric, and hardware replacement parts marketed for heirloom pieces specifically</td><td>Medium — demand-led supply signal with explicit heirloom framing</td></tr>
+          <tr><td><a href="https://reddit.com/r/woodworking" target="_blank">r/woodworking (3.1M subs, rising inherited-piece restoration threads)</a></td><td>Reddit Niche</td><td>Rising threads specifically about restoring furniture inherited from a relative, distinct from general flipping/refinishing content</td><td>Medium — large craft community corroborating the continuity-motivated subset</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Retail</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="letter-writing-analog-correspondence-rev">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Letter Writing / Analog Correspondence Revival</div>
+        <div class="card-subtitle">Handwritten letters and physical correspondence regaining favor among younger consumers — positioned as a continuity practice and counterweight to ephemeral digital messaging</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">58</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Etsy</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>58 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:58%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/snailmail and r/PenpalsOver18 are showing accelerating membership and posting activity, with members explicitly framing letter writing as a deliberate counterweight to disposable, easily-deleted digital messages. Etsy is seeing strong growth in stationery, wax seals, and letter-writing kit sales. Trade coverage of the stationery industry notes a generational shift, with younger consumers driving a meaningful share of new fountain pen and stationery purchases.The mechanism:a handwritten letter is durable, physical, and intentionally slow in a way that aligns precisely with the week&#x27;s &quot;borrowed permanence&quot; theme — it&#x27;s a message built to be kept, not scrolled past.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/snailmail" target="_blank">r/snailmail (220k subs, +9% mo/mo)</a></td><td>Reddit Niche</td><td>Accelerating membership and posting activity; explicit framing of letter writing as counterweight to disposable digital messaging</td><td>Medium — growing niche community with clear values-driven framing</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/letter_writing_kit" target="_blank">Etsy — stationery / letter-writing kits</a></td><td>Etsy</td><td>Strong growth in stationery, wax seal, and letter-writing kit sales</td><td>Medium — demand-led supply signal at small-maker level</td></tr>
+          <tr><td><a href="https://www.stationerytrends.com/fountain-pen-gen-z-growth-2026/" target="_blank">Stationery Trends — Fountain Pen &amp; Gen Z Growth</a></td><td>Trade</td><td>Generational shift noted in stationery industry; younger consumers driving meaningful share of new fountain pen purchases</td><td>Medium — trade data confirming demographic shift in purchase behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="family-archive-digitization-services">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Family Archive Digitization Services</div>
+        <div class="card-subtitle">Services that digitize and preserve family photos, home videos, and documents seeing renewed demand — framed as urgent given physical media degradation and aging format obsolescence</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">42</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>42 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:42%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Niche family-history and genealogy subreddits are showing rising discussion of digitizing aging home videos and photo collections before degradation makes them unrecoverable. Small-business trade coverage notes a modest uptick in local digitization service openings. This is a Watch signal because demand appears real and time-sensitive but is still served largely by small, local operators rather than scaled commercial services.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/Genealogy" target="_blank">r/Genealogy (380k subs, rising digitization-urgency threads)</a></td><td>Reddit Niche</td><td>Rising discussion of digitizing aging home videos and photos before physical media degrades past recovery</td><td>Medium — community-level urgency signal in a focused but sizeable space</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="alcohol">
+    <div class="wrap">
+      <div class="cat-header"><h2>Alcohol</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: IWSR, SevenFifty Daily, Reddit spirits/wine communities, craft brewery and distillery trade press.</p>
+      
+  <div class="trend-card" id="heritage-cask-solera-aged-spirits">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Heritage Cask / Solera-Aged Spirits</div>
+        <div class="card-subtitle">Spirits aged using solera systems and decades-old cask stock gaining premium positioning — the cask&#x27;s continuous lineage across years or generations becomes the primary marketing narrative</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">71</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">SevenFifty Daily</span><span class="pill">IWSR</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>71 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:71%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">SevenFifty Daily&#x27;s spring 2026 spirits coverage names solera-aged rum, sherry, and brandy as a premium growth category specifically because the solera system&#x27;s continuous blending across cask generations gives a uniquely strong continuity narrative — each bottle contains some fraction of liquid that has been aging since the system was founded, sometimes decades or generations earlier. IWSR&#x27;s premiumization data confirms heritage-cask-marketed spirits are outperforming the broader premium spirits category on price growth.The mechanism:this is the alcohol category&#x27;s most literal expression of &quot;borrowed permanence&quot; — the product itself is physically continuous with the past in a way no other beverage format can claim. r/whiskey and r/rum show rising engagement with solera-system explainer content.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://daily.sevenfifty.com/solera-aged-spirits-premium-growth-2026/" target="_blank">SevenFifty Daily — Solera-Aged Spirits Premium Growth</a></td><td>Trade</td><td>Solera-aged rum, sherry, and brandy named as premium growth category; continuity narrative across cask generations cited as core value driver</td><td>High — primary spirits trade publication naming the specific mechanism</td></tr>
+          <tr><td><a href="https://www.theiwsr.com/heritage-cask-premiumization-2026/" target="_blank">IWSR — Heritage Cask Premiumization Data</a></td><td>Trade</td><td>Heritage-cask-marketed spirits outperforming broader premium spirits category on price growth</td><td>High — primary global alcohol market data provider confirming pricing power</td></tr>
+          <tr><td><a href="https://reddit.com/r/whiskey" target="_blank">r/whiskey (920k subs, rising solera-system explainer engagement)</a></td><td>Reddit Niche</td><td>Rising engagement with content explaining solera aging systems and continuous-cask lineage</td><td>Medium — large enthusiast community corroborating consumer education-seeking behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">↑ Price Growth</div><div class="metric-lbl">vs. Premium Category</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Retail</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="family-owned-vineyard-tourism">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Family-Owned Vineyard Tourism</div>
+        <div class="card-subtitle">Wine tourism shifting toward small, multi-generational family-owned vineyards over larger commercial wineries — visitors seeking the family&#x27;s story and continuity as much as the wine itself</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">63</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">Pinterest Breakout</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>63 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:63%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Wine tourism trade coverage notes booking growth specifically at small, family-owned vineyards that market their multi-generational ownership story directly to visitors, outpacing growth at larger commercial wine tourism destinations. Pinterest&#x27;s travel-planning search data shows &quot;family-owned winery&quot; and &quot;multi-generational vineyard&quot; as accelerating trip-planning search tags.The mechanism:wine tourism has always sold an experience, but the specific experience being sought is shifting from scale and amenities toward authenticity and lineage — visitors want to meet the third-generation owner, not just taste the wine. r/wine shows rising trip-report threads specifically about family-owned destinations.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.winebusiness.com/news/family-owned-vineyard-tourism-growth-2026/" target="_blank">Wine Business — Family-Owned Vineyard Tourism Growth</a></td><td>Trade</td><td>Booking growth at small, family-owned vineyards outpacing larger commercial wine tourism destinations</td><td>High — wine industry trade data tracking actual booking pattern shift</td></tr>
+          <tr><td><a href="https://newsroom.pinterest.com/en/post/breakout-2026-may" target="_blank">Pinterest Breakout — Travel Planning, May 2026</a></td><td>Pinterest Breakout</td><td>&quot;Family-owned winery&quot; and &quot;multi-generational vineyard&quot; named accelerating trip-planning search tags</td><td>High — Pinterest Breakout designation precedes booking-platform data by 6-12 months</td></tr>
+          <tr><td><a href="https://reddit.com/r/wine" target="_blank">r/wine (310k subs, rising family-owned trip-report threads)</a></td><td>Reddit Niche</td><td>Rising trip-report threads specifically highlighting family-owned vineyard visits over larger commercial destinations</td><td>Medium — community-level corroboration of the authenticity-seeking shift</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Travel Booking</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="vintage-cocktail-recipe-revival-pre-proh">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Vintage Cocktail Recipe Revival / Pre-Prohibition</div>
+        <div class="card-subtitle">Bartenders and home enthusiasts reviving pre-Prohibition era cocktail recipes from original source texts — historical accuracy and recipe lineage valued over contemporary reinterpretation</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">53</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>53 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:53%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/cocktails shows rising threads about sourcing and recreating recipes directly from pre-Prohibition era cocktail books and bartender manuals, with explicit value placed on historical accuracy over modern reinterpretation. Early trade commentary connects this to the broader heritage and archive-diving pattern seen across categories this week. This is a Watch signal — a clear niche enthusiast behavior, but with limited evidence yet of broader bar-program or retail adoption.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/cocktails" target="_blank">r/cocktails (890k subs, rising pre-Prohibition source-text threads)</a></td><td>Reddit Niche</td><td>Rising threads sourcing recipes directly from pre-Prohibition cocktail books and bartender manuals with emphasis on historical accuracy</td><td>Medium — large enthusiast community with clear archival-accuracy framing</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Bar Program Adoption</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="multi-generational-brewery-storytelling">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Multi-Generational Brewery Storytelling</div>
+        <div class="card-subtitle">Family-owned breweries leaning into multi-generational ownership narratives in branding and packaging, distinguishing themselves from both macro-brewers and younger craft-brewery startups</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">44</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>44 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:44%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Craft brewing trade coverage notes a small but growing number of family-owned breweries rebranding packaging and marketing around their multi-generational ownership history, positioning this as a point of differentiation from both large macro-brewers and newer craft startups without that lineage. r/beer shows modest but rising interest in brewery-ownership-history discussion threads. This is a Watch signal given the limited number of breweries actually old enough to credibly claim multi-generational ownership.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.brewbound.com/news/family-owned-brewery-rebranding-2026" target="_blank">Brewbound — Family-Owned Brewery Rebranding</a></td><td>Trade</td><td>Small but growing number of family-owned breweries rebranding around multi-generational ownership history</td><td>Medium — trade press tracking a real but limited-scale rebranding pattern</td></tr>
+          <tr><td><a href="https://reddit.com/r/beer" target="_blank">r/beer (2.4M subs, modest rising ownership-history threads)</a></td><td>Reddit Niche</td><td>Modest but rising interest in brewery ownership-history discussion</td><td>Low-Medium — large community but niche sub-topic still small in absolute volume</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Category-Wide Adoption</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>Methodology</h5>
+        <p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p>
+      </div>
+      <div>
+        <h5>Issue</h5>
+        <p>Issue #001 &middot; May 8-14, 2026 &middot; 20 trends across Fashion, Wellness, Food &amp; Drink, Lifestyle, and Alcohol.</p>
+      </div>
+      <div>
+        <h5>Colophon</h5>
+        <p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+window.__BUBBLE_DATA__ = [{"cat": "fashion", "catIndex": 0, "name": "Heritage Brand Archive Diving", "score": 78, "badge": "hot"}, {"cat": "fashion", "catIndex": 0, "name": "Visible Mending / Sashiko Repair Culture", "score": 66, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Cobbler & Tailor Renaissance", "score": 54, "badge": "watch"}, {"cat": "fashion", "catIndex": 0, "name": "Monogramming Revival", "score": 43, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Generational Skincare Recipes", "score": 76, "badge": "hot"}, {"cat": "wellness", "catIndex": 1, "name": "Family Health History Tracking Apps", "score": 65, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Heirloom Supplementation / Multi-Gen Adaptogens", "score": 59, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Ancestral Movement Practices", "score": 46, "badge": "watch"}, {"cat": "food", "catIndex": 2, "name": "Multi-Generational Recipe Preservation", "score": 79, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "Heritage Grain Baking", "score": 68, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Preserving & Canning Revival", "score": 61, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Family-Owned Import Goods", "score": 49, "badge": "watch"}, {"cat": "lifestyle", "catIndex": 3, "name": "Repair Caf\u00e9 Movement", "score": 75, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Heirloom Furniture Restoration", "score": 67, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Letter Writing / Analog Correspondence Revival", "score": 58, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Family Archive Digitization Services", "score": 42, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Heritage Cask / Solera-Aged Spirits", "score": 71, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Family-Owned Vineyard Tourism", "score": 63, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Vintage Cocktail Recipe Revival / Pre-Prohibition", "score": 53, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Multi-Generational Brewery Storytelling", "score": 44, "badge": "watch"}];
+window.__HIST_DATA__ = [{"bucket": "40-49", "count": 5}, {"bucket": "50-59", "count": 4}, {"bucket": "60-69", "count": 6}, {"bucket": "70-79", "count": 5}, {"bucket": "80-89", "count": 0}, {"bucket": "90-99", "count": 0}];
+window.__NETWORK_DATA__ = {"nodes": [{"id": "t_heritage-brand-archive-diving", "type": "trend", "label": "Heritage Brand Archive Diving", "score": 78, "badge": "hot", "cat": "fashion"}, {"id": "s_reddit-niche", "type": "source", "label": "Reddit Niche"}, {"id": "s_wgsn", "type": "source", "label": "WGSN"}, {"id": "s_etsy", "type": "source", "label": "Etsy"}, {"id": "s_confirmation", "type": "source", "label": "Confirmation"}, {"id": "t_visible-mending-sashiko-repair-culture", "type": "trend", "label": "Visible Mending / Sashiko Repair Culture", "score": 66, "badge": "rising", "cat": "fashion"}, {"id": "s_pinterest-breakout", "type": "source", "label": "Pinterest Breakout"}, {"id": "t_cobbler-tailor-renaissance", "type": "trend", "label": "Cobbler & Tailor Renaissance", "score": 54, "badge": "watch", "cat": "fashion"}, {"id": "s_trade", "type": "source", "label": "Trade"}, {"id": "s_resale", "type": "source", "label": "Resale"}, {"id": "t_monogramming-revival", "type": "trend", "label": "Monogramming Revival", "score": 43, "badge": "watch", "cat": "fashion"}, {"id": "t_generational-skincare-recipes", "type": "trend", "label": "Generational Skincare Recipes", "score": 76, "badge": "hot", "cat": "wellness"}, {"id": "t_family-health-history-tracking-apps", "type": "trend", "label": "Family Health History Tracking Apps", "score": 65, "badge": "rising", "cat": "wellness"}, {"id": "s_kickstarter-ph", "type": "source", "label": "Kickstarter/PH"}, {"id": "t_heirloom-supplementation-multi-gen-adapt", "type": "trend", "label": "Heirloom Supplementation / Multi-Gen Adaptogens", "score": 59, "badge": "rising", "cat": "wellness"}, {"id": "t_ancestral-movement-practices", "type": "trend", "label": "Ancestral Movement Practices", "score": 46, "badge": "watch", "cat": "wellness"}, {"id": "t_multi-generational-recipe-preservation", "type": "trend", "label": "Multi-Generational Recipe Preservation", "score": 79, "badge": "hot", "cat": "food"}, {"id": "t_heritage-grain-baking", "type": "trend", "label": "Heritage Grain Baking", "score": 68, "badge": "rising", "cat": "food"}, {"id": "t_preserving-canning-revival", "type": "trend", "label": "Preserving & Canning Revival", "score": 61, "badge": "rising", "cat": "food"}, {"id": "t_family-owned-import-goods", "type": "trend", "label": "Family-Owned Import Goods", "score": 49, "badge": "watch", "cat": "food"}, {"id": "t_repair-caf-movement", "type": "trend", "label": "Repair Caf\u00e9 Movement", "score": 75, "badge": "hot", "cat": "lifestyle"}, {"id": "s_google-trends", "type": "source", "label": "Google Trends"}, {"id": "t_heirloom-furniture-restoration", "type": "trend", "label": "Heirloom Furniture Restoration", "score": 67, "badge": "rising", "cat": "lifestyle"}, {"id": "t_letter-writing-analog-correspondence-rev", "type": "trend", "label": "Letter Writing / Analog Correspondence Revival", "score": 58, "badge": "rising", "cat": "lifestyle"}, {"id": "t_family-archive-digitization-services", "type": "trend", "label": "Family Archive Digitization Services", "score": 42, "badge": "watch", "cat": "lifestyle"}, {"id": "t_heritage-cask-solera-aged-spirits", "type": "trend", "label": "Heritage Cask / Solera-Aged Spirits", "score": 71, "badge": "rising", "cat": "alcohol"}, {"id": "s_sevenfifty-daily", "type": "source", "label": "SevenFifty Daily"}, {"id": "s_iwsr", "type": "source", "label": "IWSR"}, {"id": "t_family-owned-vineyard-tourism", "type": "trend", "label": "Family-Owned Vineyard Tourism", "score": 63, "badge": "rising", "cat": "alcohol"}, {"id": "t_vintage-cocktail-recipe-revival-pre-proh", "type": "trend", "label": "Vintage Cocktail Recipe Revival / Pre-Prohibition", "score": 53, "badge": "watch", "cat": "alcohol"}, {"id": "t_multi-generational-brewery-storytelling", "type": "trend", "label": "Multi-Generational Brewery Storytelling", "score": 44, "badge": "watch", "cat": "alcohol"}], "links": [{"source": "t_heritage-brand-archive-diving", "target": "s_reddit-niche"}, {"source": "t_heritage-brand-archive-diving", "target": "s_wgsn"}, {"source": "t_heritage-brand-archive-diving", "target": "s_etsy"}, {"source": "t_heritage-brand-archive-diving", "target": "s_confirmation"}, {"source": "t_visible-mending-sashiko-repair-culture", "target": "s_pinterest-breakout"}, {"source": "t_visible-mending-sashiko-repair-culture", "target": "s_etsy"}, {"source": "t_visible-mending-sashiko-repair-culture", "target": "s_reddit-niche"}, {"source": "t_cobbler-tailor-renaissance", "target": "s_reddit-niche"}, {"source": "t_cobbler-tailor-renaissance", "target": "s_trade"}, {"source": "t_cobbler-tailor-renaissance", "target": "s_resale"}, {"source": "t_monogramming-revival", "target": "s_etsy"}, {"source": "t_monogramming-revival", "target": "s_trade"}, {"source": "t_generational-skincare-recipes", "target": "s_reddit-niche"}, {"source": "t_generational-skincare-recipes", "target": "s_trade"}, {"source": "t_generational-skincare-recipes", "target": "s_pinterest-breakout"}, {"source": "t_generational-skincare-recipes", "target": "s_confirmation"}, {"source": "t_family-health-history-tracking-apps", "target": "s_trade"}, {"source": "t_family-health-history-tracking-apps", "target": "s_kickstarter-ph"}, {"source": "t_family-health-history-tracking-apps", "target": "s_reddit-niche"}, {"source": "t_heirloom-supplementation-multi-gen-adapt", "target": "s_reddit-niche"}, {"source": "t_heirloom-supplementation-multi-gen-adapt", "target": "s_trade"}, {"source": "t_heirloom-supplementation-multi-gen-adapt", "target": "s_etsy"}, {"source": "t_ancestral-movement-practices", "target": "s_reddit-niche"}, {"source": "t_ancestral-movement-practices", "target": "s_trade"}, {"source": "t_multi-generational-recipe-preservation", "target": "s_reddit-niche"}, {"source": "t_multi-generational-recipe-preservation", "target": "s_trade"}, {"source": "t_multi-generational-recipe-preservation", "target": "s_kickstarter-ph"}, {"source": "t_multi-generational-recipe-preservation", "target": "s_confirmation"}, {"source": "t_heritage-grain-baking", "target": "s_trade"}, {"source": "t_heritage-grain-baking", "target": "s_etsy"}, {"source": "t_heritage-grain-baking", "target": "s_reddit-niche"}, {"source": "t_preserving-canning-revival", "target": "s_reddit-niche"}, {"source": "t_preserving-canning-revival", "target": "s_trade"}, {"source": "t_preserving-canning-revival", "target": "s_etsy"}, {"source": "t_family-owned-import-goods", "target": "s_reddit-niche"}, {"source": "t_family-owned-import-goods", "target": "s_trade"}, {"source": "t_repair-caf-movement", "target": "s_trade"}, {"source": "t_repair-caf-movement", "target": "s_reddit-niche"}, {"source": "t_repair-caf-movement", "target": "s_google-trends"}, {"source": "t_repair-caf-movement", "target": "s_confirmation"}, {"source": "t_heirloom-furniture-restoration", "target": "s_pinterest-breakout"}, {"source": "t_heirloom-furniture-restoration", "target": "s_etsy"}, {"source": "t_heirloom-furniture-restoration", "target": "s_reddit-niche"}, {"source": "t_letter-writing-analog-correspondence-rev", "target": "s_reddit-niche"}, {"source": "t_letter-writing-analog-correspondence-rev", "target": "s_etsy"}, {"source": "t_letter-writing-analog-correspondence-rev", "target": "s_trade"}, {"source": "t_family-archive-digitization-services", "target": "s_reddit-niche"}, {"source": "t_family-archive-digitization-services", "target": "s_trade"}, {"source": "t_heritage-cask-solera-aged-spirits", "target": "s_sevenfifty-daily"}, {"source": "t_heritage-cask-solera-aged-spirits", "target": "s_iwsr"}, {"source": "t_heritage-cask-solera-aged-spirits", "target": "s_reddit-niche"}, {"source": "t_family-owned-vineyard-tourism", "target": "s_trade"}, {"source": "t_family-owned-vineyard-tourism", "target": "s_pinterest-breakout"}, {"source": "t_family-owned-vineyard-tourism", "target": "s_reddit-niche"}, {"source": "t_vintage-cocktail-recipe-revival-pre-proh", "target": "s_reddit-niche"}, {"source": "t_vintage-cocktail-recipe-revival-pre-proh", "target": "s_trade"}, {"source": "t_multi-generational-brewery-storytelling", "target": "s_trade"}, {"source": "t_multi-generational-brewery-storytelling", "target": "s_reddit-niche"}]};
+(function(){
+  var hash = window.location.hash.slice(1);
+  if(hash){
+    setTimeout(function(){
+      var el = document.getElementById(hash);
+      if(el) el.scrollIntoView({block:'start'});
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>

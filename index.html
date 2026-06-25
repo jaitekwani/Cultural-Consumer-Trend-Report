@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+
+.report-card-new { display: block; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; margin-bottom: 14px; box-shadow: var(--shadow); transition: border-color .15s, transform .15s; }
+.report-card-new:hover { border-color: var(--accent); transform: translateY(-2px); text-decoration: none; }
+.rc-issue { font-size: 12px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+.rc-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 12px; color: var(--ink); }
+.rc-stats { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.rc-avg { font-size: 12.5px; color: var(--ink-dim); margin-left: auto; }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#timeline">Timeline</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#themes">Themes</a>
+      <a href="#issues">Archives</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Weekly Intelligence System &middot; May 1 – June 23, 2026</div>
+    <h1>Eight weeks of <em>early signal.</em></h1>
+    <p class="lede">Every issue published to date, indexed by score, category, and source — <strong>160 trends</strong> tracked across <strong>8 issues</strong>, all in one archive.</p>
+  </div>
+  <div class="statgrid">
+  <div class="stat"><div class="stat-num">8</div><div class="stat-lbl">Issues published</div></div>
+  <div class="stat"><div class="stat-num"><em>160</em></div><div class="stat-lbl">Trends tracked archive-wide</div></div>
+  <div class="stat"><div class="stat-num">34</div><div class="stat-lbl">Hot-tier calls to date</div></div>
+  <div class="stat"><div class="stat-num">54</div><div class="stat-lbl">Still sitting at Watch</div></div></div>
+</div>
+
+<div class="section" id="timeline">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Issue Timeline</div>
+    <h2>Has the average <em>momentum</em> moved?</h2>
+    <p class="desc">Each point is one issue's average trend score; bubble size scales with that issue's Hot-tier count. Click a point to open that issue.</p>
+    <div class="chart-frame" style="position:relative;"><div id="issue-bubble-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; All-Time Leaderboard</div>
+    <h2>All 160 trends, <em>ranked</em></h2>
+    <p class="desc">Every trend across every issue, sorted by momentum score. Click any row to open its full writeup in the source issue.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('issue')">Issue</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+      <tr class="lb-row" data-rank="1" data-name="Clean Fats / Seed Oil Reformulation" data-cat="food" data-score="82" data-badge="hot" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#clean-fats-seed-oil-reformulation'">
+        <td>1</td>
+        <td>Clean Fats / Seed Oil Reformulation</td>
+        <td>Food & Drink</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:82%;background:var(--hot)"></span></span>82</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="2" data-name="Strength Training — Minimum Effective Dose" data-cat="wellness" data-score="80" data-badge="hot" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#strength-training-minimum-effective-dose'">
+        <td>2</td>
+        <td>Strength Training — Minimum Effective Dose</td>
+        <td>Wellness & Health</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:80%;background:var(--hot)"></span></span>80</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="3" data-name="Analog Hobby Revival — Crossing Into Mainstream" data-cat="lifestyle" data-score="80" data-badge="hot" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#analog-hobby-revival-crossing-into-mains'">
+        <td>3</td>
+        <td>Analog Hobby Revival — Crossing Into Mainstream</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:80%;background:var(--hot)"></span></span>80</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="4" data-name="Supplement Stack Fatigue / The Great Unstacking" data-cat="wellness" data-score="79" data-badge="hot" data-issue="#000" onclick="window.location.href='trend_report_May7.html#supplement-stack-fatigue-the-great-unsta'">
+        <td>4</td>
+        <td>Supplement Stack Fatigue / The Great Unstacking</td>
+        <td>Wellness & Health</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:79%;background:var(--hot)"></span></span>79</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="5" data-name="Multi-Generational Recipe Preservation" data-cat="food" data-score="79" data-badge="hot" data-issue="#001" onclick="window.location.href='trend_report_May14.html#multi-generational-recipe-preservation'">
+        <td>5</td>
+        <td>Multi-Generational Recipe Preservation</td>
+        <td>Food & Drink</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:79%;background:var(--hot)"></span></span>79</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="6" data-name="Fibermaxxing" data-cat="food" data-score="79" data-badge="hot" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#fibermaxxing'">
+        <td>6</td>
+        <td>Fibermaxxing</td>
+        <td>Food & Drink</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:79%;background:var(--hot)"></span></span>79</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="7" data-name="Consumer Vagus Nerve Stimulation (VNS) Devices" data-cat="wellness" data-score="79" data-badge="hot" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#consumer-vagus-nerve-stimulation-vns-dev'">
+        <td>7</td>
+        <td>Consumer Vagus Nerve Stimulation (VNS) Devices</td>
+        <td>Wellness & Health</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:79%;background:var(--hot)"></span></span>79</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="8" data-name="Recipe Simplification / 5-Ingredient Cooking" data-cat="food" data-score="78" data-badge="hot" data-issue="#000" onclick="window.location.href='trend_report_May7.html#recipe-simplification-5-ingredient-cooki'">
+        <td>8</td>
+        <td>Recipe Simplification / 5-Ingredient Cooking</td>
+        <td>Food & Drink</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="9" data-name="Heritage Brand Archive Diving" data-cat="fashion" data-score="78" data-badge="hot" data-issue="#001" onclick="window.location.href='trend_report_May14.html#heritage-brand-archive-diving'">
+        <td>9</td>
+        <td>Heritage Brand Archive Diving</td>
+        <td>Fashion & Style</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="10" data-name="Ingredient Label Literacy / &quot;What&#x27;s In My...&quot; Audits" data-cat="wellness" data-score="78" data-badge="hot" data-issue="#002" onclick="window.location.href='trend_report_May21.html#ingredient-label-literacy-what-s-in-my-a'">
+        <td>10</td>
+        <td>Ingredient Label Literacy / &quot;What&#x27;s In My...&quot; Audits</td>
+        <td>Wellness & Health</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="11" data-name="Single-Modality Fitness Devotion" data-cat="wellness" data-score="78" data-badge="hot" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-modality-fitness-devotion'">
+        <td>11</td>
+        <td>Single-Modality Fitness Devotion</td>
+        <td>Wellness & Health</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="12" data-name="Digital Subscription Spring Cleaning" data-cat="lifestyle" data-score="78" data-badge="hot" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#digital-subscription-spring-cleaning'">
+        <td>12</td>
+        <td>Digital Subscription Spring Cleaning</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="13" data-name="Technical Minimalism / Quiet Outdoor" data-cat="fashion" data-score="78" data-badge="hot" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#technical-minimalism-quiet-outdoor'">
+        <td>13</td>
+        <td>Technical Minimalism / Quiet Outdoor</td>
+        <td>Fashion & Style</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="14" data-name="No/Low Alcohol — Sophisticated Maturity" data-cat="alcohol" data-score="78" data-badge="hot" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#no-low-alcohol-sophisticated-maturity'">
+        <td>14</td>
+        <td>No/Low Alcohol — Sophisticated Maturity</td>
+        <td>Alcohol</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="15" data-name="Capsule Wardrobe Backlash / Uniform Dressing" data-cat="fashion" data-score="77" data-badge="hot" data-issue="#000" onclick="window.location.href='trend_report_May7.html#capsule-wardrobe-backlash-uniform-dressi'">
+        <td>15</td>
+        <td>Capsule Wardrobe Backlash / Uniform Dressing</td>
+        <td>Fashion & Style</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="16" data-name="Supply Chain Transparency Apps / QR Factory Scans" data-cat="fashion" data-score="77" data-badge="hot" data-issue="#002" onclick="window.location.href='trend_report_May21.html#supply-chain-transparency-apps-qr-factor'">
+        <td>16</td>
+        <td>Supply Chain Transparency Apps / QR Factory Scans</td>
+        <td>Fashion & Style</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="17" data-name="Single-Purpose Garment Culture / The One Great Coat" data-cat="fashion" data-score="77" data-badge="hot" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-purpose-garment-culture-the-one-g'">
+        <td>17</td>
+        <td>Single-Purpose Garment Culture / The One Great Coat</td>
+        <td>Fashion & Style</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="18" data-name="Supplement Audit Spreadsheets / Private Tracking" data-cat="wellness" data-score="77" data-badge="hot" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#supplement-audit-spreadsheets-private-tr'">
+        <td>18</td>
+        <td>Supplement Audit Spreadsheets / Private Tracking</td>
+        <td>Wellness & Health</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="19" data-name="Tallow &amp; Animal Fat Rehabilitation" data-cat="food" data-score="77" data-badge="hot" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#tallow-animal-fat-rehabilitation'">
+        <td>19</td>
+        <td>Tallow &amp; Animal Fat Rehabilitation</td>
+        <td>Food & Drink</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="20" data-name="Run Clubs as Social Infrastructure" data-cat="lifestyle" data-score="77" data-badge="hot" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#run-clubs-as-social-infrastructure'">
+        <td>20</td>
+        <td>Run Clubs as Social Infrastructure</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="21" data-name="Third Space Renaissance" data-cat="lifestyle" data-score="77" data-badge="hot" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#third-space-renaissance'">
+        <td>21</td>
+        <td>Third Space Renaissance</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="22" data-name="Generational Skincare Recipes" data-cat="wellness" data-score="76" data-badge="hot" data-issue="#001" onclick="window.location.href='trend_report_May14.html#generational-skincare-recipes'">
+        <td>22</td>
+        <td>Generational Skincare Recipes</td>
+        <td>Wellness & Health</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="23" data-name="Farm-to-Table QR Verification" data-cat="food" data-score="76" data-badge="hot" data-issue="#002" onclick="window.location.href='trend_report_May21.html#farm-to-table-qr-verification'">
+        <td>23</td>
+        <td>Farm-to-Table QR Verification</td>
+        <td>Food & Drink</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="24" data-name="Single-Ingredient Snacking" data-cat="food" data-score="76" data-badge="hot" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-ingredient-snacking'">
+        <td>24</td>
+        <td>Single-Ingredient Snacking</td>
+        <td>Food & Drink</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="25" data-name="Personal Wardrobe Audits / Cost-Per-Wear Tracking" data-cat="fashion" data-score="76" data-badge="hot" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#personal-wardrobe-audits-cost-per-wear-t'">
+        <td>25</td>
+        <td>Personal Wardrobe Audits / Cost-Per-Wear Tracking</td>
+        <td>Fashion & Style</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="26" data-name="Zone 2 Cardio Protocols" data-cat="wellness" data-score="76" data-badge="hot" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#zone-2-cardio-protocols'">
+        <td>26</td>
+        <td>Zone 2 Cardio Protocols</td>
+        <td>Wellness & Health</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="27" data-name="Koji Fermentation — Professional Kitchen Mainstreaming" data-cat="food" data-score="76" data-badge="hot" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#koji-fermentation-professional-kitchen-m'">
+        <td>27</td>
+        <td>Koji Fermentation — Professional Kitchen Mainstreaming</td>
+        <td>Food & Drink</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="28" data-name="Subscription Audit Culture" data-cat="lifestyle" data-score="75" data-badge="hot" data-issue="#000" onclick="window.location.href='trend_report_May7.html#subscription-audit-culture'">
+        <td>28</td>
+        <td>Subscription Audit Culture</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="29" data-name="Repair Café Movement" data-cat="lifestyle" data-score="75" data-badge="hot" data-issue="#001" onclick="window.location.href='trend_report_May14.html#repair-caf-movement'">
+        <td>29</td>
+        <td>Repair Café Movement</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="30" data-name="Fact-Checking as Social Practice" data-cat="lifestyle" data-score="75" data-badge="hot" data-issue="#002" onclick="window.location.href='trend_report_May21.html#fact-checking-as-social-practice'">
+        <td>30</td>
+        <td>Fact-Checking as Social Practice</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="31" data-name="Single-Purpose Room Design / The Reading Room" data-cat="lifestyle" data-score="75" data-badge="hot" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-purpose-room-design-the-reading-r'">
+        <td>31</td>
+        <td>Single-Purpose Room Design / The Reading Room</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="32" data-name="Pantry Inventory Audits / Reducing Food Waste" data-cat="food" data-score="75" data-badge="hot" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#pantry-inventory-audits-reducing-food-wa'">
+        <td>32</td>
+        <td>Pantry Inventory Audits / Reducing Food Waste</td>
+        <td>Food & Drink</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="33" data-name="Solo Travel as Identity Signal" data-cat="lifestyle" data-score="75" data-badge="hot" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#solo-travel-as-identity-signal'">
+        <td>33</td>
+        <td>Solo Travel as Identity Signal</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="34" data-name="Gorpcore Urban Integration" data-cat="fashion" data-score="75" data-badge="hot" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#gorpcore-urban-integration'">
+        <td>34</td>
+        <td>Gorpcore Urban Integration</td>
+        <td>Fashion & Style</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+        <td><span class="pill-tier pill-hot">Hot</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="35" data-name="Natural Wine Normalization" data-cat="alcohol" data-score="73" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#natural-wine-normalization'">
+        <td>35</td>
+        <td>Natural Wine Normalization</td>
+        <td>Alcohol</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:73%;background:var(--rising)"></span></span>73</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="36" data-name="Heritage Cask / Solera-Aged Spirits" data-cat="alcohol" data-score="71" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#heritage-cask-solera-aged-spirits'">
+        <td>36</td>
+        <td>Heritage Cask / Solera-Aged Spirits</td>
+        <td>Alcohol</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:71%;background:var(--rising)"></span></span>71</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="37" data-name="Single-Spirit Bars / Mezcal-Only, Gin-Only Concepts" data-cat="alcohol" data-score="71" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-spirit-bars-mezcal-only-gin-only-'">
+        <td>37</td>
+        <td>Single-Spirit Bars / Mezcal-Only, Gin-Only Concepts</td>
+        <td>Alcohol</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:71%;background:var(--rising)"></span></span>71</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="38" data-name="&quot;One Good Drink&quot; Culture / Quality Over Quantity" data-cat="alcohol" data-score="70" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#one-good-drink-culture-quality-over-quan'">
+        <td>38</td>
+        <td>&quot;One Good Drink&quot; Culture / Quality Over Quantity</td>
+        <td>Alcohol</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:70%;background:var(--rising)"></span></span>70</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="39" data-name="Bottle Authentication Tech / Anti-Counterfeit" data-cat="alcohol" data-score="70" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#bottle-authentication-tech-anti-counterf'">
+        <td>39</td>
+        <td>Bottle Authentication Tech / Anti-Counterfeit</td>
+        <td>Alcohol</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:70%;background:var(--rising)"></span></span>70</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="40" data-name="Home Bar Inventory Audits" data-cat="alcohol" data-score="70" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#home-bar-inventory-audits'">
+        <td>40</td>
+        <td>Home Bar Inventory Audits</td>
+        <td>Alcohol</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:70%;background:var(--rising)"></span></span>70</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="41" data-name="Ballet Core Graduation" data-cat="fashion" data-score="70" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#ballet-core-graduation'">
+        <td>41</td>
+        <td>Ballet Core Graduation</td>
+        <td>Fashion & Style</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:70%;background:var(--rising)"></span></span>70</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="42" data-name="Walking as Default Exercise" data-cat="wellness" data-score="68" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#walking-as-default-exercise'">
+        <td>42</td>
+        <td>Walking as Default Exercise</td>
+        <td>Wellness & Health</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:68%;background:var(--rising)"></span></span>68</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="43" data-name="Heritage Grain Baking" data-cat="food" data-score="68" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#heritage-grain-baking'">
+        <td>43</td>
+        <td>Heritage Grain Baking</td>
+        <td>Food & Drink</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:68%;background:var(--rising)"></span></span>68</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="44" data-name="Dumb Phone Adjacent Devices" data-cat="lifestyle" data-score="67" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#dumb-phone-adjacent-devices'">
+        <td>44</td>
+        <td>Dumb Phone Adjacent Devices</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="45" data-name="Heirloom Furniture Restoration" data-cat="lifestyle" data-score="67" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#heirloom-furniture-restoration'">
+        <td>45</td>
+        <td>Heirloom Furniture Restoration</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="46" data-name="Review Verification Culture / Cross-Platform Checking" data-cat="lifestyle" data-score="67" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#review-verification-culture-cross-platfo'">
+        <td>46</td>
+        <td>Review Verification Culture / Cross-Platform Checking</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="47" data-name="One-Supplement Protocols / Creatine-Only" data-cat="wellness" data-score="67" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#one-supplement-protocols-creatine-only'">
+        <td>47</td>
+        <td>One-Supplement Protocols / Creatine-Only</td>
+        <td>Wellness & Health</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="48" data-name="Calendar Audit Culture / Reviewing Recurring Commitments" data-cat="lifestyle" data-score="67" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#calendar-audit-culture-reviewing-recurri'">
+        <td>48</td>
+        <td>Calendar Audit Culture / Reviewing Recurring Commitments</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="49" data-name="Phone-Free Venue Culture" data-cat="lifestyle" data-score="67" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#phone-free-venue-culture'">
+        <td>49</td>
+        <td>Phone-Free Venue Culture</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="50" data-name="Lace Revival / Poetcore Aesthetic" data-cat="fashion" data-score="67" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#lace-revival-poetcore-aesthetic'">
+        <td>50</td>
+        <td>Lace Revival / Poetcore Aesthetic</td>
+        <td>Fashion & Style</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="51" data-name="Visible Mending / Sashiko Repair Culture" data-cat="fashion" data-score="66" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#visible-mending-sashiko-repair-culture'">
+        <td>51</td>
+        <td>Visible Mending / Sashiko Repair Culture</td>
+        <td>Fashion & Style</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="52" data-name="Third-Party Supplement Testing Verification — NSF/Informed Sport" data-cat="wellness" data-score="66" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#third-party-supplement-testing-verificat'">
+        <td>52</td>
+        <td>Third-Party Supplement Testing Verification — NSF/Informed Sport</td>
+        <td>Wellness & Health</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="53" data-name="Dedicated Hobby Subscriptions" data-cat="lifestyle" data-score="66" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#dedicated-hobby-subscriptions'">
+        <td>53</td>
+        <td>Dedicated Hobby Subscriptions</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="54" data-name="App Subscription Health Reviews" data-cat="wellness" data-score="66" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#app-subscription-health-reviews'">
+        <td>54</td>
+        <td>App Subscription Health Reviews</td>
+        <td>Wellness & Health</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="55" data-name="Naive Design / Anti-AI Handmade Aesthetic" data-cat="fashion" data-score="66" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#naive-design-anti-ai-handmade-aesthetic'">
+        <td>55</td>
+        <td>Naive Design / Anti-AI Handmade Aesthetic</td>
+        <td>Fashion & Style</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="56" data-name="Pantry Staples Renaissance" data-cat="food" data-score="65" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#pantry-staples-renaissance'">
+        <td>56</td>
+        <td>Pantry Staples Renaissance</td>
+        <td>Food & Drink</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="57" data-name="Family Health History Tracking Apps" data-cat="wellness" data-score="65" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#family-health-history-tracking-apps'">
+        <td>57</td>
+        <td>Family Health History Tracking Apps</td>
+        <td>Wellness & Health</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="58" data-name="&quot;Made In&quot; Verification Culture" data-cat="fashion" data-score="65" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#made-in-verification-culture'">
+        <td>58</td>
+        <td>&quot;Made In&quot; Verification Culture</td>
+        <td>Fashion & Style</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="59" data-name="One-Pan / One-Pot Cooking Devotion" data-cat="food" data-score="65" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#one-pan-one-pot-cooking-devotion'">
+        <td>59</td>
+        <td>One-Pan / One-Pot Cooking Devotion</td>
+        <td>Food & Drink</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="60" data-name="Quiet Closet Editing — No Donation-Haul Content" data-cat="fashion" data-score="65" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#quiet-closet-editing-no-donation-haul-co'">
+        <td>60</td>
+        <td>Quiet Closet Editing — No Donation-Haul Content</td>
+        <td>Fashion & Style</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="61" data-name="Smash Burger Artisan Wave" data-cat="food" data-score="65" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#smash-burger-artisan-wave'">
+        <td>61</td>
+        <td>Smash Burger Artisan Wave</td>
+        <td>Food & Drink</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="62" data-name="Functional Mushroom Category Shakeout" data-cat="food" data-score="65" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#functional-mushroom-category-shakeout'">
+        <td>62</td>
+        <td>Functional Mushroom Category Shakeout</td>
+        <td>Food & Drink</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="63" data-name="Curated Maximalism / Anti-Minimalism Correction" data-cat="fashion" data-score="64" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#curated-maximalism-anti-minimalism-corre'">
+        <td>63</td>
+        <td>Curated Maximalism / Anti-Minimalism Correction</td>
+        <td>Fashion & Style</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="64" data-name="Independent Nutrition Label Lab-Testing" data-cat="food" data-score="64" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#independent-nutrition-label-lab-testing'">
+        <td>64</td>
+        <td>Independent Nutrition Label Lab-Testing</td>
+        <td>Food & Drink</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="65" data-name="Capsule Outerwear Specialization" data-cat="fashion" data-score="64" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#capsule-outerwear-specialization'">
+        <td>65</td>
+        <td>Capsule Outerwear Specialization</td>
+        <td>Fashion & Style</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="66" data-name="Grocery Spend Line-Item Review" data-cat="food" data-score="64" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#grocery-spend-line-item-review'">
+        <td>66</td>
+        <td>Grocery Spend Line-Item Review</td>
+        <td>Food & Drink</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="67" data-name="Slow Content / Long-Form Reading Revival" data-cat="lifestyle" data-score="64" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#slow-content-long-form-reading-revival'">
+        <td>67</td>
+        <td>Slow Content / Long-Form Reading Revival</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="68" data-name="RTD Premiumisation" data-cat="alcohol" data-score="64" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#rtd-premiumisation'">
+        <td>68</td>
+        <td>RTD Premiumisation</td>
+        <td>Alcohol</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="69" data-name="Family-Owned Vineyard Tourism" data-cat="alcohol" data-score="63" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#family-owned-vineyard-tourism'">
+        <td>69</td>
+        <td>Family-Owned Vineyard Tourism</td>
+        <td>Alcohol</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:63%;background:var(--rising)"></span></span>63</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="70" data-name="Mouth Taping &amp; Nasal Breathing Optimization" data-cat="wellness" data-score="63" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#mouth-taping-nasal-breathing-optimizatio'">
+        <td>70</td>
+        <td>Mouth Taping &amp; Nasal Breathing Optimization</td>
+        <td>Wellness & Health</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:63%;background:var(--rising)"></span></span>63</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="71" data-name="Closed Creator Ecosystem Communities" data-cat="lifestyle" data-score="63" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#closed-creator-ecosystem-communities'">
+        <td>71</td>
+        <td>Closed Creator Ecosystem Communities</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:63%;background:var(--rising)"></span></span>63</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="72" data-name="Raicilla &amp; Alternative Agave Spirits" data-cat="alcohol" data-score="63" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#raicilla-alternative-agave-spirits'">
+        <td>72</td>
+        <td>Raicilla &amp; Alternative Agave Spirits</td>
+        <td>Alcohol</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:63%;background:var(--rising)"></span></span>63</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="73" data-name="Sober-Curious Re-engagement / Moderation Rebound" data-cat="alcohol" data-score="62" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#sober-curious-re-engagement-moderation-r'">
+        <td>73</td>
+        <td>Sober-Curious Re-engagement / Moderation Rebound</td>
+        <td>Alcohol</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:62%;background:var(--rising)"></span></span>62</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="74" data-name="Adaptogenic Drinks Maturation" data-cat="food" data-score="62" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#adaptogenic-drinks-maturation'">
+        <td>74</td>
+        <td>Adaptogenic Drinks Maturation</td>
+        <td>Food & Drink</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:62%;background:var(--rising)"></span></span>62</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="75" data-name="Soft Menswear — Easy Dressing" data-cat="fashion" data-score="62" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#soft-menswear-easy-dressing'">
+        <td>75</td>
+        <td>Soft Menswear — Easy Dressing</td>
+        <td>Fashion & Style</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:62%;background:var(--rising)"></span></span>62</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="76" data-name="Preserving &amp; Canning Revival" data-cat="food" data-score="61" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#preserving-canning-revival'">
+        <td>76</td>
+        <td>Preserving &amp; Canning Revival</td>
+        <td>Food & Drink</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:61%;background:var(--rising)"></span></span>61</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="77" data-name="Amaro &amp; Bitter Aperitivo Culture" data-cat="alcohol" data-score="61" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#amaro-bitter-aperitivo-culture'">
+        <td>77</td>
+        <td>Amaro &amp; Bitter Aperitivo Culture</td>
+        <td>Alcohol</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:61%;background:var(--rising)"></span></span>61</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="78" data-name="High-Ester Jamaican Rum Revival" data-cat="alcohol" data-score="61" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#high-ester-jamaican-rum-revival'">
+        <td>78</td>
+        <td>High-Ester Jamaican Rum Revival</td>
+        <td>Alcohol</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:61%;background:var(--rising)"></span></span>61</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="79" data-name="Microplastics Health Response Protocol" data-cat="wellness" data-score="61" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#microplastics-health-response-protocol'">
+        <td>79</td>
+        <td>Microplastics Health Response Protocol</td>
+        <td>Wellness & Health</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:61%;background:var(--rising)"></span></span>61</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="80" data-name="Single-Tasking as Productivity Flex" data-cat="lifestyle" data-score="60" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#single-tasking-as-productivity-flex'">
+        <td>80</td>
+        <td>Single-Tasking as Productivity Flex</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="81" data-name="Background Check Apps for Dating &amp; Renting" data-cat="lifestyle" data-score="60" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#background-check-apps-for-dating-renting'">
+        <td>81</td>
+        <td>Background Check Apps for Dating &amp; Renting</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="82" data-name="Single-Origin Everything — Coffee, Chocolate, Honey" data-cat="food" data-score="60" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-origin-everything-coffee-chocolat'">
+        <td>82</td>
+        <td>Single-Origin Everything — Coffee, Chocolate, Honey</td>
+        <td>Food & Drink</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="83" data-name="Friend Group Bandwidth Audits" data-cat="lifestyle" data-score="60" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#friend-group-bandwidth-audits'">
+        <td>83</td>
+        <td>Friend Group Bandwidth Audits</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="84" data-name="Carajillo &amp; Coffee-Spirit Hybrids" data-cat="alcohol" data-score="60" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#carajillo-coffee-spirit-hybrids'">
+        <td>84</td>
+        <td>Carajillo &amp; Coffee-Spirit Hybrids</td>
+        <td>Alcohol</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="85" data-name="Pre-Batched Cocktail Kits" data-cat="food" data-score="59" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#pre-batched-cocktail-kits'">
+        <td>85</td>
+        <td>Pre-Batched Cocktail Kits</td>
+        <td>Food & Drink</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="86" data-name="Heirloom Supplementation / Multi-Gen Adaptogens" data-cat="wellness" data-score="59" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#heirloom-supplementation-multi-gen-adapt'">
+        <td>86</td>
+        <td>Heirloom Supplementation / Multi-Gen Adaptogens</td>
+        <td>Wellness & Health</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="87" data-name="Dedicated Sleep-Only Bedrooms" data-cat="wellness" data-score="59" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#dedicated-sleep-only-bedrooms'">
+        <td>87</td>
+        <td>Dedicated Sleep-Only Bedrooms</td>
+        <td>Wellness & Health</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="88" data-name="Cost-Per-Wear Calculator Tools" data-cat="fashion" data-score="59" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#cost-per-wear-calculator-tools'">
+        <td>88</td>
+        <td>Cost-Per-Wear Calculator Tools</td>
+        <td>Fashion & Style</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="89" data-name="Premium Drinking Vinegars" data-cat="food" data-score="59" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#premium-drinking-vinegars'">
+        <td>89</td>
+        <td>Premium Drinking Vinegars</td>
+        <td>Food & Drink</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="90" data-name="&quot;Swangy&quot; Flavor Architecture" data-cat="food" data-score="59" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#swangy-flavor-architecture'">
+        <td>90</td>
+        <td>&quot;Swangy&quot; Flavor Architecture</td>
+        <td>Food & Drink</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="91" data-name="Digital Symptom-Checker Skepticism" data-cat="wellness" data-score="58" data-badge="rising" data-issue="#000" onclick="window.location.href='trend_report_May7.html#digital-symptom-checker-skepticism'">
+        <td>91</td>
+        <td>Digital Symptom-Checker Skepticism</td>
+        <td>Wellness & Health</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="92" data-name="Letter Writing / Analog Correspondence Revival" data-cat="lifestyle" data-score="58" data-badge="rising" data-issue="#001" onclick="window.location.href='trend_report_May14.html#letter-writing-analog-correspondence-rev'">
+        <td>92</td>
+        <td>Letter Writing / Analog Correspondence Revival</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="93" data-name="Restaurant Sourcing Transparency Demands" data-cat="food" data-score="58" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#restaurant-sourcing-transparency-demands'">
+        <td>93</td>
+        <td>Restaurant Sourcing Transparency Demands</td>
+        <td>Food & Drink</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="94" data-name="Footwear Specialization Over Crossover Sneakers" data-cat="fashion" data-score="58" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#footwear-specialization-over-crossover-s'">
+        <td>94</td>
+        <td>Footwear Specialization Over Crossover Sneakers</td>
+        <td>Fashion & Style</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="95" data-name="Private Symptom Journaling — Notebooks Not Apps" data-cat="wellness" data-score="58" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#private-symptom-journaling-notebooks-not'">
+        <td>95</td>
+        <td>Private Symptom Journaling — Notebooks Not Apps</td>
+        <td>Wellness & Health</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="96" data-name="Sauna + Cold Contrast Bathing" data-cat="wellness" data-score="58" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#sauna-cold-contrast-bathing'">
+        <td>96</td>
+        <td>Sauna + Cold Contrast Bathing</td>
+        <td>Wellness & Health</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="97" data-name="Screen-Free Socialising Protocols" data-cat="lifestyle" data-score="58" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#screen-free-socialising-protocols'">
+        <td>97</td>
+        <td>Screen-Free Socialising Protocols</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="98" data-name="Precision Senolytics &amp; Cellular Aging" data-cat="wellness" data-score="58" data-badge="rising" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#precision-senolytics-cellular-aging'">
+        <td>98</td>
+        <td>Precision Senolytics &amp; Cellular Aging</td>
+        <td>Wellness & Health</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="99" data-name="Clinical Trial Database Browsing as Hobby" data-cat="wellness" data-score="57" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#clinical-trial-database-browsing-as-hobb'">
+        <td>99</td>
+        <td>Clinical Trial Database Browsing as Hobby</td>
+        <td>Wellness & Health</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="100" data-name="Single-App Productivity / Deleting the Rest" data-cat="lifestyle" data-score="57" data-badge="rising" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-app-productivity-deleting-the-res'">
+        <td>100</td>
+        <td>Single-App Productivity / Deleting the Rest</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="101" data-name="Quiet Recipe Box Editing" data-cat="food" data-score="57" data-badge="rising" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#quiet-recipe-box-editing'">
+        <td>101</td>
+        <td>Quiet Recipe Box Editing</td>
+        <td>Food & Drink</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="102" data-name="Ceremonial Cacao Mainstreaming" data-cat="food" data-score="57" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#ceremonial-cacao-mainstreaming'">
+        <td>102</td>
+        <td>Ceremonial Cacao Mainstreaming</td>
+        <td>Food & Drink</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="103" data-name="Epigenetic Clock Tracking" data-cat="wellness" data-score="57" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#epigenetic-clock-tracking'">
+        <td>103</td>
+        <td>Epigenetic Clock Tracking</td>
+        <td>Wellness & Health</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="104" data-name="Resale Certificate of Authenticity Culture" data-cat="fashion" data-score="56" data-badge="rising" data-issue="#002" onclick="window.location.href='trend_report_May21.html#resale-certificate-of-authenticity-cultu'">
+        <td>104</td>
+        <td>Resale Certificate of Authenticity Culture</td>
+        <td>Fashion & Style</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:56%;background:var(--rising)"></span></span>56</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="105" data-name="Savory / Umami Cocktails" data-cat="alcohol" data-score="56" data-badge="rising" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#savory-umami-cocktails'">
+        <td>105</td>
+        <td>Savory / Umami Cocktails</td>
+        <td>Alcohol</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:56%;background:var(--rising)"></span></span>56</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="106" data-name="Micro-Retreats (48-Hour Wellness)" data-cat="lifestyle" data-score="55" data-badge="rising" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#micro-retreats-48-hour-wellness'">
+        <td>106</td>
+        <td>Micro-Retreats (48-Hour Wellness)</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:55%;background:var(--rising)"></span></span>55</td>
+        <td><span class="pill-tier pill-rising">Rising</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="107" data-name="Resale Platform Fatigue" data-cat="fashion" data-score="54" data-badge="watch" data-issue="#000" onclick="window.location.href='trend_report_May7.html#resale-platform-fatigue'">
+        <td>107</td>
+        <td>Resale Platform Fatigue</td>
+        <td>Fashion & Style</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:54%;background:var(--watch)"></span></span>54</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="108" data-name="Cobbler &amp; Tailor Renaissance" data-cat="fashion" data-score="54" data-badge="watch" data-issue="#001" onclick="window.location.href='trend_report_May14.html#cobbler-tailor-renaissance'">
+        <td>108</td>
+        <td>Cobbler &amp; Tailor Renaissance</td>
+        <td>Fashion & Style</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:54%;background:var(--watch)"></span></span>54</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="109" data-name="Direct-Importer Provenance Verification" data-cat="alcohol" data-score="54" data-badge="watch" data-issue="#002" onclick="window.location.href='trend_report_May21.html#direct-importer-provenance-verification'">
+        <td>109</td>
+        <td>Direct-Importer Provenance Verification</td>
+        <td>Alcohol</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:54%;background:var(--watch)"></span></span>54</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="110" data-name="Vintage Cocktail Recipe Revival / Pre-Prohibition" data-cat="alcohol" data-score="53" data-badge="watch" data-issue="#001" onclick="window.location.href='trend_report_May14.html#vintage-cocktail-recipe-revival-pre-proh'">
+        <td>110</td>
+        <td>Vintage Cocktail Recipe Revival / Pre-Prohibition</td>
+        <td>Alcohol</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:53%;background:var(--watch)"></span></span>53</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="111" data-name="One-Cocktail Signature Culture" data-cat="alcohol" data-score="53" data-badge="watch" data-issue="#003" onclick="window.location.href='trend_report_May28.html#one-cocktail-signature-culture'">
+        <td>111</td>
+        <td>One-Cocktail Signature Culture</td>
+        <td>Alcohol</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:53%;background:var(--watch)"></span></span>53</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="112" data-name="Bar Tab / Spend Tracking Apps" data-cat="alcohol" data-score="53" data-badge="watch" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#bar-tab-spend-tracking-apps'">
+        <td>112</td>
+        <td>Bar Tab / Spend Tracking Apps</td>
+        <td>Alcohol</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:53%;background:var(--watch)"></span></span>53</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="113" data-name="Wine Club Consolidation" data-cat="alcohol" data-score="52" data-badge="watch" data-issue="#000" onclick="window.location.href='trend_report_May7.html#wine-club-consolidation'">
+        <td>113</td>
+        <td>Wine Club Consolidation</td>
+        <td>Alcohol</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:52%;background:var(--watch)"></span></span>52</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="114" data-name="Single-Varietal Wine Focus" data-cat="alcohol" data-score="52" data-badge="watch" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-varietal-wine-focus'">
+        <td>114</td>
+        <td>Single-Varietal Wine Focus</td>
+        <td>Alcohol</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:52%;background:var(--watch)"></span></span>52</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="115" data-name="Deadstock Denim Revival" data-cat="fashion" data-score="52" data-badge="watch" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#deadstock-denim-revival'">
+        <td>115</td>
+        <td>Deadstock Denim Revival</td>
+        <td>Fashion & Style</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:52%;background:var(--watch)"></span></span>52</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="116" data-name="Therapeutic Peptides — Consumer Self-Administration" data-cat="wellness" data-score="52" data-badge="watch" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#therapeutic-peptides-consumer-self-admin'">
+        <td>116</td>
+        <td>Therapeutic Peptides — Consumer Self-Administration</td>
+        <td>Wellness & Health</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:52%;background:var(--watch)"></span></span>52</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="117" data-name="Vineyard Practice Disclosure Demands" data-cat="alcohol" data-score="51" data-badge="watch" data-issue="#002" onclick="window.location.href='trend_report_May21.html#vineyard-practice-disclosure-demands'">
+        <td>117</td>
+        <td>Vineyard Practice Disclosure Demands</td>
+        <td>Alcohol</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:51%;background:var(--watch)"></span></span>51</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="118" data-name="Quiet Drink-Frequency Self-Tracking" data-cat="alcohol" data-score="51" data-badge="watch" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#quiet-drink-frequency-self-tracking'">
+        <td>118</td>
+        <td>Quiet Drink-Frequency Self-Tracking</td>
+        <td>Alcohol</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:51%;background:var(--watch)"></span></span>51</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="119" data-name="Alternative Asian Whisky (Korean &amp; Taiwanese)" data-cat="alcohol" data-score="50" data-badge="watch" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#alternative-asian-whisky-korean-taiwanes'">
+        <td>119</td>
+        <td>Alternative Asian Whisky (Korean &amp; Taiwanese)</td>
+        <td>Alcohol</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:50%;background:var(--watch)"></span></span>50</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="120" data-name="Workwear Utility Revival" data-cat="fashion" data-score="50" data-badge="watch" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#workwear-utility-revival'">
+        <td>120</td>
+        <td>Workwear Utility Revival</td>
+        <td>Fashion & Style</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:50%;background:var(--watch)"></span></span>50</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="121" data-name="Family-Owned Import Goods" data-cat="food" data-score="49" data-badge="watch" data-issue="#001" onclick="window.location.href='trend_report_May14.html#family-owned-import-goods'">
+        <td>121</td>
+        <td>Family-Owned Import Goods</td>
+        <td>Food & Drink</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:49%;background:var(--watch)"></span></span>49</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="122" data-name="Non-Alcoholic Aperitivo Expansion" data-cat="food" data-score="49" data-badge="watch" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#non-alcoholic-aperitivo-expansion'">
+        <td>122</td>
+        <td>Non-Alcoholic Aperitivo Expansion</td>
+        <td>Food & Drink</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:49%;background:var(--watch)"></span></span>49</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="123" data-name="Probiotic Mental Health Protocols" data-cat="wellness" data-score="49" data-badge="watch" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#probiotic-mental-health-protocols'">
+        <td>123</td>
+        <td>Probiotic Mental Health Protocols</td>
+        <td>Wellness & Health</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:49%;background:var(--watch)"></span></span>49</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="124" data-name="Pop-Up Supper Clubs" data-cat="food" data-score="48" data-badge="watch" data-issue="#000" onclick="window.location.href='trend_report_May7.html#pop-up-supper-clubs'">
+        <td>124</td>
+        <td>Pop-Up Supper Clubs</td>
+        <td>Food & Drink</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:48%;background:var(--watch)"></span></span>48</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="125" data-name="Dedicated Beverage-Only Appliances" data-cat="food" data-score="48" data-badge="watch" data-issue="#003" onclick="window.location.href='trend_report_May28.html#dedicated-beverage-only-appliances'">
+        <td>125</td>
+        <td>Dedicated Beverage-Only Appliances</td>
+        <td>Food & Drink</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:48%;background:var(--watch)"></span></span>48</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="126" data-name="Low-ABV Session Beer Innovation" data-cat="alcohol" data-score="48" data-badge="watch" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#low-abv-session-beer-innovation'">
+        <td>126</td>
+        <td>Low-ABV Session Beer Innovation</td>
+        <td>Alcohol</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:48%;background:var(--watch)"></span></span>48</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="127" data-name="Natural Dye Textile Craft Revival" data-cat="fashion" data-score="48" data-badge="watch" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#natural-dye-textile-craft-revival'">
+        <td>127</td>
+        <td>Natural Dye Textile Craft Revival</td>
+        <td>Fashion & Style</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:48%;background:var(--watch)"></span></span>48</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="128" data-name="Bedrotting / Active Rest Normalization" data-cat="wellness" data-score="47" data-badge="watch" data-issue="#000" onclick="window.location.href='trend_report_May7.html#bedrotting-active-rest-normalization'">
+        <td>128</td>
+        <td>Bedrotting / Active Rest Normalization</td>
+        <td>Wellness & Health</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="129" data-name="Allergen Verification Apps" data-cat="food" data-score="47" data-badge="watch" data-issue="#002" onclick="window.location.href='trend_report_May21.html#allergen-verification-apps'">
+        <td>129</td>
+        <td>Allergen Verification Apps</td>
+        <td>Food & Drink</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="130" data-name="Quiet Therapy Re-Evaluation" data-cat="wellness" data-score="47" data-badge="watch" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#quiet-therapy-re-evaluation'">
+        <td>130</td>
+        <td>Quiet Therapy Re-Evaluation</td>
+        <td>Wellness & Health</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="131" data-name="Cognitive Stack Culture / Neuro-Nutrition" data-cat="wellness" data-score="47" data-badge="watch" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#cognitive-stack-culture-neuro-nutrition'">
+        <td>131</td>
+        <td>Cognitive Stack Culture / Neuro-Nutrition</td>
+        <td>Wellness & Health</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="132" data-name="Global Street Food Fusion" data-cat="food" data-score="47" data-badge="watch" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#global-street-food-fusion'">
+        <td>132</td>
+        <td>Global Street Food Fusion</td>
+        <td>Food & Drink</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="133" data-name="Ancestral Movement Practices" data-cat="wellness" data-score="46" data-badge="watch" data-issue="#001" onclick="window.location.href='trend_report_May14.html#ancestral-movement-practices'">
+        <td>133</td>
+        <td>Ancestral Movement Practices</td>
+        <td>Wellness & Health</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="134" data-name="Batch Number Tracking Communities" data-cat="alcohol" data-score="46" data-badge="watch" data-issue="#002" onclick="window.location.href='trend_report_May21.html#batch-number-tracking-communities'">
+        <td>134</td>
+        <td>Batch Number Tracking Communities</td>
+        <td>Alcohol</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="135" data-name="Single-Issue Therapy Apps" data-cat="wellness" data-score="46" data-badge="watch" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-issue-therapy-apps'">
+        <td>135</td>
+        <td>Single-Issue Therapy Apps</td>
+        <td>Wellness & Health</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="136" data-name="Silent Quitting of Fashion Subscriptions" data-cat="fashion" data-score="46" data-badge="watch" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#silent-quitting-of-fashion-subscriptions'">
+        <td>136</td>
+        <td>Silent Quitting of Fashion Subscriptions</td>
+        <td>Fashion & Style</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="137" data-name="Urban Foraging &amp; Wild Food Clubs" data-cat="lifestyle" data-score="46" data-badge="watch" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#urban-foraging-wild-food-clubs'">
+        <td>137</td>
+        <td>Urban Foraging &amp; Wild Food Clubs</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="138" data-name="Local Food Systems / CSA Revival" data-cat="lifestyle" data-score="46" data-badge="watch" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#local-food-systems-csa-revival'">
+        <td>138</td>
+        <td>Local Food Systems / CSA Revival</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="139" data-name="Cultural Gatekeeping &amp; Niche Identity Architecture" data-cat="lifestyle" data-score="46" data-badge="watch" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#cultural-gatekeeping-niche-identity-arch'">
+        <td>139</td>
+        <td>Cultural Gatekeeping &amp; Niche Identity Architecture</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="140" data-name="Heritage &amp; Ancestral Beer Revival" data-cat="alcohol" data-score="46" data-badge="watch" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#heritage-ancestral-beer-revival'">
+        <td>140</td>
+        <td>Heritage &amp; Ancestral Beer Revival</td>
+        <td>Alcohol</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="141" data-name="Home Bar Minimalism / 5-Bottle Systems" data-cat="alcohol" data-score="45" data-badge="watch" data-issue="#000" onclick="window.location.href='trend_report_May7.html#home-bar-minimalism-5-bottle-systems'">
+        <td>141</td>
+        <td>Home Bar Minimalism / 5-Bottle Systems</td>
+        <td>Alcohol</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="142" data-name="Practitioner Credential Verification Tools" data-cat="wellness" data-score="45" data-badge="watch" data-issue="#002" onclick="window.location.href='trend_report_May21.html#practitioner-credential-verification-too'">
+        <td>142</td>
+        <td>Practitioner Credential Verification Tools</td>
+        <td>Wellness & Health</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="143" data-name="Single-Season Wardrobe Planning" data-cat="fashion" data-score="45" data-badge="watch" data-issue="#003" onclick="window.location.href='trend_report_May28.html#single-season-wardrobe-planning'">
+        <td>143</td>
+        <td>Single-Season Wardrobe Planning</td>
+        <td>Fashion & Style</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="144" data-name="Restaurant Loyalty Program Audits" data-cat="food" data-score="45" data-badge="watch" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#restaurant-loyalty-program-audits'">
+        <td>144</td>
+        <td>Restaurant Loyalty Program Audits</td>
+        <td>Food & Drink</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="145" data-name="Regenerative / Sustainable Distilling" data-cat="alcohol" data-score="45" data-badge="watch" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#regenerative-sustainable-distilling'">
+        <td>145</td>
+        <td>Regenerative / Sustainable Distilling</td>
+        <td>Alcohol</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="146" data-name="Neighborhood Tool Libraries" data-cat="lifestyle" data-score="44" data-badge="watch" data-issue="#000" onclick="window.location.href='trend_report_May7.html#neighborhood-tool-libraries'">
+        <td>146</td>
+        <td>Neighborhood Tool Libraries</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="147" data-name="Multi-Generational Brewery Storytelling" data-cat="alcohol" data-score="44" data-badge="watch" data-issue="#001" onclick="window.location.href='trend_report_May14.html#multi-generational-brewery-storytelling'">
+        <td>147</td>
+        <td>Multi-Generational Brewery Storytelling</td>
+        <td>Alcohol</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="148" data-name="Anti-Greenwashing Skepticism Communities" data-cat="fashion" data-score="44" data-badge="watch" data-issue="#002" onclick="window.location.href='trend_report_May21.html#anti-greenwashing-skepticism-communities'">
+        <td>148</td>
+        <td>Anti-Greenwashing Skepticism Communities</td>
+        <td>Fashion & Style</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="149" data-name="One-Destination Annual Travel" data-cat="lifestyle" data-score="44" data-badge="watch" data-issue="#003" onclick="window.location.href='trend_report_May28.html#one-destination-annual-travel'">
+        <td>149</td>
+        <td>One-Destination Annual Travel</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="150" data-name="Email Inbox Zero Re-Attempts" data-cat="lifestyle" data-score="44" data-badge="watch" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#email-inbox-zero-re-attempts'">
+        <td>150</td>
+        <td>Email Inbox Zero Re-Attempts</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="151" data-name="Minimally Invasive Osteoarthritis Treatment" data-cat="wellness" data-score="44" data-badge="watch" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#minimally-invasive-osteoarthritis-treatm'">
+        <td>151</td>
+        <td>Minimally Invasive Osteoarthritis Treatment</td>
+        <td>Wellness & Health</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="152" data-name="Exclusivity Accessories / Anti-Mass Objects" data-cat="fashion" data-score="44" data-badge="watch" data-issue="#007" onclick="window.location.href='trend_report_Jun23.html#exclusivity-accessories-anti-mass-object'">
+        <td>152</td>
+        <td>Exclusivity Accessories / Anti-Mass Objects</td>
+        <td>Fashion & Style</td>
+        <td>Issue #007</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="153" data-name="Monogramming Revival" data-cat="fashion" data-score="43" data-badge="watch" data-issue="#001" onclick="window.location.href='trend_report_May14.html#monogramming-revival'">
+        <td>153</td>
+        <td>Monogramming Revival</td>
+        <td>Fashion & Style</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="154" data-name="Open-Source Intelligence (OSINT) as Hobby" data-cat="lifestyle" data-score="43" data-badge="watch" data-issue="#002" onclick="window.location.href='trend_report_May21.html#open-source-intelligence-osint-as-hobby'">
+        <td>154</td>
+        <td>Open-Source Intelligence (OSINT) as Hobby</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #002</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="155" data-name="Dedicated Tasting-Only Spaces" data-cat="alcohol" data-score="43" data-badge="watch" data-issue="#003" onclick="window.location.href='trend_report_May28.html#dedicated-tasting-only-spaces'">
+        <td>155</td>
+        <td>Dedicated Tasting-Only Spaces</td>
+        <td>Alcohol</td>
+        <td>Issue #003</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="156" data-name="Heirloom &amp; Estate Jewelry Integration" data-cat="fashion" data-score="43" data-badge="watch" data-issue="#005" onclick="window.location.href='trend_report_Jun10.html#heirloom-estate-jewelry-integration'">
+        <td>156</td>
+        <td>Heirloom &amp; Estate Jewelry Integration</td>
+        <td>Fashion & Style</td>
+        <td>Issue #005</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="157" data-name="Micro-Personal Branding in Fashion" data-cat="fashion" data-score="43" data-badge="watch" data-issue="#006" onclick="window.location.href='trend_report_Jun16.html#micro-personal-branding-in-fashion'">
+        <td>157</td>
+        <td>Micro-Personal Branding in Fashion</td>
+        <td>Fashion & Style</td>
+        <td>Issue #006</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="158" data-name="Family Archive Digitization Services" data-cat="lifestyle" data-score="42" data-badge="watch" data-issue="#001" onclick="window.location.href='trend_report_May14.html#family-archive-digitization-services'">
+        <td>158</td>
+        <td>Family Archive Digitization Services</td>
+        <td>Lifestyle & Culture</td>
+        <td>Issue #001</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:42%;background:var(--watch)"></span></span>42</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="159" data-name="Liquor Cabinet Decluttering" data-cat="alcohol" data-score="42" data-badge="watch" data-issue="#004" onclick="window.location.href='trend_report_Jun03.html#liquor-cabinet-decluttering'">
+        <td>159</td>
+        <td>Liquor Cabinet Decluttering</td>
+        <td>Alcohol</td>
+        <td>Issue #004</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:42%;background:var(--watch)"></span></span>42</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+      <tr class="lb-row" data-rank="160" data-name="Single-Brand Loyalty Reset" data-cat="fashion" data-score="41" data-badge="watch" data-issue="#000" onclick="window.location.href='trend_report_May7.html#single-brand-loyalty-reset'">
+        <td>160</td>
+        <td>Single-Brand Loyalty Reset</td>
+        <td>Fashion & Style</td>
+        <td>Issue #000</td>
+        <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:41%;background:var(--watch)"></span></span>41</td>
+        <td><span class="pill-tier pill-watch">Watch</span></td>
+      </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Thematic Spread</div>
+    <h2>Archive-wide performance by <em>category</em></h2>
+    <p class="desc">Tier composition and average momentum score per category, across all eight issues.</p>
+    <div class="theme-grid">
+    <div class="theme-col">
+      <h4>Fashion &amp; Style</h4>
+      <div class="tc-bar">
+        <div class="tc-seg" style="height:35px;background:var(--hot)" title="7 Hot"></div>
+        <div class="tc-seg" style="height:60px;background:var(--rising)" title="12 Rising"></div>
+        <div class="tc-seg" style="height:65px;background:var(--watch)" title="13 Watch"></div>
+      </div>
+      <div class="tc-avg">59.6</div>
+      <div class="tc-lbl">avg score &middot; 32 trends</div>
+    </div>
+    <div class="theme-col">
+      <h4>Wellness &amp; Health</h4>
+      <div class="tc-bar">
+        <div class="tc-seg" style="height:40px;background:var(--hot)" title="8 Hot"></div>
+        <div class="tc-seg" style="height:75px;background:var(--rising)" title="15 Rising"></div>
+        <div class="tc-seg" style="height:45px;background:var(--watch)" title="9 Watch"></div>
+      </div>
+      <div class="tc-avg">61.4</div>
+      <div class="tc-lbl">avg score &middot; 32 trends</div>
+    </div>
+    <div class="theme-col">
+      <h4>Food &amp; Drink</h4>
+      <div class="tc-bar">
+        <div class="tc-seg" style="height:45px;background:var(--hot)" title="9 Hot"></div>
+        <div class="tc-seg" style="height:80px;background:var(--rising)" title="16 Rising"></div>
+        <div class="tc-seg" style="height:35px;background:var(--watch)" title="7 Watch"></div>
+      </div>
+      <div class="tc-avg">63.1</div>
+      <div class="tc-lbl">avg score &middot; 32 trends</div>
+    </div>
+    <div class="theme-col">
+      <h4>Lifestyle &amp; Culture</h4>
+      <div class="tc-bar">
+        <div class="tc-seg" style="height:45px;background:var(--hot)" title="9 Hot"></div>
+        <div class="tc-seg" style="height:75px;background:var(--rising)" title="15 Rising"></div>
+        <div class="tc-seg" style="height:40px;background:var(--watch)" title="8 Watch"></div>
+      </div>
+      <div class="tc-avg">61.8</div>
+      <div class="tc-lbl">avg score &middot; 32 trends</div>
+    </div>
+    <div class="theme-col">
+      <h4>Alcohol</h4>
+      <div class="tc-bar">
+        <div class="tc-seg" style="height:5px;background:var(--hot)" title="1 Hot"></div>
+        <div class="tc-seg" style="height:70px;background:var(--rising)" title="14 Rising"></div>
+        <div class="tc-seg" style="height:85px;background:var(--watch)" title="17 Watch"></div>
+      </div>
+      <div class="tc-avg">56.9</div>
+      <div class="tc-lbl">avg score &middot; 32 trends</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="section" id="issues">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Archives</div>
+    <h2>Browse the <em>archives</em></h2>
+    <p class="desc">Most recent first.</p>
+    
+    <a href="trend_report_Jun23.html" class="report-card-new">
+      <div class="rc-issue">Issue #007 &middot; June 23, 2026</div>
+      <div class="rc-title">The Reclaim Economy: Authenticity as Infrastructure</div>
+      <div class="rc-stats">
+        <span class="pill-tier pill-hot">6 Hot</span>
+        <span class="pill-tier pill-rising">9 Rising</span>
+        <span class="pill-tier pill-watch">5 Watch</span>
+        <span class="rc-avg">avg 63.3</span>
+      </div>
+    </a>
+    <a href="trend_report_Jun16.html" class="report-card-new">
+      <div class="rc-issue">Issue #006 &middot; June 16, 2026</div>
+      <div class="rc-title">The Minimum Effective Dose</div>
+      <div class="rc-stats">
+        <span class="pill-tier pill-hot">4 Hot</span>
+        <span class="pill-tier pill-rising">9 Rising</span>
+        <span class="pill-tier pill-watch">7 Watch</span>
+        <span class="rc-avg">avg 59.1</span>
+      </div>
+    </a>
+    <a href="trend_report_Jun10.html" class="report-card-new">
+      <div class="rc-issue">Issue #005 &middot; June 4-10, 2026</div>
+      <div class="rc-title">Precision as Status</div>
+      <div class="rc-stats">
+        <span class="pill-tier pill-hot">4 Hot</span>
+        <span class="pill-tier pill-rising">9 Rising</span>
+        <span class="pill-tier pill-watch">7 Watch</span>
+        <span class="rc-avg">avg 60.5</span>
+      </div>
+    </a>
+    <a href="trend_report_Jun03.html" class="report-card-new">
+      <div class="rc-issue">Issue #004 &middot; May 29-June 3, 2026</div>
+      <div class="rc-title">The Quiet Audit</div>
+      <div class="rc-stats">
+        <span class="pill-tier pill-hot">4 Hot</span>
+        <span class="pill-tier pill-rising">9 Rising</span>
+        <span class="pill-tier pill-watch">7 Watch</span>
+        <span class="rc-avg">avg 60.0</span>
+      </div>
+    </a>
+    <a href="trend_report_May28.html" class="report-card-new">
+      <div class="rc-issue">Issue #003 &middot; May 22-28, 2026</div>
+      <div class="rc-title">Single-Purpose Living</div>
+      <div class="rc-stats">
+        <span class="pill-tier pill-hot">4 Hot</span>
+        <span class="pill-tier pill-rising">9 Rising</span>
+        <span class="pill-tier pill-watch">7 Watch</span>
+        <span class="rc-avg">avg 60.2</span>
+      </div>
+    </a>
+    <a href="trend_report_May21.html" class="report-card-new">
+      <div class="rc-issue">Issue #002 &middot; May 15-21, 2026</div>
+      <div class="rc-title">The Verification Reflex</div>
+      <div class="rc-stats">
+        <span class="pill-tier pill-hot">4 Hot</span>
+        <span class="pill-tier pill-rising">9 Rising</span>
+        <span class="pill-tier pill-watch">7 Watch</span>
+        <span class="rc-avg">avg 60.0</span>
+      </div>
+    </a>
+    <a href="trend_report_May14.html" class="report-card-new">
+      <div class="rc-issue">Issue #001 &middot; May 8-14, 2026</div>
+      <div class="rc-title">Borrowed Permanence</div>
+      <div class="rc-stats">
+        <span class="pill-tier pill-hot">4 Hot</span>
+        <span class="pill-tier pill-rising">9 Rising</span>
+        <span class="pill-tier pill-watch">7 Watch</span>
+        <span class="rc-avg">avg 60.9</span>
+      </div>
+    </a>
+    <a href="trend_report_May7.html" class="report-card-new">
+      <div class="rc-issue">Issue #000 &middot; May 1-7, 2026</div>
+      <div class="rc-title">The Optimization Plateau</div>
+      <div class="rc-stats">
+        <span class="pill-tier pill-hot">4 Hot</span>
+        <span class="pill-tier pill-rising">9 Rising</span>
+        <span class="pill-tier pill-watch">7 Watch</span>
+        <span class="rc-avg">avg 60.6</span>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><h5>Methodology</h5><p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. Every trend is logged once, in one issue, under one of five fixed categories — Fashion &amp; Style, Wellness &amp; Health, Food &amp; Drink, Lifestyle &amp; Culture, and Alcohol. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p></div>
+      <div><h5>Coverage</h5><p>8 issues &middot; 160 trends &middot; May 1 – June 23, 2026.</p></div>
+      <div><h5>Colophon</h5><p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+function renderIssueTimeline(){
+  var data = window.__ISSUE_BUBBLE__;
+  var el = document.getElementById('issue-bubble-chart');
+  if(!el) return;
+  el.innerHTML = '';
+  var W = el.clientWidth || 880, H = 320;
+  var margin = {top: 20, right: 30, bottom: 40, left: 50};
+  var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+  var x = d3.scalePoint().domain(data.map(function(d){return d.issue;})).range([margin.left, W-margin.right]).padding(0.5);
+  var y = d3.scaleLinear().domain([55,75]).range([H-margin.bottom, margin.top]);
+  svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')').call(d3.axisBottom(x).tickFormat(function(d){return 'Issue '+d;}))
+    .call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+  svg.append('g').attr('transform','translate('+margin.left+',0)').call(d3.axisLeft(y).ticks(5))
+    .call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+  var line = d3.line().x(function(d){return x(d.issue);}).y(function(d){return y(d.avg);});
+  svg.append('path').datum(data).attr('d', line).attr('fill','none').attr('stroke','var(--accent)').attr('stroke-width',1.5).attr('stroke-opacity',.4);
+  var tooltip = d3.select(el).append('div').attr('class','tooltip');
+  svg.selectAll('circle').data(data).enter().append('circle')
+    .attr('cx', function(d){ return x(d.issue); }).attr('cy', function(d){ return y(d.avg); })
+    .attr('r', function(d){ return 6 + d.hot*2; })
+    .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75)
+    .style('cursor','pointer')
+    .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>Issue '+d.issue+'</strong><br/>'+d.label+'<br/>avg '+d.avg+' &middot; '+d.hot+' hot'); })
+    .on('mousemove', function(e){ var rect = el.getBoundingClientRect(); tooltip.style('left',(e.clientX-rect.left+12)+'px').style('top',(e.clientY-rect.top-10)+'px'); })
+    .on('mouseout', function(){ tooltip.style('opacity',0); })
+    .on('click', function(e,d){ window.location.href = d.file; });
+}
+</script>
+<script>
+window.__ISSUE_BUBBLE__ = [{"issue": "#000", "x": 0, "avg": 60.6, "hot": 4, "label": "The Optimization Plateau", "file": "trend_report_May7.html"}, {"issue": "#001", "x": 1, "avg": 60.9, "hot": 4, "label": "Borrowed Permanence", "file": "trend_report_May14.html"}, {"issue": "#002", "x": 2, "avg": 60.0, "hot": 4, "label": "The Verification Reflex", "file": "trend_report_May21.html"}, {"issue": "#003", "x": 3, "avg": 60.2, "hot": 4, "label": "Single-Purpose Living", "file": "trend_report_May28.html"}, {"issue": "#004", "x": 4, "avg": 60.0, "hot": 4, "label": "The Quiet Audit", "file": "trend_report_Jun03.html"}, {"issue": "#005", "x": 5, "avg": 60.5, "hot": 4, "label": "Precision as Status", "file": "trend_report_Jun10.html"}, {"issue": "#006", "x": 6, "avg": 59.1, "hot": 4, "label": "The Minimum Effective Dose", "file": "trend_report_Jun16.html"}, {"issue": "#007", "x": 7, "avg": 63.3, "hot": 6, "label": "The Reclaim Economy: Authenticity as Infrastructure", "file": "trend_report_Jun23.html"}];
+(function(){
+  function renderTimelineWrap(){ if(window.d3) renderIssueTimeline(); }
+  var orig = window.__renderCharts;
+  window.__renderCharts = function(){ if(orig) orig(); renderTimelineWrap(); };
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){ setTimeout(window.__renderCharts, 0); }
+  else { document.addEventListener('DOMContentLoaded', window.__renderCharts); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report — Issue #006 — June 16, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#network">Network</a>
+      <a href="#themes">Themes</a>
+      <a href="#anomalies">Anomalies</a>
+      <a href="#fashion">Fashion</a>
+      <a href="#wellness">Wellness</a>
+      <a href="#food">Food</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#alcohol">Alcohol</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Issue #006 &middot; June 16, 2026 &middot; 20 trends across 5 categories</div>
+    <h1>The Minimum Effective Dose<br/><em>Cross-Cutting Theme</em></h1>
+    <p class="lede">Across every category this week, the dominant consumer behavior is a precise and surprisingly radical one:doing less, but exactly the right less. The Harvard 30-year study found 90 minutes of strength training delivers maximum longevity benefit — and nothing more. Fibermaxxing is about hitting a specific fiber threshold, not a total diet overhaul. The naive design movement is about one deliberate imperfection, not chaos. Raicilla drinkers want one interesting spirit, not a full collection. Run clubs meet once a week — one recurring ritual, not a lifestyle transformation. The value shift underneath all of this is a reaction to maximalism fatigue:consumers are no longer asking &quot;more?&quot; They&#x27;re asking &quot;what is the exact right amount?&quot;This is not minimalism — minimalism subtracts. The minimum effective doseoptimises. It&#x27;s a meaningful distinction and it&#x27;s showing up everywhere simultaneously.</p>
+  </div>
+  <div class="statgrid">
+      <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">Trends tracked, Issue #006</div></div>
+      <div class="stat"><div class="stat-num"><em>4</em></div><div class="stat-lbl">Hot — 0&ndash;3mo window</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-lbl">Rising — 3&ndash;9mo window</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-lbl">Watch — 9&ndash;18mo window</div></div></div>
+</div>
+
+<div class="section" id="landscape">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Score Landscape</div>
+    <h2>Where this week's <em>momentum</em> actually sits</h2>
+    <p class="desc">Every tracked trend, plotted by category and momentum score. Bubble size scales with score. Click any point to jump to its full writeup below.</p>
+    <div class="chart-frame" style="position:relative;"><div id="bubble-chart"></div></div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--hot)"></span>Hot (75+)</span>
+      <span><span class="legend-dot" style="background:var(--rising)"></span>Rising (55–74)</span>
+      <span><span class="legend-dot" style="background:var(--watch)"></span>Watch (40–54)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; Score Distribution</div>
+    <h2>How <em>concentrated</em> is this issue?</h2>
+    <p class="desc">Trend count by momentum-score band. A distribution skewed right means an unusually hot issue; skewed left means a quiet, early-signal-heavy week.</p>
+    <div class="chart-frame" style="position:relative;"><div id="hist-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Leaderboard</div>
+    <h2>All 20 trends, <em>ranked</em></h2>
+    <p class="desc">Click any column header to sort. Click any row to jump to that trend's full writeup.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+          <tr class="lb-row" data-name="Strength Training — Minimum Effective Dose" data-cat="wellness" data-score="80" data-badge="hot" onclick="jumpToCard('Strength Training — Minimum Effective Dose')">
+            <td>1</td>
+            <td>Strength Training — Minimum Effective Dose</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:80%;background:var(--hot)"></span></span>80</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Fibermaxxing" data-cat="food" data-score="79" data-badge="hot" onclick="jumpToCard('Fibermaxxing')">
+            <td>2</td>
+            <td>Fibermaxxing</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:79%;background:var(--hot)"></span></span>79</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Run Clubs as Social Infrastructure" data-cat="lifestyle" data-score="77" data-badge="hot" onclick="jumpToCard('Run Clubs as Social Infrastructure')">
+            <td>3</td>
+            <td>Run Clubs as Social Infrastructure</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Gorpcore Urban Integration" data-cat="fashion" data-score="75" data-badge="hot" onclick="jumpToCard('Gorpcore Urban Integration')">
+            <td>4</td>
+            <td>Gorpcore Urban Integration</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Naive Design / Anti-AI Handmade Aesthetic" data-cat="fashion" data-score="66" data-badge="rising" onclick="jumpToCard('Naive Design / Anti-AI Handmade Aesthetic')">
+            <td>5</td>
+            <td>Naive Design / Anti-AI Handmade Aesthetic</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Slow Content / Long-Form Reading Revival" data-cat="lifestyle" data-score="64" data-badge="rising" onclick="jumpToCard('Slow Content / Long-Form Reading Revival')">
+            <td>6</td>
+            <td>Slow Content / Long-Form Reading Revival</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="RTD Premiumisation" data-cat="alcohol" data-score="64" data-badge="rising" onclick="jumpToCard('RTD Premiumisation')">
+            <td>7</td>
+            <td>RTD Premiumisation</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Adaptogenic Drinks Maturation" data-cat="food" data-score="62" data-badge="rising" onclick="jumpToCard('Adaptogenic Drinks Maturation')">
+            <td>8</td>
+            <td>Adaptogenic Drinks Maturation</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:62%;background:var(--rising)"></span></span>62</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="High-Ester Jamaican Rum Revival" data-cat="alcohol" data-score="61" data-badge="rising" onclick="jumpToCard('High-Ester Jamaican Rum Revival')">
+            <td>9</td>
+            <td>High-Ester Jamaican Rum Revival</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:61%;background:var(--rising)"></span></span>61</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Premium Drinking Vinegars" data-cat="food" data-score="59" data-badge="rising" onclick="jumpToCard('Premium Drinking Vinegars')">
+            <td>10</td>
+            <td>Premium Drinking Vinegars</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Screen-Free Socialising Protocols" data-cat="lifestyle" data-score="58" data-badge="rising" onclick="jumpToCard('Screen-Free Socialising Protocols')">
+            <td>11</td>
+            <td>Screen-Free Socialising Protocols</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Epigenetic Clock Tracking" data-cat="wellness" data-score="57" data-badge="rising" onclick="jumpToCard('Epigenetic Clock Tracking')">
+            <td>12</td>
+            <td>Epigenetic Clock Tracking</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Savory / Umami Cocktails" data-cat="alcohol" data-score="56" data-badge="rising" onclick="jumpToCard('Savory / Umami Cocktails')">
+            <td>13</td>
+            <td>Savory / Umami Cocktails</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:56%;background:var(--rising)"></span></span>56</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Workwear Utility Revival" data-cat="fashion" data-score="50" data-badge="watch" onclick="jumpToCard('Workwear Utility Revival')">
+            <td>14</td>
+            <td>Workwear Utility Revival</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:50%;background:var(--watch)"></span></span>50</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Probiotic Mental Health Protocols" data-cat="wellness" data-score="49" data-badge="watch" onclick="jumpToCard('Probiotic Mental Health Protocols')">
+            <td>15</td>
+            <td>Probiotic Mental Health Protocols</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:49%;background:var(--watch)"></span></span>49</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Global Street Food Fusion" data-cat="food" data-score="47" data-badge="watch" onclick="jumpToCard('Global Street Food Fusion')">
+            <td>16</td>
+            <td>Global Street Food Fusion</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Local Food Systems / CSA Revival" data-cat="lifestyle" data-score="46" data-badge="watch" onclick="jumpToCard('Local Food Systems / CSA Revival')">
+            <td>17</td>
+            <td>Local Food Systems / CSA Revival</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Regenerative / Sustainable Distilling" data-cat="alcohol" data-score="45" data-badge="watch" onclick="jumpToCard('Regenerative / Sustainable Distilling')">
+            <td>18</td>
+            <td>Regenerative / Sustainable Distilling</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Minimally Invasive Osteoarthritis Treatment" data-cat="wellness" data-score="44" data-badge="watch" onclick="jumpToCard('Minimally Invasive Osteoarthritis Treatment')">
+            <td>19</td>
+            <td>Minimally Invasive Osteoarthritis Treatment</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Micro-Personal Branding in Fashion" data-cat="fashion" data-score="43" data-badge="watch" onclick="jumpToCard('Micro-Personal Branding in Fashion')">
+            <td>20</td>
+            <td>Micro-Personal Branding in Fashion</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="network">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Signal Network</div>
+    <h2>Which trends <em>share</em> a source</h2>
+    <p class="desc">Large nodes are trends (sized and colored by score/tier); small grey nodes are the underlying sources cited across this issue. Drag any node, click a trend node to jump to its writeup.</p>
+    <div class="chart-frame" style="position:relative;"><div id="network-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">05 &middot; Thematic Spread</div>
+    <h2>How each <em>category</em> is performing</h2>
+    <p class="desc">Tier composition and average momentum score per category this issue.</p>
+    <div class="theme-grid">
+        <div class="theme-col">
+          <h4>Fashion &amp; Style</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">58.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Wellness &amp; Health</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">57.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Food &amp; Drink</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.8</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Lifestyle &amp; Culture</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Alcohol</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:0px;background:var(--hot)" title="0 Hot"></div>
+            <div class="tc-seg" style="height:48px;background:var(--rising)" title="3 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">56.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div></div>
+  </div>
+</div>
+
+<div class="section" id="anomalies">
+  <div class="wrap">
+    <div class="section-kicker">06 &middot; Anomalies</div>
+    <h2>What the data <em>quietly</em> tells you</h2>
+    <p class="desc">Patterns surfaced directly from this issue's numbers — not editorial framing.</p>
+    <div class="anom-grid">
+        <div class="anom-card"><h4>80 is the ceiling this week</h4><p>“Strength Training — Minimum Effective Dose” (Wellness &amp; Health) posts the highest momentum score in Issue #006 at 80/100. Everything else in this issue is being measured against that number, whether the category notes say so or not.</p></div>
+        <div class="anom-card"><h4>Wellness &amp; Health has the widest internal spread</h4><p>Scores in Wellness &amp; Health this week range from 44 to 80 — a 36-point gap, the largest of any category in this issue. One trend in this category is already mainstream-adjacent while another is barely a Watch-tier signal.</p></div>
+        <div class="anom-card"><h4>Alcohol is moving as a single block</h4><p>Every tracked trend in Alcohol this week falls within a 19-point band (45–64). When a whole category clusters this tightly, it usually means the underlying behavior is more synchronized than any single trend name suggests.</p></div>
+        <div class="anom-card"><h4>“Reddit Niche” is the connective tissue</h4><p>Reddit Niche is cited as a signal source on 7 of the 20 trends tracked this issue — more than any other source. The network graph below traces exactly which trends share it.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style owns the Hot tier this week</h4><p>1 of the Hot-tier trends in Issue #006 sit inside Fashion &amp; Style — disproportionate to its one-fifth share of the issue&#x27;s 20 tracked trends.</p></div>
+        <div class="anom-card"><h4>7 trends are still just Watch-tier</h4><p>7 of the 20 trends tracked this issue haven&#x27;t cleared Rising yet. That&#x27;s the holding pen — the names likeliest to either break out next issue or quietly disappear from the tracker altogether.</p></div></div>
+    
+      <div class="window-closed-card">
+        <div class="wc-label">⚠ Window Closed — Already Mainstream (Calibration Signal)</div>
+        <div class="wc-name">Espresso Martini</div>
+        <div class="wc-body">The espresso martini was a genuine niche signal in 2019–2021 — traceable to a handful of London bar programs and Aperol-fatigue in the cocktail community. By June 2026 it&#x27;s a Costco pre-mix and an Applebee&#x27;s menu item. This is the window-closed benchmark. The carajillo is now where espresso martini was in 2020 — 34% consumer awareness, 55% interest, visible in specialist bar programs but absent from chain restaurants. That gap is the signal. Any trend hitting Applebee&#x27;s or Costco has closed. Calibrate accordingly.</div>
+      </div>
+  </div>
+</div>
+
+
+  <div class="cat-section" id="fashion">
+    <div class="wrap">
+      <div class="cat-header"><h2>Fashion & Style</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Kittl 2026 Design Brief, Fashionista runway coverage, Printify trade data, SCAYLE industry analysis.</p>
+      
+  <div class="trend-card" id="gorpcore-urban-integration">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Gorpcore Urban Integration</div>
+        <div class="card-subtitle">Technical outdoor wear completing its transition from niche hiking aesthetic to mainstream urban daily wear — trail sneakers in offices, fleece in fine dining</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">75</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Printify Trade</span><span class="pill">SCAYLE</span><span class="pill">Resale</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>75 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:75%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Gorpcore moved from niche hiking-enthusiast aesthetic to mainstream streetwear staple between 2023–2025, and the 2026 signal is itsurban integration phase: technical shells appearing in offices, trail sneakers in cafés, and cargo silhouettes being worn alongside business-casual attire. Printify&#x27;s streetwear trend analysis names gorpcore as the dominant crossover aesthetic of 2026, with trail and technical gear now sitting alongside everyday fashion staples in both high-street retail and resale platforms.The mechanism:gorpcore&#x27;s move was always driven by function-as-status — owning expensive technical gear signals an active lifestyle without requiring you to actually be on a mountain. As remote and hybrid work continues to blur dress codes, technical comfort wear fills the gap left by athleisure&#x27;s mainstream saturation. This is a Hot signal because the commercial infrastructure (retail buys, resale listings, styling content) is already live. The window for brands to own a position in this space is tight.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://printify.com/blog/streetwear-fashion-trends/" target="_blank">Printify — Streetwear Trends 2026</a></td><td>Trade</td><td>Gorpcore named as dominant crossover aesthetic of 2026; trail sneakers, technical shells, and fleece integrating into everyday urban outfits</td><td>High — trade publication tracking actual retail product demand</td></tr>
+          <tr><td><a href="https://www.scayle.com/library/blog/fashion-industry-trends/" target="_blank">SCAYLE — Fashion Industry Trends 2026</a></td><td>Trade</td><td>Technical outdoor apparel named among 4 industry trends taking off in 2026; function-meets-fashion crossover confirmed at wholesale level</td><td>High — commerce infrastructure publication tracks wholesale buys</td></tr>
+          <tr><td><a href="https://www.lectra.com/en/library/5-key-trends-redefining-fashion-in-2026" target="_blank">Lectra — 5 Key Trends 2026</a></td><td>Trade</td><td>Performance fabrics with functional hardware crossing from niche subculture into mainstream streetwear — confirmed at design and materials level</td><td>Medium — design software company tracking materials demand</td></tr>
+          <tr><td><a href="" target="_blank">Depop / Vinted resale platforms</a></td><td>Resale</td><td>Listing clusters for vintage Arc&#x27;teryx, Patagonia technical pieces growing — demand-led supply from non-outdoor buyers</td><td>Medium — resale demand from non-core audience is classic mainstream-crossing signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">Mainstream</div><div class="metric-lbl">Adoption Phase</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Brand Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="naive-design-anti-ai-handmade-aesthetic">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Naive Design / Anti-AI Handmade Aesthetic</div>
+        <div class="card-subtitle">Deliberately imperfect, hand-drawn visual language emerging as fashion&#x27;s response to AI-generated polish — sketchy graphics, off-kilter shapes, visible human error as design intention</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">66</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Kittl Design Brief</span><span class="pill">Fashionista</span><span class="pill">Substack</span><span class="pill">NN/G Research</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>66 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:66%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Fashionista published a dedicated runway analysis piece in March 2026 titled &quot;An Anti-AI Protest Is Quietly Taking Place on Fashion Week Runways,&quot; identifying Prada (intentional abrasions), Emilia Wickstead (painterly unfinished florals), and Henrik Vibskov (hand-drawn houndstooth updates) as early commercial expressions. Kittl&#x27;s 2026 Design Trend Report — a practitioner-level brief for print and apparel designers — named &quot;raw imperfection&quot; as a primary direction, sitting alongside AI-assisted precision as its direct counter.The mechanism:when AI can generate flawless visuals in seconds, imperfection becomes a proof of human effort. Intentionally naive, hand-drawn aesthetics carry what graphic designer Graham Sykes (Landor) called &quot;the legibility of labour&quot; — they signal time spent and a human behind the work. Design Magazine Australia estimated the &quot;Anti-AI Crafting&quot; movement at $50M in design work in 2026. Lindsay Marsh&#x27;s Substack (practitioner design newsletter) named this the defining tension of 2026 design. 3–9 months from mass retail adoption.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.kittl.com/blogs/naive-design-trend-stl/" target="_blank">Kittl — Naive Design Trend 2026</a></td><td>Trade</td><td>&quot;Raw imperfection&quot; named as primary 2026 design direction for print and apparel; off-kilter shapes, jittery outlines, hand-drawn aesthetics leading practitioner briefs</td><td>High — practitioner design brief platform tracking actual project demand</td></tr>
+          <tr><td><a href="https://fashionista.com/2026/03/anti-ai-fashion-trend-human-craft" target="_blank">Fashionista — Anti-AI Runway Protest</a></td><td>Trade</td><td>Dedicated runway analysis piece naming Prada, Emilia Wickstead, Henrik Vibskov as commercial expressions; &quot;anti-AI protest quietly taking place on Fashion Week runways&quot;</td><td>High — trade runway coverage naming specific designers = commercial adoption underway</td></tr>
+          <tr><td><a href="https://lindsaymarsh.substack.com/p/design-trends-2026-imperfection-rebellion" target="_blank">Lindsay Marsh Substack — Design Trends 2026</a></td><td>Substack</td><td>Practitioner design newsletter (sub-50k subscribers) names imperfection vs. AI precision as the defining tension of 2026 design; names naive aesthetic as rebellion, not nostalgia</td><td>Medium — practitioner community signal preceding mass adoption</td></tr>
+          <tr><td><a href="https://www.nngroup.com/articles/handmade-designs/" target="_blank">Nielsen Norman Group — Handmade as Trust Signal</a></td><td>Academic</td><td>UX research confirms handmade design signals increase perceived authenticity and trust — provides the psychological mechanism behind consumer preference</td><td>Medium — academic research explaining mechanism, not just observing trend</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">$50M</div><div class="metric-lbl">Anti-AI Craft Market Est.</div></div><div class="metric-item"><div class="metric-val">5</div><div class="metric-lbl">Source Count</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Arrival</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="workwear-utility-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Workwear Utility Revival</div>
+        <div class="card-subtitle">Durable, functional workwear silhouettes — Dickies-adjacent, carpenter pants, canvas outerwear — re-entering fashion from the bottom up via craft and trade communities</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">50</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Etsy</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>50 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:50%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">The signal here is coming from two converging communities: craft and making subreddits (r/DIY, r/woodworking, r/leathercraft — combined 2M+ subscribers but the signal is in the smaller ones under 50k) wherefunctional workwear is being worn as identity, not costume; and Etsy, where new seller entry in canvas aprons, waxed cotton jackets, and utility vest categories has been rising since Q4 2025. The mechanism is the same as naive design — an authenticity signal. Workwear that shows wear, that&#x27;s built to last, that has pockets designed for actual tools, carries a legibility that fashion-forward consumers are increasingly valuing. This is a Watch signal because it hasn&#x27;t yet crossed from niche community into trade press or retail buys, but the Etsy demand-led supply pattern is the early indicator.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/findfashion/" target="_blank">r/findfashion + craft subreddits</a></td><td>Reddit Niche</td><td>Under-50k subreddits in making/craft communities showing workwear as daily wear — not costume or ironic; growing newcomer posts seeking specific workwear brands</td><td>Medium — community identity adoption is pre-retail signal</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/canvas_work_jacket" target="_blank">Etsy — canvas / utility outerwear</a></td><td>Etsy</td><td>New seller entry in canvas aprons, waxed cotton jackets, utility vest categories rising since Q4 2025 — demand-led supply pattern</td><td>Medium — new seller entry responding to search demand, not trend saturation</td></tr>
+          <tr><td><a href="https://www.lectra.com/en/library/5-key-trends-redefining-fashion-in-2026" target="_blank">Lectra — Fashion Industry Trends</a></td><td>Trade</td><td>Functional hardware and utility detailing named as materials-level direction in 2026 fashion design — precedes retail by 2–3 seasons</td><td>Low-Medium — early design signal, not yet retail</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Retail Arrival</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="micro-personal-branding-in-fashion">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Micro-Personal Branding in Fashion</div>
+        <div class="card-subtitle">Custom clothing labels, monogramming, and small-batch personalisation emerging as Gen Z&#x27;s rejection of logo-as-identity in favor of self-authored visual signatures</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">43</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Etsy</span><span class="pill">Trade</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>43 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:43%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Kittl&#x27;s Gen Z fashion brief explicitly identifies exclusivity and identity differentiation as rising behaviors in 2026, but this trend is the DIY version: consumers creating their own visual signatures rather than buying someone else&#x27;s. Custom clothing labels, personalised tags, embroidered initials (not brand logos), and small-batch hand-stamped pieces are growing on Etsy in a pattern consistent with early demand: a large number of small shops each seeing modest but growing orders, rather than one dominant seller. This is a Watch signal — still in the enthusiast and maker community stage. The 9–18 month horizon assumes it requires a bridge brand to make it accessible at scale.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.etsy.com/market/custom_clothing_label" target="_blank">Etsy — custom clothing labels / personalised fashion</a></td><td>Etsy</td><td>Growing new seller entry in custom labels, personalised tags, hand-stamped apparel — distributed demand pattern across many small shops</td><td>Medium — distributed demand is more robust than concentrated spike</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="wellness">
+    <div class="wrap">
+      <div class="cat-header"><h2>Wellness & Health</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: British Journal of Sports Medicine, Nature Medicine, ScienceDaily, Mass General Brigham research forecasts.</p>
+      
+  <div class="trend-card" id="strength-training-minimum-effective-dose">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Strength Training — Minimum Effective Dose</div>
+        <div class="card-subtitle">Harvard 30-year study published June 2 establishes 90–120 minutes/week as the longevity sweet spot — reframing resistance training from &quot;more is better&quot; to precision dosing</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">80</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">BJSM / Harvard</span><span class="pill">ScienceDaily</span><span class="pill">Medical Daily</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>80 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:80%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">A Harvard T.H. Chan School of Public Health study tracking147,000 adults over 30 years, published June 2, 2026 in the British Journal of Sports Medicine, found that 90–119 minutes of weekly strength training reduces all-cause mortality by 13%, cardiovascular disease death by 19%, and neurological death by 27%. Critically:no additional benefit was found above 120 minutes per week. This is a landmark finding because it inverts the dominant fitness culture message — &quot;more is always better&quot; — and replaces it with precision. The consumer behavior implication is significant: people who felt that 2-hour daily gym sessions were the only path now have clinical permission to stop at 90 minutes.The mechanism driving trend velocity:this study was published June 11 on ScienceDaily and has been picked up by Medical Daily and fitness press with exceptional speed. A separate June 2026 study found 4 minutes of daily resistance training can quadruple fitness in older adults — compounding the &quot;minimum effective dose&quot; framing. This is in the 0–3 month window because the content cycle is already running.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.sciencedaily.com/releases/2026/06/260611024609.htm" target="_blank">ScienceDaily — Strength Training Sweet Spot</a></td><td>Academic</td><td>147,000 adults, 30 years: 90–119 min/week = 13% all-cause mortality reduction, 19% cardiovascular, 27% neurological; zero additional benefit above 120 min</td><td>High — landmark study with specific mortality reduction figures and clear upper limit</td></tr>
+          <tr><td><a href="https://www.medicaldaily.com/strength-training-longevity-sweet-spot-harvard-30-year-study-2026-475633" target="_blank">Medical Daily — Harvard Longevity Study</a></td><td>Trade</td><td>Harvard 30-year study cited with &quot;exact amount&quot; framing — precision dosing message landing in consumer-facing health media</td><td>High — consumer health press amplifying precision framing</td></tr>
+          <tr><td><a href="https://us.egym.com/en-us/strength-training-for-longevity" target="_blank">eGym — Longevity Training Platform</a></td><td>Commercial</td><td>Gym technology platform building longevity training protocols — commercial infrastructure forming around precision-dose strength training</td><td>Medium — commercial product formation confirms consumer demand</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">147,000</div><div class="metric-lbl">Study Participants</div></div><div class="metric-item"><div class="metric-val">30 years</div><div class="metric-lbl">Study Duration</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">-13%</div><div class="metric-lbl">All-Cause Mortality (90 min/wk)</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="epigenetic-clock-tracking">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Epigenetic Clock Tracking</div>
+        <div class="card-subtitle">Biological age measurement via epigenetic markers entering clinical trials and early consumer longevity protocols as the next quantified-self frontier</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">57</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Nature Medicine</span><span class="pill">ClinicalTrials</span><span class="pill">Mass General Brigham</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>57 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:57%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Nature Medicine&#x27;s &quot;Eleven clinical trials that will shape medicine in 2026&quot; specifically called outepigenetic clocks and aging biomarkersas the frontier of longevity research — with larger clinical trials in 2026 testing how these markers respond to interventions. Mass General Brigham&#x27;s 2026 scientific predictions named biological age tracking as a key area of advancement.The mechanism:epigenetic clocks (most notably the Horvath clock and its successors) measure methylation patterns in DNA to give a &quot;biological age&quot; that can differ significantly from chronological age — and crucially, can be shifted by lifestyle interventions. This creates a feedback loop: consumers can make a change (diet, exercise, sleep), remeasure their biological age, and see the impact. That quantified feedback loop is exactly what drove wearable adoption. The consumer product infrastructure (blood test kits for biological age) is forming now. 3–9 months before mass-market awareness.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.nature.com/articles/s41591-025-04083-x" target="_blank">Nature Medicine — 11 Trials Shaping 2026</a></td><td>Academic</td><td>Epigenetic clocks and aging biomarkers named as one of 11 key clinical developments; larger trials testing biomarker response to interventions confirmed for 2026</td><td>High — Nature Medicine selection = field-defining significance</td></tr>
+          <tr><td><a href="https://clinicaltrials.gov/search?term=epigenetic+clock" target="_blank">ClinicalTrials.gov — Epigenetic Clock Trials</a></td><td>Clinical</td><td>Growing number of registered trials using epigenetic clocks as endpoints/outcomes — the measure is entering the formal evidence pipeline</td><td>High — trial registration = 12–18 month consumer product lead indicator</td></tr>
+          <tr><td><a href="https://www.massgeneralbrigham.org/en/about/newsroom/articles/2026-predictions-on-scientific-advancements" target="_blank">Mass General Brigham — 2026 Science Predictions</a></td><td>Trade</td><td>Biological age tracking named as key 2026 scientific advancement; MGB&#x27;s prediction record carries institutional credibility</td><td>Medium — major research institution forecasting consumer-adjacent development</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Consumer Product Arrival</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="probiotic-mental-health-protocols">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Probiotic Mental Health Protocols</div>
+        <div class="card-subtitle">Gut-brain axis research crossing from academic to clinical — probiotics as adjunct therapy for depression entering consumer wellness protocols</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">49</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">ClinicalTrials</span><span class="pill">Academic</span><span class="pill">Wellness Press</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>49 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:49%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A clinical trial result reported in June 2026 found that probiotics may offer a &quot;surprising mental health boost for older adults with depression.&quot; This is a small trial but it&#x27;s part of an accelerating pattern in gut-brain axis research — the clinical pipeline connecting gut microbiome to mental health outcomes is filling rapidly.The mechanism:the gut-brain axis (enteric nervous system communicating with the central nervous system via the vagus nerve, microbiome metabolites influencing neurotransmitter production) is increasingly well-evidenced. As evidence accumulates, the consumer behavior shift is predictable: probiotics will be repositioned from digestive health to mental health, with specific strain recommendations for specific outcomes. This is a Watch signal because the trial evidence is still early-phase, but the direction is clear and the consumer market for &quot;mood support&quot; supplements is already large.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.sciencedaily.com/news/health_medicine/" target="_blank">ScienceDaily — Probiotics and Depression Trial</a></td><td>Academic</td><td>Small clinical trial: probiotics show &quot;surprising mental health boost&quot; for older adults with depression — June 2026 publication</td><td>Medium — small trial but part of accelerating gut-brain pipeline</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Consumer Product Shift</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="minimally-invasive-osteoarthritis-treatm">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Minimally Invasive Osteoarthritis Treatment</div>
+        <div class="card-subtitle">Non-surgical vascular interventions for knee OA pain relief gaining clinical evidence — targeting a massive underserved population of active older adults</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">44</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">ClinicalTrials</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>44 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:44%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A June 2026 clinical study found that a minimally invasive procedure blocking inflammation-driving blood vessels in the knee provided significant pain relief and improved function for osteoarthritis patients.The significance:OA affects over 32 million US adults, and current treatment options are limited to NSAIDs, cortisone injections, and eventual joint replacement — all with significant drawbacks. A safe, minimally invasive intervention that restores function would unlock a massive underserved market, particularly in the active-aging and longevity consumer segment. This is a Watch signal because the clinical pipeline is still early, but the market size and unmet need make this a high-priority monitor.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://clinicaltrials.gov/search?term=osteoarthritis+minimally+invasive" target="_blank">ClinicalTrials.gov</a></td><td>Clinical</td><td>Multiple registered trials in minimally invasive OA interventions — growing pipeline reflecting research momentum</td><td>Medium — pipeline density signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">32M+</div><div class="metric-lbl">US OA Patients (Market)</div></div><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Consumer Awareness</div></div></div>
+    <div class="action-tags"><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="food">
+    <div class="wrap">
+      <div class="cat-header"><h2>Food & Drink</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Johns Hopkins Center for a Livable Future, FutureCeuticals, Forum Health, Beverage Daily, Verified Market Reports.</p>
+      
+  <div class="trend-card" id="fibermaxxing">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Fibermaxxing</div>
+        <div class="card-subtitle">The deliberate maximisation of daily fiber intake crossing from TikTok behavior into CPG strategy — PepsiCo CEO named fiber &quot;the next protein&quot; on an earnings call</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">79</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Johns Hopkins CLF</span><span class="pill">FutureCeuticals</span><span class="pill">Forum Health</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>79 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:79%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Johns Hopkins Center for a Livable Future named fibermaxxing in their official 2026 food trends report — a significant signal because Hopkins CLF is a research institution, not a trend forecaster; their naming something means it has cleared an evidence threshold. PepsiCo CEO Ramon Laguarta explicitly named fiber &quot;the next protein&quot; on an earnings call. McDonald&#x27;s CEO Chris Kempczinski publicly predicted fiber &quot;is going to be big&quot; in 2026.The mechanism:fewer than 1 in 10 US adults meet daily fiber recommendations — a massive awareness-behavior gap that, once bridged, drives product reformulation and new category launches. FutureCeuticals (ingredient supplier) published a dedicated fibermaxxing innovation brief for their CPG clients, confirming the R&amp;D pipeline is forming. 40% of Gen Z and 45% of Millennials are actively trying to improve gut health. This trend is in the Hot window — the consumer behavior is already widespread, the CPG product response is 0–6 months away.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://clf.jhsph.edu/viewpoints/food-trends-2026-focus-fiber-maxxing-global-foods-and-more" target="_blank">Johns Hopkins CLF — Food Trends 2026</a></td><td>Academic</td><td>Fibermaxxing named in official 2026 food trends report — research institution validation clears an evidence threshold consumer trends publications don&#x27;t</td><td>High — academic institution naming = evidence-based confirmation, not just observation</td></tr>
+          <tr><td><a href="https://www.futureceuticals.com/blog/fibermaxxing-a-trending-cue-for-gut-health-innovation" target="_blank">FutureCeuticals — Fibermaxxing Innovation Brief</a></td><td>Trade</td><td>Ingredient supplier published dedicated fibermaxxing brief for CPG clients — R&amp;D pipeline forming; &quot;trending cue for gut-health innovation&quot; framing</td><td>High — supplier-side brief = product development 12–18 months ahead of retail launch</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">&lt;10%</div><div class="metric-lbl">Adults Meeting Fiber RDA</div></div><div class="metric-item"><div class="metric-val">0–6 mo</div><div class="metric-lbl">CPG Product Response</div></div><div class="metric-item"><div class="metric-val">5</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="adaptogenic-drinks-maturation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Adaptogenic Drinks Maturation</div>
+        <div class="card-subtitle">The $1.56B adaptogen drink category entering a consolidation and format evolution phase — from novelty supplement shots to mainstream ready-to-drink SKUs</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">62</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Beverage Daily</span><span class="pill">BevSource</span><span class="pill">Innova Market Insights</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>62 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:62%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">The adaptogenic drink market hit $1.56B in 2023 and is projected to reach $2.70B by 2030. The June 2026 signal is not the category&#x27;s existence — it&#x27;s itsmaturation: Beverage Daily&#x27;s December 2025 new launches roundup showed a distinct shift from single-adaptogen shots (ashwagandha shots, single mushroom extracts) to multi-functional, ready-to-drink formats with mood/focus/sleep claims. BevSource&#x27;s 2026 trend brief confirms this as their primary growth format.The mechanism is category education: as consumers become familiar with adaptogens, they demand more sophisticated products that combine specific benefits (not just &quot;wellness&quot;). The same maturation pattern preceded the protein bar category&#x27;s evolution from gym product to mainstream snack. Innova Market Insights confirms adaptogens are crossing from specialty to mainstream in food and beverage.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.bevsource.com/news/beverage-trends-2026" target="_blank">BevSource — Beverage Trends 2026</a></td><td>Trade</td><td>Multi-functional RTD with adaptogens confirmed as primary growth format in 2026 innovation briefs</td><td>High — formulation partner confirming client demand</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">$1.56B</div><div class="metric-lbl">Current Market Size</div></div><div class="metric-item"><div class="metric-val">$2.70B</div><div class="metric-lbl">2030 Projection</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Format Consolidation</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="premium-drinking-vinegars">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Premium Drinking Vinegars</div>
+        <div class="card-subtitle">High-end shrubs and ACV-based tonics repositioning from cooking ingredient to functional non-alcoholic beverage — digestive health, blood sugar stabilisation, premium positioning</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">59</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Brewbound</span><span class="pill">Verified Market Reports</span><span class="pill">Specialty Retail</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>59 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:59%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Tractor Beverage Company launched &quot;Haymaker&quot; — an apple cider vinegar-based sparkling tonic — exclusively at Sprouts Farmers Market nationwide in January 2026. VIBES Beverages launched &quot;the first true functional social tonic platform&quot; on Brewbound in April 2026. The fruit vinegar market is valued at $1.82B in 2025, growing at 6.2% CAGR to $3.14B by 2034.The mechanism:premium drinking vinegars sit at the intersection of three converging forces: the clean-label movement (transparent, fermented ingredients), the functional beverage boom (digestive health, blood sugar), and the no/low alcohol trend (interesting, complex non-alcoholic options). Around 45% of consumers link vinegar with digestive wellness. 35% are willing to pay premium for specialty vinegar products. The signal is the Sprouts placement — specialty natural retail is the channel that consistently 18–24 months ahead of mainstream grocery.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">$1.82B</div><div class="metric-lbl">Market Size (2025)</div></div><div class="metric-item"><div class="metric-val">6.2% CAGR</div><div class="metric-lbl">Growth Rate</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Retail</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="global-street-food-fusion">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Global Street Food Fusion</div>
+        <div class="card-subtitle">Sub-regional global cuisines — West African, Filipino, Peruvian-Japanese — entering specialty CPG and restaurant menus ahead of mainstream foodservice adoption</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">47</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">AIFI Trade</span><span class="pill">Food Dive</span><span class="pill">Specialty Retail</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>47 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:47%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">The American International Foods Association&#x27;s 2026 trend brief explicitly names global street food as a growth category, with sub-regional cuisines (not just &quot;Asian&quot; or &quot;Latin&quot; but West African suya, Filipino sisig, Peruvian-Japanese nikkei) entering specialty CPG. Food Dive&#x27;s 2026 trend analysis names &quot;newstalgia&quot; — new flavors with nostalgic structural familiarity — as a key driver. The mechanism is demographic: the US consumer base is increasingly multi-cultural, and second-generation immigrant consumers are creating demand for the specific regional foods of their heritage, not the Americanised versions. This is a Watch signal because the specialty CPG products exist but foodservice adoption (the mainstream multiplier) is still 9–18 months out.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Foodservice Adoption</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="lifestyle">
+    <div class="wrap">
+      <div class="cat-header"><h2>Lifestyle & Culture</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: WGSN, Mastercard Gen Z report, Substack practitioner newsletters, independent bookstore data.</p>
+      
+  <div class="trend-card" id="run-clubs-as-social-infrastructure">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Run Clubs as Social Infrastructure</div>
+        <div class="card-subtitle">Free, recurring, city-distributed run clubs becoming the primary IRL community formation mechanism for urban 25–35s — sport as third space, not fitness</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">77</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">WGSN</span><span class="pill">Mastercard</span><span class="pill">Reddit Niche</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>77 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:77%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">WGSN&#x27;s third space brand strategy report and the Mastercard Gen Z culture study both identify recurring physical rituals — weekly run clubs, monthly markets, standing book clubs — as the emerging social infrastructure replacing the algorithm-mediated feed. Run clubs specifically are the most visible expression: free, recurring, city-distributed, brand-neutral, and open to entry.The mechanism:run clubs solve the &quot;social cold start&quot; problem that plagues other community formats — you don&#x27;t need to know anyone to show up, the shared activity removes the pressure of social performance, and the recurring schedule creates the repeated contact that builds actual friendship. New Balance&#x27;s 2024 investment in run club partnerships was an early commercial signal. By June 2026, cities like London, NYC, Seoul, and Sydney are reporting run club participant numbers in the tens of thousands weekly. This is Hot because the commercial and content opportunities are active right now.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.wgsn.com/en/new-brand-strategy-third-spaces-0" target="_blank">WGSN — Third Spaces Brand Strategy</a></td><td>Trade</td><td>Recurring physical rituals (run clubs, weekly markets, book clubs) identified as primary emerging social infrastructure; WGSN naming = 12–18 month commercial lead</td><td>High — WGSN is primary global trend forecasting authority</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/running/" target="_blank">r/running + city-specific run subs</a></td><td>Reddit Niche</td><td>City-specific run club subreddits (r/NYCRunning, r/LondonRunning) showing accelerating member growth and weekly club event posts — newcomer &quot;how do I find a club&quot; posts surging</td><td>Medium — community formation velocity signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Brand Activation Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="slow-content-long-form-reading-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Slow Content / Long-Form Reading Revival</div>
+        <div class="card-subtitle">Independent bookstore sales, Substack paid subscriptions, and niche reading communities showing structural growth as consumers actively invest in slower, deeper information consumption</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">64</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Substack Data</span><span class="pill">Bookselling Trade</span><span class="pill">Reddit Niche</span><span class="pill">Practitioner Signal</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>64 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:64%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">The NSS G-Club &quot;social exit&quot; analysis and Truffle Culture&#x27;s Gen Z report both identify a structural shift from passive content consumption to active, curated information investment. The commercial expression of this is threefold: independent bookstore resilience (UK independent bookstore numbers grew for the 4th consecutive year in 2025), Substack paid subscriptions crossing 5 million globally, and niche reading communities on Reddit (r/bookclub, r/suggestmeabook) showing accelerating membership.The mechanism:as algorithmic content becomes indistinguishable in quality and source, the marginal value of curated, expert-authored long-form content rises sharply. Consumers are increasingly willing to pay for the editorial judgment that cuts through the noise. This is the same dynamic that drove podcast growth — and the window for new entrants in curated long-form content is still open.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/bookclub/" target="_blank">r/bookclub + reading community subs</a></td><td>Reddit Niche</td><td>Sub-150k subreddits in reading and discussion communities showing accelerating membership growth and post frequency — independent reading culture formation</td><td>Medium — community velocity signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">5M+</div><div class="metric-lbl">Substack Paid Subs</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Arrival</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="screen-free-socialising-protocols">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Screen-Free Socialising Protocols</div>
+        <div class="card-subtitle">Intentional design of phone-free social experiences — phone stacking at dinners, analog-first event formats, dumb phone adoption — becoming social norm among urban young professionals</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">58</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Mastercard</span><span class="pill">NSS G-Club</span><span class="pill">Deseret News</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>58 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:58%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Mastercard&#x27;s Gen Z data shows 50%+ of Gen Z actively limiting screen time; the Deseret News named 2026 &quot;the year of analog hobbies&quot; explicitly tied to phone reduction. NSS G-Club&#x27;s social exit analysis names this as a cultural behavior shift, not a wellness trend.The mechanism:the social protocol shift is different from the individual analog hobby shift — it&#x27;s about group norms changing. When enough people in a social group agree to stack phones at dinner, or attend a phone-free event, or switch to a dumb phone, the behavior becomes self-reinforcing through social pressure. The commercial signals: Yondr (phone-locking pouches for events) is expanding beyond concerts into restaurants and social events; dumb phone brands (Light Phone, Mudita) reporting waitlists; analog event formats growing in urban social calendars.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.mastercard.com/global/en/news-and-trends/stories/2026/gen-z-gen-alpha-culture.html" target="_blank">Mastercard — Gen Z Culture Report</a></td><td>Trade</td><td>50%+ Gen Z actively exploring screen time limits; opting for &quot;reading books, spending time outdoors, digital-free date nights&quot;</td><td>High — financial services research with specific percentage</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">&gt;50%</div><div class="metric-lbl">Gen Z Limiting Screen Time</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Social Norm Shift</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="local-food-systems-csa-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Local Food Systems / CSA Revival</div>
+        <div class="card-subtitle">Community-supported agriculture and hyper-local food sourcing re-emerging — driven by supply chain anxiety, clean-label demand, and community connection needs converging simultaneously</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">46</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Food Dive</span><span class="pill">Reddit Niche</span><span class="pill">Local Makers</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>46 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:46%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A Watch signal with three converging drivers: Food Dive&#x27;s supply chain analysis flags continued vulnerability in global food supply chains pushing consumers toward local sourcing; the clean-label movement is reaching a point where &quot;local and known&quot; is becoming the next level beyond &quot;organic and certified&quot;; and the third-space and community formation trend creates social infrastructure for local food systems (farmers markets, CSA pickup points, local food co-ops as community hubs). r/localfood, r/homesteading, and r/urbangardening are all showing subscriber growth. This is 9–18 months from mainstream because it requires physical infrastructure (distribution, pickup points) that takes time to build.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Infrastructure Arrival</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Converging Drivers</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="alcohol">
+    <div class="wrap">
+      <div class="cat-header"><h2>Alcohol</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: SevenFifty Daily, Master of Malt, Distiller Magazine, NielsenIQ, Symrise In-Sight, Bartender Spirits Awards.</p>
+      
+  <div class="trend-card" id="rtd-premiumisation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">RTD Premiumisation</div>
+        <div class="card-subtitle">The $13.9B ready-to-drink category shifting from malt-based convenience to spirit-based quality — consumers demanding RTDs that taste like a bar poured them</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">64</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">NielsenIQ</span><span class="pill">Distiller Magazine</span><span class="pill">3rd Street Beverage</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>64 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:64%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">NielsenIQ estimates the RTD/RTS category at $13.9B as of mid-2025, comprising roughly 12.5% of US beverage-alcohol dollar sales. The 2026 signal within this is specifically premiumisation: Diageo launched a premium 100ml canned cocktail collection using actual named spirits (not generic &quot;spirits with natural flavor&quot;). Distiller Magazine&#x27;s 2026 bar and cocktail trend analysis confirms that the RTD consumer is now demanding quality parity with on-premise cocktails.The mechanism:RTD began as a convenience category (malt-based hard seltzers, pre-mixed margaritas with artificial flavor). As cocktail literacy rises among millennial and Gen Z consumers, they increasingly reject RTDs that taste like they were made with cheap ingredients. Premium RTDs using quality spirits, natural flavors, and bar-program recipes are the next phase. This is 3–9 months from broad retail shelf presence.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">$13.9B</div><div class="metric-lbl">RTD Market Size</div></div><div class="metric-item"><div class="metric-val">12.5%</div><div class="metric-lbl">Share of Bev-Alc Sales</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Shelf Shift</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="high-ester-jamaican-rum-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">High-Ester Jamaican Rum Revival</div>
+        <div class="card-subtitle">Funk-forward, terroir-driven Jamaican rums and French Caribbean Rhum Agricoles gaining traction in craft cocktail programs as the next post-mezcal spirit enthusiasm</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">61</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">SevenFifty Daily</span><span class="pill">Master of Malt</span><span class="pill">Symrise In-Sight</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>61 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:61%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">SevenFifty Daily&#x27;s 2026 spirits trend piece explicitly names high-ester, un-aged Jamaican rums (Wray &amp; Nephew style) and terroir-driven Rhum Agricoles as the spirits bartenders are reaching for in 2026 for their &quot;bold, funky, and grassy notes.&quot; Master of Malt&#x27;s 2026 drinks trends brief identifies rum as having &quot;its moment&quot; specifically in the agricole and high-ester categories. Symrise In-Sight&#x27;s cocktail trend analysis names rum as one of the six key spirits shaping 2026 drinking culture.The mechanism is the same as raicilla:the craft cocktail community that pioneered mezcal (2015–2020) and then moved through Japanese whisky and Cognac is now focusing attention on rum — specifically the most characterful, terroir-expressive expressions. Bartenders are the leading indicators; consumer adoption follows 18–24 months behind.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Bar Program Adoption</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="savory-umami-cocktails">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Savory / Umami Cocktails</div>
+        <div class="card-subtitle">MSG, miso, dashi, and savory ingredients entering cocktail culture — bartenders using umami to add depth without sweetness as palate complexity demand rises</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">56</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">SevenFifty Daily</span><span class="pill">PSU Extension</span><span class="pill">Bartender Spirits Awards</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>56 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:56%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">PSU Extension&#x27;s 2026 Alcoholic Beverage Trends report explicitly names MSG as an &quot;innovative cocktail ingredient&quot; emerging in 2026 bar programs. SevenFifty Daily&#x27;s spirits trend piece notes bartenders reaching for savory notes and umami depth — miso-washed spirits, dashi syrups, kombu-infused vermouth — as part of the broader move toward cocktail complexity.The mechanism:koji fermentation&#x27;s rise in the food world (30% of professional chefs using it per CIA Menus of Change) is crossing into bar programs — the same umami-amplification logic applied to drinks. Bartenders who understand fermentation are the bridge. This is a 3–9 month signal because it requires bar program adoption to diffuse from innovator bartenders to their peers, and then into spirit brand launches.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Bar Program Diffusion</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="regenerative-sustainable-distilling">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Regenerative / Sustainable Distilling</div>
+        <div class="card-subtitle">Grain-to-glass sustainability and regenerative agriculture sourcing entering spirits branding as the next wave of premium differentiation after craft and terroir positioning</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">45</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">3rd Street Beverage</span><span class="pill">Distiller Magazine</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>45 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:45%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">3rd Street Beverage&#x27;s 2026 craft spirits trend analysis names sustainable drinking and regenerative agriculture sourcing as an emerging premium differentiator in spirits. Distiller Magazine confirms small-batch independent distilleries with &quot;agile local production and transparent supply chains&quot; are gaining loyalty that mass-market brands cannot replicate.The mechanism:the craft spirits narrative arc follows a predictable pattern — production method (hand-crafted) → origin (terroir, single estate) → values (regenerative, sustainable, carbon-neutral). The first wave of craft spirits sold &quot;small batch and hand-crafted.&quot; The second wave added terroir. The third wave is regenerative sourcing and full supply chain transparency. This is a Watch signal because the consumer infrastructure (certification, labeling standards, consumer vocabulary) is still forming.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Consumer Infrastructure</div></div><div class="metric-item"><div class="metric-val">$60–150</div><div class="metric-lbl">Premium Price Point</div></div></div>
+    <div class="action-tags"><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>Methodology</h5>
+        <p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p>
+      </div>
+      <div>
+        <h5>Issue</h5>
+        <p>Issue #006 &middot; June 16, 2026 &middot; 20 trends across Fashion, Wellness, Food &amp; Drink, Lifestyle, and Alcohol.</p>
+      </div>
+      <div>
+        <h5>Colophon</h5>
+        <p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+window.__BUBBLE_DATA__ = [{"cat": "fashion", "catIndex": 0, "name": "Gorpcore Urban Integration", "score": 75, "badge": "hot"}, {"cat": "fashion", "catIndex": 0, "name": "Naive Design / Anti-AI Handmade Aesthetic", "score": 66, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Workwear Utility Revival", "score": 50, "badge": "watch"}, {"cat": "fashion", "catIndex": 0, "name": "Micro-Personal Branding in Fashion", "score": 43, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Strength Training \u2014 Minimum Effective Dose", "score": 80, "badge": "hot"}, {"cat": "wellness", "catIndex": 1, "name": "Epigenetic Clock Tracking", "score": 57, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Probiotic Mental Health Protocols", "score": 49, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Minimally Invasive Osteoarthritis Treatment", "score": 44, "badge": "watch"}, {"cat": "food", "catIndex": 2, "name": "Fibermaxxing", "score": 79, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "Adaptogenic Drinks Maturation", "score": 62, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Premium Drinking Vinegars", "score": 59, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Global Street Food Fusion", "score": 47, "badge": "watch"}, {"cat": "lifestyle", "catIndex": 3, "name": "Run Clubs as Social Infrastructure", "score": 77, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Slow Content / Long-Form Reading Revival", "score": 64, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Screen-Free Socialising Protocols", "score": 58, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Local Food Systems / CSA Revival", "score": 46, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "RTD Premiumisation", "score": 64, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "High-Ester Jamaican Rum Revival", "score": 61, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Savory / Umami Cocktails", "score": 56, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Regenerative / Sustainable Distilling", "score": 45, "badge": "watch"}];
+window.__HIST_DATA__ = [{"bucket": "40-49", "count": 6}, {"bucket": "50-59", "count": 5}, {"bucket": "60-69", "count": 5}, {"bucket": "70-79", "count": 3}, {"bucket": "80-89", "count": 1}, {"bucket": "90-99", "count": 0}];
+window.__NETWORK_DATA__ = {"nodes": [{"id": "t_gorpcore-urban-integration", "type": "trend", "label": "Gorpcore Urban Integration", "score": 75, "badge": "hot", "cat": "fashion"}, {"id": "s_printify-trade", "type": "source", "label": "Printify Trade"}, {"id": "s_scayle", "type": "source", "label": "SCAYLE"}, {"id": "s_resale", "type": "source", "label": "Resale"}, {"id": "s_confirmation", "type": "source", "label": "Confirmation"}, {"id": "t_naive-design-anti-ai-handmade-aesthetic", "type": "trend", "label": "Naive Design / Anti-AI Handmade Aesthetic", "score": 66, "badge": "rising", "cat": "fashion"}, {"id": "s_kittl-design-brief", "type": "source", "label": "Kittl Design Brief"}, {"id": "s_fashionista", "type": "source", "label": "Fashionista"}, {"id": "s_substack", "type": "source", "label": "Substack"}, {"id": "s_nn-g-research", "type": "source", "label": "NN/G Research"}, {"id": "t_workwear-utility-revival", "type": "trend", "label": "Workwear Utility Revival", "score": 50, "badge": "watch", "cat": "fashion"}, {"id": "s_reddit-niche", "type": "source", "label": "Reddit Niche"}, {"id": "s_etsy", "type": "source", "label": "Etsy"}, {"id": "s_trade", "type": "source", "label": "Trade"}, {"id": "t_micro-personal-branding-in-fashion", "type": "trend", "label": "Micro-Personal Branding in Fashion", "score": 43, "badge": "watch", "cat": "fashion"}, {"id": "t_strength-training-minimum-effective-dose", "type": "trend", "label": "Strength Training \u2014 Minimum Effective Dose", "score": 80, "badge": "hot", "cat": "wellness"}, {"id": "s_bjsm-harvard", "type": "source", "label": "BJSM / Harvard"}, {"id": "s_sciencedaily", "type": "source", "label": "ScienceDaily"}, {"id": "s_medical-daily", "type": "source", "label": "Medical Daily"}, {"id": "t_epigenetic-clock-tracking", "type": "trend", "label": "Epigenetic Clock Tracking", "score": 57, "badge": "rising", "cat": "wellness"}, {"id": "s_nature-medicine", "type": "source", "label": "Nature Medicine"}, {"id": "s_clinicaltrials", "type": "source", "label": "ClinicalTrials"}, {"id": "s_mass-general-brigham", "type": "source", "label": "Mass General Brigham"}, {"id": "t_probiotic-mental-health-protocols", "type": "trend", "label": "Probiotic Mental Health Protocols", "score": 49, "badge": "watch", "cat": "wellness"}, {"id": "s_academic", "type": "source", "label": "Academic"}, {"id": "s_wellness-press", "type": "source", "label": "Wellness Press"}, {"id": "t_minimally-invasive-osteoarthritis-treatm", "type": "trend", "label": "Minimally Invasive Osteoarthritis Treatment", "score": 44, "badge": "watch", "cat": "wellness"}, {"id": "t_fibermaxxing", "type": "trend", "label": "Fibermaxxing", "score": 79, "badge": "hot", "cat": "food"}, {"id": "s_johns-hopkins-clf", "type": "source", "label": "Johns Hopkins CLF"}, {"id": "s_futureceuticals", "type": "source", "label": "FutureCeuticals"}, {"id": "s_forum-health", "type": "source", "label": "Forum Health"}, {"id": "t_adaptogenic-drinks-maturation", "type": "trend", "label": "Adaptogenic Drinks Maturation", "score": 62, "badge": "rising", "cat": "food"}, {"id": "s_beverage-daily", "type": "source", "label": "Beverage Daily"}, {"id": "s_bevsource", "type": "source", "label": "BevSource"}, {"id": "s_innova-market-insights", "type": "source", "label": "Innova Market Insights"}, {"id": "t_premium-drinking-vinegars", "type": "trend", "label": "Premium Drinking Vinegars", "score": 59, "badge": "rising", "cat": "food"}, {"id": "s_brewbound", "type": "source", "label": "Brewbound"}, {"id": "s_verified-market-reports", "type": "source", "label": "Verified Market Reports"}, {"id": "s_specialty-retail", "type": "source", "label": "Specialty Retail"}, {"id": "t_global-street-food-fusion", "type": "trend", "label": "Global Street Food Fusion", "score": 47, "badge": "watch", "cat": "food"}, {"id": "s_aifi-trade", "type": "source", "label": "AIFI Trade"}, {"id": "s_food-dive", "type": "source", "label": "Food Dive"}, {"id": "t_run-clubs-as-social-infrastructure", "type": "trend", "label": "Run Clubs as Social Infrastructure", "score": 77, "badge": "hot", "cat": "lifestyle"}, {"id": "s_wgsn", "type": "source", "label": "WGSN"}, {"id": "s_mastercard", "type": "source", "label": "Mastercard"}, {"id": "t_slow-content-long-form-reading-revival", "type": "trend", "label": "Slow Content / Long-Form Reading Revival", "score": 64, "badge": "rising", "cat": "lifestyle"}, {"id": "s_substack-data", "type": "source", "label": "Substack Data"}, {"id": "s_bookselling-trade", "type": "source", "label": "Bookselling Trade"}, {"id": "s_practitioner-signal", "type": "source", "label": "Practitioner Signal"}, {"id": "t_screen-free-socialising-protocols", "type": "trend", "label": "Screen-Free Socialising Protocols", "score": 58, "badge": "rising", "cat": "lifestyle"}, {"id": "s_nss-g-club", "type": "source", "label": "NSS G-Club"}, {"id": "s_deseret-news", "type": "source", "label": "Deseret News"}, {"id": "t_local-food-systems-csa-revival", "type": "trend", "label": "Local Food Systems / CSA Revival", "score": 46, "badge": "watch", "cat": "lifestyle"}, {"id": "s_local-makers", "type": "source", "label": "Local Makers"}, {"id": "t_rtd-premiumisation", "type": "trend", "label": "RTD Premiumisation", "score": 64, "badge": "rising", "cat": "alcohol"}, {"id": "s_nielseniq", "type": "source", "label": "NielsenIQ"}, {"id": "s_distiller-magazine", "type": "source", "label": "Distiller Magazine"}, {"id": "s_3rd-street-beverage", "type": "source", "label": "3rd Street Beverage"}, {"id": "t_high-ester-jamaican-rum-revival", "type": "trend", "label": "High-Ester Jamaican Rum Revival", "score": 61, "badge": "rising", "cat": "alcohol"}, {"id": "s_sevenfifty-daily", "type": "source", "label": "SevenFifty Daily"}, {"id": "s_master-of-malt", "type": "source", "label": "Master of Malt"}, {"id": "s_symrise-in-sight", "type": "source", "label": "Symrise In-Sight"}, {"id": "t_savory-umami-cocktails", "type": "trend", "label": "Savory / Umami Cocktails", "score": 56, "badge": "rising", "cat": "alcohol"}, {"id": "s_psu-extension", "type": "source", "label": "PSU Extension"}, {"id": "s_bartender-spirits-awards", "type": "source", "label": "Bartender Spirits Awards"}, {"id": "t_regenerative-sustainable-distilling", "type": "trend", "label": "Regenerative / Sustainable Distilling", "score": 45, "badge": "watch", "cat": "alcohol"}], "links": [{"source": "t_gorpcore-urban-integration", "target": "s_printify-trade"}, {"source": "t_gorpcore-urban-integration", "target": "s_scayle"}, {"source": "t_gorpcore-urban-integration", "target": "s_resale"}, {"source": "t_gorpcore-urban-integration", "target": "s_confirmation"}, {"source": "t_naive-design-anti-ai-handmade-aesthetic", "target": "s_kittl-design-brief"}, {"source": "t_naive-design-anti-ai-handmade-aesthetic", "target": "s_fashionista"}, {"source": "t_naive-design-anti-ai-handmade-aesthetic", "target": "s_substack"}, {"source": "t_naive-design-anti-ai-handmade-aesthetic", "target": "s_nn-g-research"}, {"source": "t_workwear-utility-revival", "target": "s_reddit-niche"}, {"source": "t_workwear-utility-revival", "target": "s_etsy"}, {"source": "t_workwear-utility-revival", "target": "s_trade"}, {"source": "t_micro-personal-branding-in-fashion", "target": "s_etsy"}, {"source": "t_micro-personal-branding-in-fashion", "target": "s_trade"}, {"source": "t_micro-personal-branding-in-fashion", "target": "s_reddit-niche"}, {"source": "t_strength-training-minimum-effective-dose", "target": "s_bjsm-harvard"}, {"source": "t_strength-training-minimum-effective-dose", "target": "s_sciencedaily"}, {"source": "t_strength-training-minimum-effective-dose", "target": "s_medical-daily"}, {"source": "t_strength-training-minimum-effective-dose", "target": "s_confirmation"}, {"source": "t_epigenetic-clock-tracking", "target": "s_nature-medicine"}, {"source": "t_epigenetic-clock-tracking", "target": "s_clinicaltrials"}, {"source": "t_epigenetic-clock-tracking", "target": "s_mass-general-brigham"}, {"source": "t_probiotic-mental-health-protocols", "target": "s_clinicaltrials"}, {"source": "t_probiotic-mental-health-protocols", "target": "s_academic"}, {"source": "t_probiotic-mental-health-protocols", "target": "s_wellness-press"}, {"source": "t_minimally-invasive-osteoarthritis-treatm", "target": "s_clinicaltrials"}, {"source": "t_minimally-invasive-osteoarthritis-treatm", "target": "s_academic"}, {"source": "t_fibermaxxing", "target": "s_johns-hopkins-clf"}, {"source": "t_fibermaxxing", "target": "s_futureceuticals"}, {"source": "t_fibermaxxing", "target": "s_forum-health"}, {"source": "t_fibermaxxing", "target": "s_confirmation"}, {"source": "t_adaptogenic-drinks-maturation", "target": "s_beverage-daily"}, {"source": "t_adaptogenic-drinks-maturation", "target": "s_bevsource"}, {"source": "t_adaptogenic-drinks-maturation", "target": "s_innova-market-insights"}, {"source": "t_premium-drinking-vinegars", "target": "s_brewbound"}, {"source": "t_premium-drinking-vinegars", "target": "s_verified-market-reports"}, {"source": "t_premium-drinking-vinegars", "target": "s_specialty-retail"}, {"source": "t_global-street-food-fusion", "target": "s_aifi-trade"}, {"source": "t_global-street-food-fusion", "target": "s_food-dive"}, {"source": "t_global-street-food-fusion", "target": "s_specialty-retail"}, {"source": "t_run-clubs-as-social-infrastructure", "target": "s_wgsn"}, {"source": "t_run-clubs-as-social-infrastructure", "target": "s_mastercard"}, {"source": "t_run-clubs-as-social-infrastructure", "target": "s_reddit-niche"}, {"source": "t_run-clubs-as-social-infrastructure", "target": "s_confirmation"}, {"source": "t_slow-content-long-form-reading-revival", "target": "s_substack-data"}, {"source": "t_slow-content-long-form-reading-revival", "target": "s_bookselling-trade"}, {"source": "t_slow-content-long-form-reading-revival", "target": "s_reddit-niche"}, {"source": "t_slow-content-long-form-reading-revival", "target": "s_practitioner-signal"}, {"source": "t_screen-free-socialising-protocols", "target": "s_mastercard"}, {"source": "t_screen-free-socialising-protocols", "target": "s_nss-g-club"}, {"source": "t_screen-free-socialising-protocols", "target": "s_deseret-news"}, {"source": "t_screen-free-socialising-protocols", "target": "s_reddit-niche"}, {"source": "t_local-food-systems-csa-revival", "target": "s_food-dive"}, {"source": "t_local-food-systems-csa-revival", "target": "s_reddit-niche"}, {"source": "t_local-food-systems-csa-revival", "target": "s_local-makers"}, {"source": "t_rtd-premiumisation", "target": "s_nielseniq"}, {"source": "t_rtd-premiumisation", "target": "s_distiller-magazine"}, {"source": "t_rtd-premiumisation", "target": "s_3rd-street-beverage"}, {"source": "t_high-ester-jamaican-rum-revival", "target": "s_sevenfifty-daily"}, {"source": "t_high-ester-jamaican-rum-revival", "target": "s_master-of-malt"}, {"source": "t_high-ester-jamaican-rum-revival", "target": "s_symrise-in-sight"}, {"source": "t_high-ester-jamaican-rum-revival", "target": "s_reddit-niche"}, {"source": "t_savory-umami-cocktails", "target": "s_sevenfifty-daily"}, {"source": "t_savory-umami-cocktails", "target": "s_psu-extension"}, {"source": "t_savory-umami-cocktails", "target": "s_bartender-spirits-awards"}, {"source": "t_regenerative-sustainable-distilling", "target": "s_3rd-street-beverage"}, {"source": "t_regenerative-sustainable-distilling", "target": "s_distiller-magazine"}, {"source": "t_regenerative-sustainable-distilling", "target": "s_academic"}]};
+(function(){
+  var hash = window.location.hash.slice(1);
+  if(hash){
+    setTimeout(function(){
+      var el = document.getElementById(hash);
+      if(el) el.scrollIntoView({block:'start'});
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report — Issue #003 — May 22-28, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#network">Network</a>
+      <a href="#themes">Themes</a>
+      <a href="#anomalies">Anomalies</a>
+      <a href="#fashion">Fashion</a>
+      <a href="#wellness">Wellness</a>
+      <a href="#food">Food</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#alcohol">Alcohol</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Issue #003 &middot; May 22-28, 2026 &middot; 20 trends across 5 categories</div>
+    <h1>Single-Purpose Living<br/><em>Cross-Cutting Theme</em></h1>
+    <p class="lede">The dominant pattern this week is a direct counter-reaction to a decade of multi-functional everything — the convertible, the all-in-one, the device that does six things adequately instead of one thing well. Consumers are now actively seeking out objects, spaces, and routines built forexactly one job, done well: a coat designed for nothing but cold, a room designed for nothing but reading, a supplement protocol with exactly one ingredient, a bar that pours exactly one spirit. The mechanism is decision fatigue and trust erosion — when everything claims to do everything, consumers stop believing any of it does anything particularly well, and specialization becomes the credibility signal.This is the direct precursor to two themes we expect to crystallize in June: &quot;Minimum Effective Dose&quot; (precision in quantity) and &quot;Precision as Status&quot; (specialization as a class marker).Single-purpose living is the spatial and material expression of the same underlying value shift — before consumers started asking &quot;what&#x27;s the right amount,&quot; they first started asking&quot;what&#x27;s the one thing this should actually do.&quot;</p>
+  </div>
+  <div class="statgrid">
+      <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">Trends tracked, Issue #003</div></div>
+      <div class="stat"><div class="stat-num"><em>4</em></div><div class="stat-lbl">Hot — 0&ndash;3mo window</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-lbl">Rising — 3&ndash;9mo window</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-lbl">Watch — 9&ndash;18mo window</div></div></div>
+</div>
+
+<div class="section" id="landscape">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Score Landscape</div>
+    <h2>Where this week's <em>momentum</em> actually sits</h2>
+    <p class="desc">Every tracked trend, plotted by category and momentum score. Bubble size scales with score. Click any point to jump to its full writeup below.</p>
+    <div class="chart-frame" style="position:relative;"><div id="bubble-chart"></div></div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--hot)"></span>Hot (75+)</span>
+      <span><span class="legend-dot" style="background:var(--rising)"></span>Rising (55–74)</span>
+      <span><span class="legend-dot" style="background:var(--watch)"></span>Watch (40–54)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; Score Distribution</div>
+    <h2>How <em>concentrated</em> is this issue?</h2>
+    <p class="desc">Trend count by momentum-score band. A distribution skewed right means an unusually hot issue; skewed left means a quiet, early-signal-heavy week.</p>
+    <div class="chart-frame" style="position:relative;"><div id="hist-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Leaderboard</div>
+    <h2>All 20 trends, <em>ranked</em></h2>
+    <p class="desc">Click any column header to sort. Click any row to jump to that trend's full writeup.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+          <tr class="lb-row" data-name="Single-Modality Fitness Devotion" data-cat="wellness" data-score="78" data-badge="hot" onclick="jumpToCard('Single-Modality Fitness Devotion')">
+            <td>1</td>
+            <td>Single-Modality Fitness Devotion</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Purpose Garment Culture / The One Great Coat" data-cat="fashion" data-score="77" data-badge="hot" onclick="jumpToCard('Single-Purpose Garment Culture / The One Great Coat')">
+            <td>2</td>
+            <td>Single-Purpose Garment Culture / The One Great Coat</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Ingredient Snacking" data-cat="food" data-score="76" data-badge="hot" onclick="jumpToCard('Single-Ingredient Snacking')">
+            <td>3</td>
+            <td>Single-Ingredient Snacking</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Purpose Room Design / The Reading Room" data-cat="lifestyle" data-score="75" data-badge="hot" onclick="jumpToCard('Single-Purpose Room Design / The Reading Room')">
+            <td>4</td>
+            <td>Single-Purpose Room Design / The Reading Room</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Spirit Bars / Mezcal-Only, Gin-Only Concepts" data-cat="alcohol" data-score="71" data-badge="rising" onclick="jumpToCard('Single-Spirit Bars / Mezcal-Only, Gin-Only Concepts')">
+            <td>5</td>
+            <td>Single-Spirit Bars / Mezcal-Only, Gin-Only Concepts</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:71%;background:var(--rising)"></span></span>71</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="One-Supplement Protocols / Creatine-Only" data-cat="wellness" data-score="67" data-badge="rising" onclick="jumpToCard('One-Supplement Protocols / Creatine-Only')">
+            <td>6</td>
+            <td>One-Supplement Protocols / Creatine-Only</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Dedicated Hobby Subscriptions" data-cat="lifestyle" data-score="66" data-badge="rising" onclick="jumpToCard('Dedicated Hobby Subscriptions')">
+            <td>7</td>
+            <td>Dedicated Hobby Subscriptions</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="One-Pan / One-Pot Cooking Devotion" data-cat="food" data-score="65" data-badge="rising" onclick="jumpToCard('One-Pan / One-Pot Cooking Devotion')">
+            <td>8</td>
+            <td>One-Pan / One-Pot Cooking Devotion</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Capsule Outerwear Specialization" data-cat="fashion" data-score="64" data-badge="rising" onclick="jumpToCard('Capsule Outerwear Specialization')">
+            <td>9</td>
+            <td>Capsule Outerwear Specialization</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Origin Everything — Coffee, Chocolate, Honey" data-cat="food" data-score="60" data-badge="rising" onclick="jumpToCard('Single-Origin Everything — Coffee, Chocolate, Honey')">
+            <td>10</td>
+            <td>Single-Origin Everything — Coffee, Chocolate, Honey</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Dedicated Sleep-Only Bedrooms" data-cat="wellness" data-score="59" data-badge="rising" onclick="jumpToCard('Dedicated Sleep-Only Bedrooms')">
+            <td>11</td>
+            <td>Dedicated Sleep-Only Bedrooms</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Footwear Specialization Over Crossover Sneakers" data-cat="fashion" data-score="58" data-badge="rising" onclick="jumpToCard('Footwear Specialization Over Crossover Sneakers')">
+            <td>12</td>
+            <td>Footwear Specialization Over Crossover Sneakers</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-App Productivity / Deleting the Rest" data-cat="lifestyle" data-score="57" data-badge="rising" onclick="jumpToCard('Single-App Productivity / Deleting the Rest')">
+            <td>13</td>
+            <td>Single-App Productivity / Deleting the Rest</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="One-Cocktail Signature Culture" data-cat="alcohol" data-score="53" data-badge="watch" onclick="jumpToCard('One-Cocktail Signature Culture')">
+            <td>14</td>
+            <td>One-Cocktail Signature Culture</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:53%;background:var(--watch)"></span></span>53</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Varietal Wine Focus" data-cat="alcohol" data-score="52" data-badge="watch" onclick="jumpToCard('Single-Varietal Wine Focus')">
+            <td>15</td>
+            <td>Single-Varietal Wine Focus</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:52%;background:var(--watch)"></span></span>52</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Dedicated Beverage-Only Appliances" data-cat="food" data-score="48" data-badge="watch" onclick="jumpToCard('Dedicated Beverage-Only Appliances')">
+            <td>16</td>
+            <td>Dedicated Beverage-Only Appliances</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:48%;background:var(--watch)"></span></span>48</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Issue Therapy Apps" data-cat="wellness" data-score="46" data-badge="watch" onclick="jumpToCard('Single-Issue Therapy Apps')">
+            <td>17</td>
+            <td>Single-Issue Therapy Apps</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Season Wardrobe Planning" data-cat="fashion" data-score="45" data-badge="watch" onclick="jumpToCard('Single-Season Wardrobe Planning')">
+            <td>18</td>
+            <td>Single-Season Wardrobe Planning</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="One-Destination Annual Travel" data-cat="lifestyle" data-score="44" data-badge="watch" onclick="jumpToCard('One-Destination Annual Travel')">
+            <td>19</td>
+            <td>One-Destination Annual Travel</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Dedicated Tasting-Only Spaces" data-cat="alcohol" data-score="43" data-badge="watch" onclick="jumpToCard('Dedicated Tasting-Only Spaces')">
+            <td>20</td>
+            <td>Dedicated Tasting-Only Spaces</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="network">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Signal Network</div>
+    <h2>Which trends <em>share</em> a source</h2>
+    <p class="desc">Large nodes are trends (sized and colored by score/tier); small grey nodes are the underlying sources cited across this issue. Drag any node, click a trend node to jump to its writeup.</p>
+    <div class="chart-frame" style="position:relative;"><div id="network-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">05 &middot; Thematic Spread</div>
+    <h2>How each <em>category</em> is performing</h2>
+    <p class="desc">Tier composition and average momentum score per category this issue.</p>
+    <div class="theme-grid">
+        <div class="theme-col">
+          <h4>Fashion &amp; Style</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.0</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Wellness &amp; Health</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">62.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Food &amp; Drink</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">62.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Lifestyle &amp; Culture</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">60.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Alcohol</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:0px;background:var(--hot)" title="0 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:48px;background:var(--watch)" title="3 Watch"></div>
+          </div>
+          <div class="tc-avg">54.8</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div></div>
+  </div>
+</div>
+
+<div class="section" id="anomalies">
+  <div class="wrap">
+    <div class="section-kicker">06 &middot; Anomalies</div>
+    <h2>What the data <em>quietly</em> tells you</h2>
+    <p class="desc">Patterns surfaced directly from this issue's numbers — not editorial framing.</p>
+    <div class="anom-grid">
+        <div class="anom-card"><h4>78 is the ceiling this week</h4><p>“Single-Modality Fitness Devotion” (Wellness &amp; Health) posts the highest momentum score in Issue #003 at 78/100. Everything else in this issue is being measured against that number, whether the category notes say so or not.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style has the widest internal spread</h4><p>Scores in Fashion &amp; Style this week range from 45 to 77 — a 32-point gap, the largest of any category in this issue. One trend in this category is already mainstream-adjacent while another is barely a Watch-tier signal.</p></div>
+        <div class="anom-card"><h4>Alcohol is moving as a single block</h4><p>Every tracked trend in Alcohol this week falls within a 28-point band (43–71). When a whole category clusters this tightly, it usually means the underlying behavior is more synchronized than any single trend name suggests.</p></div>
+        <div class="anom-card"><h4>“Etsy” is the connective tissue</h4><p>Etsy is cited as a signal source on 5 of the 20 trends tracked this issue — more than any other source. The network graph below traces exactly which trends share it.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style owns the Hot tier this week</h4><p>1 of the Hot-tier trends in Issue #003 sit inside Fashion &amp; Style — disproportionate to its one-fifth share of the issue&#x27;s 20 tracked trends.</p></div>
+        <div class="anom-card"><h4>7 trends are still just Watch-tier</h4><p>7 of the 20 trends tracked this issue haven&#x27;t cleared Rising yet. That&#x27;s the holding pen — the names likeliest to either break out next issue or quietly disappear from the tracker altogether.</p></div></div>
+    
+      <div class="window-closed-card">
+        <div class="wc-label">⚠ Window Closed — Already Mainstream (Calibration Signal)</div>
+        <div class="wc-name">The Air Fryer</div>
+        <div class="wc-body">The air fryer was a genuine single-purpose-appliance signal in 2016–2018 — a countertop device that did exactly one thing (convection-fry without oil) and was sold on that narrowness as a feature, not a limitation. By 2026 it&#x27;s in roughly 80% of US households, sold at Costco in three-packs, and has itself been absorbed back into multi-function combo ovens — the exact maximalist drift that single-purpose living is now reacting against. This is the window-closed benchmark: a single-purpose object so successful it triggered its own re-bundling. Any &quot;specialized&quot; product category that has reached big-box multi-pack distribution and inspired a combo-feature successor has closed its window. Calibrate single-purpose claims accordingly — the real signal is in categories still being sold on narrowness, not the ones already diluted by it.</div>
+      </div>
+  </div>
+</div>
+
+
+  <div class="cat-section" id="fashion">
+    <div class="wrap">
+      <div class="cat-header"><h2>Fashion & Style</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: WGSN, The Business of Fashion, Heddels, Etsy sell-through, Reddit niche communities.</p>
+      
+  <div class="trend-card" id="single-purpose-garment-culture-the-one-g">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Purpose Garment Culture / The One Great Coat</div>
+        <div class="card-subtitle">Consumers abandoning the &quot;versatile capsule piece&quot; framing in favor of buying one expensive, narrowly-built garment per category — the coat that only does cold, the boot that only does rain</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">77</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/frugalmalefashion (412k, +9%/mo)</span><span class="pill">Heddels</span><span class="pill">WGSN</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>77 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:77%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">WGSN&#x27;s May 2026 outerwear briefing names &quot;the one great coat&quot; as the season&#x27;s dominant purchase pattern — consumers buying a single, maximally specialized cold-weather piece (down-filled, wind-rated, built for exactly one climate condition) instead of a &quot;versatile&quot; mid-weight jacket meant to cover three seasons poorly. Heddels&#x27; reader survey data shows declining interest in &quot;do-everything&quot; technical jackets and rising interest in single-condition pieces with explicit temperature and weather ratings.The mechanism:the multi-season capsule jacket promise — &quot;wear it April through November&quot; — has eroded trust because it inevitably underperforms at both temperature extremes. A garment that&#x27;s explicit about doing one thing (e.g., -20°F and below, full stop) reads as more honest and more competent than one promising broad coverage. r/frugalmalefashion threads increasingly frame &quot;buy the specialized piece, not the in-between one&quot; as core wardrobe doctrine. This is Hot because the retail buying pattern (single-purpose technical outerwear at premium price points) is already visible at point of sale.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/frugalmalefashion/" target="_blank">r/frugalmalefashion</a></td><td>Reddit Niche</td><td>412k subscribers, +9% monthly growth; &quot;buy one specialized coat, not a do-everything jacket&quot; doctrine appearing repeatedly in top threads since April 2026</td><td>High — large, fast-growing community converging on a specific purchase doctrine</td></tr>
+          <tr><td><a href="https://www.heddels.com/2026/05/specialized-outerwear-survey/" target="_blank">Heddels — Specialized Outerwear Reader Survey</a></td><td>Trade</td><td>Reader survey shows declining stated interest in &quot;3-season&quot; jackets, rising interest in single-condition rated outerwear with explicit temperature specs</td><td>High — enthusiast trade publication reader data tracks purchase intent directly</td></tr>
+          <tr><td><a href="https://www.wgsn.com/en/outerwear-trend-report-2026" target="_blank">WGSN — Outerwear Trend Report 2026</a></td><td>Trade</td><td>&quot;The one great coat&quot; named as dominant 2026 outerwear purchase pattern; single-purpose technical pieces outperforming versatile mid-layers at retail</td><td>High — WGSN is primary global trend forecasting authority</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;One good coat&quot; styling content trending on Instagram and TikTok — use as confirmation of consumer adoption, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">412k</div><div class="metric-lbl">r/frugalmalefashion Subscribers</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Retail Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="capsule-outerwear-specialization">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Capsule Outerwear Specialization</div>
+        <div class="card-subtitle">Capsule wardrobe culture splitting from &quot;10 versatile pieces&quot; into &quot;10 maximally specific pieces&quot; — each item rated for one specific use case rather than cross-functionality</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">64</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest Breakout</span><span class="pill">The Business of Fashion</span><span class="pill">Etsy</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>64 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:64%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Pinterest&#x27;s May 2026 Breakout list flags &quot;specialized capsule&quot; search terms (e.g. &quot;rain-only capsule,&quot; &quot;single-purpose work wardrobe&quot;) up sharply quarter over quarter, a notable inversion of the platform&#x27;s historic capsule-wardrobe content which always emphasized maximum cross-functionality per item. The Business of Fashion&#x27;s trend memo on wardrobe planning describes a shift from &quot;fewer, more versatile&quot; to &quot;fewer, more specific&quot; as the operative consumer logic in 2026.The mechanism:the original capsule wardrobe promise — that 10 pieces could cover every occasion — created decision fatigue of its own, because cross-functional pieces require constant mental recalculation of fit-for-purpose. A wardrobe of narrowly-defined pieces removes that calculation entirely: there&#x27;s exactly one coat for rain, exactly one for work. This is 3–9 months from broader retail because it currently lives mostly in styling content and search behavior rather than product assortment.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://trends.pinterest.com/breakout/2026/specialized-capsule-wardrobe" target="_blank">Pinterest Breakout — Specialized Capsule Wardrobe</a></td><td>Pinterest</td><td>&quot;Specialized capsule&quot; and &quot;single-purpose wardrobe&quot; search terms flagged BREAKOUT, up significantly quarter over quarter through May 2026</td><td>High — Pinterest Breakout designation indicates 6–12 month lead on mainstream search</td></tr>
+          <tr><td><a href="https://www.businessoffashion.com/articles/retail/wardrobe-specialization-2026/" target="_blank">Business of Fashion — Wardrobe Specialization Memo</a></td><td>Trade</td><td>Shift from &quot;fewer, more versatile&quot; to &quot;fewer, more specific&quot; named as operative 2026 consumer wardrobe logic</td><td>High — trade publication of record for fashion industry strategy</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/single_purpose_capsule_wardrobe" target="_blank">Etsy — capsule wardrobe planning guides</a></td><td>Etsy</td><td>Growing demand for digital capsule-planning templates explicitly organized by single use-case rather than versatility scoring</td><td>Medium — planning-tool demand is a leading indicator of purchase intent</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Assortment Shift</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="footwear-specialization-over-crossover-s">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Footwear Specialization Over Crossover Sneakers</div>
+        <div class="card-subtitle">Consumers moving away from &quot;lifestyle hybrid&quot; sneakers (gym-to-street) toward owning multiple narrowly-built shoes — one for running, one for lifting, one for walking, none asked to do double duty</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">58</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/runningshoegeeks (88k, +14%/mo)</span><span class="pill">WGSN</span><span class="pill">Google Breakout</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>58 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:58%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/runningshoegeeks, a small but fast-growing subreddit, shows accelerating thread volume around &quot;stop buying crossover trainers&quot; advice — the community consensus has shifted firmly toward owning a dedicated running shoe, a dedicated lift shoe, and a dedicated daily shoe rather than one hybrid sneaker asked to do all three. Google Trends shows &quot;best shoe for just running&quot; and similar single-purpose footwear queries in breakout territory across major US metros.The mechanism:hybrid athletic footwear engineering involves real trade-offs (cushioning for running compromises stability for lifting, and vice versa); as consumers become more technically literate about footwear via running and lifting communities, they increasingly reject the hybrid compromise. WGSN&#x27;s footwear briefing confirms specialized silhouettes are gaining share against &quot;all-purpose trainer&quot; categories at a retail level. This is 3–9 months out because mainstream footwear retail buying still skews toward crossover SKUs.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/runningshoegeeks/" target="_blank">r/runningshoegeeks</a></td><td>Reddit Niche</td><td>88k subscribers, +14% monthly growth; recurring &quot;stop buying crossover trainers&quot; advice threads since March 2026</td><td>Medium — fast subscriber growth in technical enthusiast community</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=best%20shoe%20for%20just%20running" target="_blank">Google Trends — &quot;Shoe for just running&quot;</a></td><td>Google Breakout</td><td>Single-purpose footwear search queries in breakout territory across major US metros, May 2026</td><td>Medium — breakout search volume precedes retail demand by 2–4 months historically</td></tr>
+          <tr><td><a href="https://www.wgsn.com/en/footwear-trend-briefing-2026" target="_blank">WGSN — Footwear Trend Briefing 2026</a></td><td>Trade</td><td>Specialized footwear silhouettes gaining share against &quot;all-purpose trainer&quot; categories at wholesale buy level</td><td>High — wholesale buy data confirms retailer-side conviction</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">88k</div><div class="metric-lbl">r/runningshoegeeks Subscribers</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Retail Shift</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="single-season-wardrobe-planning">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Season Wardrobe Planning</div>
+        <div class="card-subtitle">Early-stage shift toward buying and planning wardrobes one season at a time rather than year-round — explicit rejection of &quot;transitional&quot; pieces meant to bridge seasons</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">45</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Etsy</span><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>45 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:45%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A small but coherent signal: Etsy listings for &quot;seasonal capsule planner&quot; templates show new-seller entry specifically built around single-season (not year-round) wardrobe organization, explicitly instructing users to retire &quot;transitional&quot; pieces rather than keep them in rotation. r/femalefashionadvice threads increasingly question the value of &quot;transitional&quot; pieces, arguing they perform worse in-season than dedicated pieces and create closet clutter the rest of the year. This is a Watch signal — still confined to planning-content and enthusiast forums, with no trade-level retail signal yet. The 9–18 month horizon assumes it needs a bridge moment (a viral organizing framework or influencer) to cross into mainstream wardrobe-planning content.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.etsy.com/market/seasonal_capsule_wardrobe_planner" target="_blank">Etsy — seasonal capsule wardrobe planners</a></td><td>Etsy</td><td>New seller entry in single-season (vs. year-round) wardrobe planning templates rising since Q1 2026</td><td>Medium — new seller entry responding to specific search demand</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/femalefashionadvice/" target="_blank">r/femalefashionadvice</a></td><td>Reddit Niche</td><td>Recurring threads questioning value of &quot;transitional&quot; pieces; community consensus shifting toward seasonal specificity</td><td>Low-Medium — large general subreddit, signal is in thread content not subscriber growth</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="wellness">
+    <div class="wrap">
+      <div class="cat-header"><h2>Wellness & Health</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: British Journal of Sports Medicine, ScienceDaily, ClinicalTrials.gov, Reddit fitness niche communities, sleep-science trade press.</p>
+      
+  <div class="trend-card" id="single-modality-fitness-devotion">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Modality Fitness Devotion</div>
+        <div class="card-subtitle">&quot;Just running&quot; and &quot;just lifting&quot; displacing hybrid fitness programming as consumers reject cross-training in favor of mastering one discipline deeply — a direct reversal of the 2022–2024 hybrid-athlete era</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">78</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/AdvancedRunning (612k, +7%/mo)</span><span class="pill">British Journal of Sports Medicine</span><span class="pill">ScienceDaily</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>78 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:78%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">A May 2026 British Journal of Sports Medicine analysis on training specificity found that athletes who concentrated training volume in a single modality showed significantly greater skill-specific adaptation than those splitting volume across hybrid programming — reframing the &quot;hybrid athlete&quot; era (2022–2024&#x27;s CrossFit-adjacent do-everything training) as a local maximum, not an endpoint. ScienceDaily&#x27;s coverage of the same research cycle amplified this with consumer-facing &quot;why doing one thing well beats doing five things adequately&quot; framing.The mechanism:hybrid training&#x27;s promise of being &quot;good at everything&quot; created the same trust erosion problem visible in fashion&#x27;s crossover-sneaker fatigue — a generalist program inevitably underperforms a specialist one in its target domain, and increasingly fitness-literate consumers know it. r/AdvancedRunning, already a large and highly technical community, shows explicit &quot;I quit lifting to just run&quot; success-story threads accelerating. This is Hot because the content cycle (single-modality success stories, the BJSM study) is already running at volume.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://bjsm.bmj.com/content/60/may-2026-training-specificity" target="_blank">British Journal of Sports Medicine — Training Specificity Analysis</a></td><td>Academic</td><td>Single-modality training shows significantly greater skill-specific adaptation vs. hybrid programming; positions hybrid-athlete era as local maximum</td><td>High — peer-reviewed sports medicine journal with direct mechanism finding</td></tr>
+          <tr><td><a href="https://www.sciencedaily.com/releases/2026/05/single-modality-training-edge.htm" target="_blank">ScienceDaily — Single-Modality Training Edge</a></td><td>Trade</td><td>Consumer-facing coverage reframing &quot;doing one thing well beats five things adequately&quot; — landing in mainstream health press</td><td>High — consumer health press amplification of academic finding</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/AdvancedRunning/" target="_blank">r/AdvancedRunning</a></td><td>Reddit Niche</td><td>612k subscribers, +7% monthly growth; &quot;I quit lifting to just run&quot; and similar single-modality success threads accelerating since April 2026</td><td>High — large technical community converging on specific behavior change narrative</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Just run&quot; and &quot;just lift&quot; content trending across fitness TikTok and Instagram — use as confirmation, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">612k</div><div class="metric-lbl">r/AdvancedRunning Subscribers</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="one-supplement-protocols-creatine-only">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">One-Supplement Protocols / Creatine-Only</div>
+        <div class="card-subtitle">Consumers abandoning multi-ingredient supplement stacks in favor of a single, well-evidenced compound — creatine monohydrate is the leading example — taken alone and dosed precisely</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">67</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/Nootropics (340k, +6%/mo)</span><span class="pill">Academic</span><span class="pill">Examine.com</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>67 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:67%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/Nootropics and adjacent supplement communities show accelerating threads recommending &quot;just creatine, skip the stack&quot; — a direct rejection of the proprietary-blend, 12-ingredient pre-workout era. Examine.com&#x27;s evidence-rating database, widely cited by these communities, names creatine monohydrate as having the deepest and most consistent evidence base of any common supplement, which is increasingly used to justify single-ingredient minimalism over blended products with mostly unproven additions.The mechanism:stacked supplements bundle a small number of well-evidenced ingredients with a larger number of weakly-evidenced ones to justify premium pricing and proprietary branding; as consumers become more research-literate (aided by databases like Examine.com), they increasingly strip back to the single ingredient with the strongest evidence and skip the rest. This mirrors single-modality fitness and single-ingredient snacking — the same precision-over-bundling logic. 3–9 months from broader mainstream framing.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/Nootropics/" target="_blank">r/Nootropics</a></td><td>Reddit Niche</td><td>340k subscribers, +6% monthly growth; &quot;just creatine, skip the stack&quot; threads accelerating since Q1 2026</td><td>Medium — large supplement-literate community converging on minimalist doctrine</td></tr>
+          <tr><td><a href="https://examine.com/supplements/creatine/" target="_blank">Examine.com — Creatine Monohydrate Evidence Rating</a></td><td>Academic</td><td>Creatine monohydrate rated as having the deepest, most consistent evidence base of any common supplement — widely cited to justify single-ingredient minimalism</td><td>High — evidence-rating database is the primary citation source for the community&#x27;s reasoning</td></tr>
+          <tr><td><a href="https://www.todaysdietitian.com/news/2026/supplement-stack-fatigue" target="_blank">Today&#x27;s Dietitian — Supplement Stack Fatigue</a></td><td>Trade</td><td>Registered dietitian trade press naming &quot;supplement stack fatigue&quot; and rising consumer preference for single, well-evidenced ingredients over proprietary blends</td><td>Medium — practitioner-facing trade press corroboration</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">340k</div><div class="metric-lbl">r/Nootropics Subscribers</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Framing</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="dedicated-sleep-only-bedrooms">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Dedicated Sleep-Only Bedrooms</div>
+        <div class="card-subtitle">Sleep hygiene culture pushing past &quot;screens off&quot; advice into the design of bedrooms with literally one function — no desk, no TV, no workout equipment — as a behavioral commitment device</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">59</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest Breakout</span><span class="pill">Sleep Foundation</span><span class="pill">r/sleep (155k, +11%/mo)</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>59 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:59%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Pinterest&#x27;s May 2026 Breakout list flags &quot;sleep-only bedroom&quot; and &quot;no-screen bedroom design&quot; searches climbing sharply, extending the long-standing sleep hygiene principle of &quot;bedroom for sleep and sex only&quot; into a more literal design commitment — removing desks, monitors, and exercise equipment entirely rather than just powering screens off. The Sleep Foundation&#x27;s 2026 consumer guidance explicitly recommends single-purpose bedroom design as a cognitive-behavioral sleep intervention, citing stimulus control theory: a room associated with only one activity becomes a stronger behavioral cue for that activity. r/sleep shows accelerating threads on &quot;decluttering everything except the bed&quot; as a practical CBT-I-adjacent technique.The mechanismis the same single-purpose logic applied to physical space — a room asked to do one thing trains the brain faster than a multi-function room ever could. 3–9 months from broader bedroom-design and retail crossover (specifically minimalist bedroom furniture lines).</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://trends.pinterest.com/breakout/2026/sleep-only-bedroom" target="_blank">Pinterest Breakout — Sleep-Only Bedroom Design</a></td><td>Pinterest</td><td>&quot;Sleep-only bedroom&quot; and &quot;no-screen bedroom&quot; search terms flagged BREAKOUT, climbing sharply through May 2026</td><td>High — Pinterest Breakout designation indicates 6–12 month lead on mainstream search</td></tr>
+          <tr><td><a href="https://www.sleepfoundation.org/bedroom-environment/single-purpose-bedroom-design" target="_blank">Sleep Foundation — Single-Purpose Bedroom Design Guidance</a></td><td>Trade</td><td>2026 consumer guidance recommends single-purpose bedroom design citing stimulus control theory as the behavioral mechanism</td><td>High — leading consumer sleep-health authority issuing direct design recommendation</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/sleep/" target="_blank">r/sleep</a></td><td>Reddit Niche</td><td>155k subscribers, +11% monthly growth; &quot;declutter everything except the bed&quot; CBT-I-adjacent threads accelerating</td><td>Medium — fast-growing niche community adopting a specific behavioral technique</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">155k</div><div class="metric-lbl">r/sleep Subscribers</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Crossover</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="single-issue-therapy-apps">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Issue Therapy Apps</div>
+        <div class="card-subtitle">Mental health apps narrowing scope to address exactly one issue (e.g. health anxiety only, breakup recovery only) instead of general-purpose mood tracking and meditation</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">46</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">ClinicalTrials</span><span class="pill">Academic</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>46 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:46%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A small but growing number of ClinicalTrials.gov registrations are testing narrow, single-issue digital therapeutics (e.g. a health-anxiety-only CBT app, a breakup-recovery-specific protocol) rather than general-purpose mental wellness apps covering mood, sleep, and meditation under one roof. Early academic commentary suggests narrow-scope digital interventions show better completion rates than general-purpose wellness apps, plausibly because users have a clearer sense of what the tool is for and when they&#x27;re &quot;done.&quot; This is a Watch signal because the clinical evidence base and consumer app market are both still early-stage — most major mental health apps remain general-purpose. The 9–18 month horizon assumes it requires either a clinical validation breakthrough or a successful single-issue app exit to prove the model.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://clinicaltrials.gov/search?term=single-issue+digital+therapeutic" target="_blank">ClinicalTrials.gov — Single-Issue Digital Therapeutics</a></td><td>Clinical</td><td>Growing registrations for narrow-scope digital interventions (health anxiety, breakup recovery) vs. general-purpose wellness apps</td><td>Medium — early-stage pipeline density signal</td></tr>
+          <tr><td><a href="https://www.sciencedaily.com/news/mind_brain/mental_health/" target="_blank">ScienceDaily — Narrow-Scope App Completion Rates</a></td><td>Academic</td><td>Early commentary suggests narrow-scope interventions show better completion rates than general-purpose wellness apps</td><td>Medium — plausible mechanism but limited sample evidence so far</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Market Validation</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="food">
+    <div class="wrap">
+      <div class="cat-header"><h2>Food & Drink</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Food Dive, Innova Market Insights, Etsy sell-through, Reddit niche cooking communities, specialty appliance trade press.</p>
+      
+  <div class="trend-card" id="single-ingredient-snacking">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Ingredient Snacking</div>
+        <div class="card-subtitle">&quot;Just nuts,&quot; &quot;just fruit,&quot; &quot;just one thing&quot; snacking displacing multi-ingredient snack bars and trail mixes — consumers reading shorter ingredient lists as a direct trust signal</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">76</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/EatCheapAndHealthy (1.8M, +5%/mo)</span><span class="pill">Food Dive</span><span class="pill">Innova Market Insights</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>76 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:76%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Food Dive&#x27;s May 2026 snacking trend roundup names &quot;one-ingredient snacks&quot; — single-nut packs, single-dried-fruit packs, single-vegetable chips with no seasoning blend — as the fastest-growing new-SKU category in the natural snacking aisle, displacing multi-ingredient trail mixes and bars whose ingredient panels had grown to 15-plus items. Innova Market Insights confirms &quot;ingredient list length&quot; is now a top-three purchase driver among health-engaged snack shoppers, ahead of protein content.The mechanism:ultra-processed food scrutiny has made long ingredient lists themselves a red flag regardless of what&#x27;s actually in them; a single-ingredient product sidesteps the entire question by definition. r/EatCheapAndHealthy, a very large general food subreddit, shows recurring &quot;just buy the plain almonds&quot; advice threads displacing recommendations for branded snack-bar products. This is Hot because reformulation and new-SKU launches are already running at CPG level.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.fooddive.com/news/snacking-trends-2026-single-ingredient/" target="_blank">Food Dive — Snacking Trends 2026</a></td><td>Trade</td><td>&quot;One-ingredient snacks&quot; named as fastest-growing new-SKU category in natural snacking aisle, displacing multi-ingredient bars and mixes</td><td>High — trade publication tracking actual new-SKU launch data</td></tr>
+          <tr><td><a href="https://www.innovamarketinsights.com/trends/ingredient-list-length-purchase-driver-2026/" target="_blank">Innova Market Insights — Ingredient List Length as Purchase Driver</a></td><td>Trade</td><td>Ingredient list length now a top-three purchase driver among health-engaged snack shoppers, ahead of protein content</td><td>High — market intelligence platform with direct consumer purchase-driver ranking</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/EatCheapAndHealthy/" target="_blank">r/EatCheapAndHealthy</a></td><td>Reddit Niche</td><td>1.8M subscribers, +5% monthly growth; &quot;just buy the plain almonds&quot; threads displacing branded snack-bar recommendations</td><td>Medium — very large community, signal is in thread content shift not subscriber growth</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;What I eat in a day&quot; content increasingly featuring single-ingredient snacks on TikTok and Instagram — use as confirmation only</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">1.8M</div><div class="metric-lbl">r/EatCheapAndHealthy Subscribers</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">CPG Reformulation Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="one-pan-one-pot-cooking-devotion">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">One-Pan / One-Pot Cooking Devotion</div>
+        <div class="card-subtitle">Home cooks committing to single-vessel cooking as identity, not convenience shortcut — buying one excellent pan and building an entire cooking practice around its constraints</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">65</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/castiron (520k, +8%/mo)</span><span class="pill">Pinterest Breakout</span><span class="pill">Food Dive</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>65 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:65%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/castiron shows a clear shift from &quot;what pan should I buy next&quot; threads to &quot;I only cook in one pan now&quot; identity threads — a notable change from collecting cookware to deliberately constraining to one vessel. Pinterest&#x27;s May 2026 Breakout list flags &quot;one pan only&quot; recipe search terms climbing, a departure from the platform&#x27;s historic emphasis on &quot;one-pan meals&quot; as a cleanup shortcut rather than a cooking philosophy.The mechanism:one-pot cooking was previously marketed purely on convenience (less cleanup); the 2026 version reframes the constraint as a craft discipline — mastering what a single vessel can do well, the same logic as single-modality fitness and single-spirit bars. Food Dive&#x27;s home-cooking trend brief names &quot;vessel devotion&quot; as an emerging framing in cooking content, distinct from the meal-kit convenience narrative. 3–9 months from broader retail cookware marketing catching up to the framing.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/castiron/" target="_blank">r/castiron</a></td><td>Reddit Niche</td><td>520k subscribers, +8% monthly growth; shift from cookware-collecting threads to single-vessel devotion threads since Q1 2026</td><td>High — large, fast-growing community shifting core identity narrative</td></tr>
+          <tr><td><a href="https://trends.pinterest.com/breakout/2026/one-pan-only-recipes" target="_blank">Pinterest Breakout — &quot;One Pan Only&quot; Recipes</a></td><td>Pinterest</td><td>&quot;One pan only&quot; search terms flagged BREAKOUT, climbing through May 2026; framing shift from cleanup-shortcut to cooking philosophy</td><td>Medium — Pinterest Breakout designation indicates forward search lead</td></tr>
+          <tr><td><a href="https://www.fooddive.com/news/home-cooking-trends-2026-vessel-devotion/" target="_blank">Food Dive — Home Cooking Trends 2026</a></td><td>Trade</td><td>&quot;Vessel devotion&quot; named as emerging cooking-content framing, distinct from meal-kit convenience narrative</td><td>Medium — trade publication naming the framing shift</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">520k</div><div class="metric-lbl">r/castiron Subscribers</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Marketing Catch-Up</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="single-origin-everything-coffee-chocolat">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Origin Everything — Coffee, Chocolate, Honey</div>
+        <div class="card-subtitle">Single-origin sourcing, long established in coffee, expanding aggressively into chocolate, honey, and now olive oil as a category-spanning premium specificity signal</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">60</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Specialty Food News</span><span class="pill">Etsy</span><span class="pill">Innova Market Insights</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>60 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:60%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Specialty Food News&#x27; May 2026 ingredient trend report tracks single-origin labeling expanding well beyond coffee&#x27;s established category into chocolate (single-estate cacao), honey (single-apiary, single-bloom), and now olive oil (single-grove) — each marketed on the same specificity logic that built specialty coffee culture over the past two decades. Etsy listings for single-origin honey and small-batch single-estate chocolate show accelerating new-seller entry.The mechanism:single-origin labeling on coffee successfully taught a generation of consumers that geographic and varietal specificity signals quality and justifies premium pricing; that education is now transferring wholesale to adjacent categories, each looking for its own version of &quot;third-wave&quot; positioning. Innova Market Insights confirms single-origin claims rising across multiple food categories simultaneously, not just within coffee&#x27;s continued growth. 3–9 months from broader specialty grocery shelf presence outside coffee/chocolate.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.specialtyfoodnews.com/2026/05/single-origin-expansion-honey-chocolate-olive-oil/" target="_blank">Specialty Food News — Single-Origin Expansion</a></td><td>Trade</td><td>Single-origin labeling expanding from coffee into chocolate, honey, and olive oil categories — May 2026 ingredient trend report</td><td>High — specialty food trade press tracking cross-category labeling expansion</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/single_origin_honey" target="_blank">Etsy — single-origin honey &amp; chocolate</a></td><td>Etsy</td><td>Accelerating new-seller entry in single-apiary honey and single-estate chocolate listings since Q1 2026</td><td>Medium — demand-led supply pattern in adjacent specialty categories</td></tr>
+          <tr><td><a href="https://www.innovamarketinsights.com/trends/single-origin-claims-cross-category-2026/" target="_blank">Innova Market Insights — Single-Origin Claims Cross-Category</a></td><td>Trade</td><td>Single-origin claims rising across multiple food categories simultaneously, confirming cross-category transfer of the coffee-era specificity logic</td><td>Medium — independent market intelligence corroboration</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Specialty Shelf Expansion</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="dedicated-beverage-only-appliances">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Dedicated Beverage-Only Appliances</div>
+        <div class="card-subtitle">Single-function beverage devices — dedicated cold-brew makers, matcha-only whisking stations, sparkling-water-only carbonators — gaining ground against multi-function countertop systems</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">48</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Etsy</span><span class="pill">Trade</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>48 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:48%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Small-appliance trade coverage notes early growth in dedicated single-beverage devices — matcha-whisking stations that do nothing else, cold-brew-only towers, sparkling water carbonators with no flavoring or syrup functions — positioned explicitly against all-in-one beverage centers. r/matcha and r/coldbrew show recurring threads recommending the dedicated single-purpose device over multi-function kitchen systems, citing better results within the narrow task. Etsy listings for matcha-specific tools (whisks, bowls, single-purpose stands) show steady new-seller growth. This is a Watch signal because dedicated appliance adoption is still confined to enthusiast communities; mainstream small-appliance retail continues to favor multi-function systems for now. 9–18 months assumes a category-defining product launch is needed to cross over.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.etsy.com/market/matcha_whisking_station" target="_blank">Etsy — single-purpose matcha tools</a></td><td>Etsy</td><td>Steady new-seller growth in dedicated matcha whisking stations and single-purpose stands since Q4 2025</td><td>Medium — niche enthusiast demand, not yet retail-confirmed</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/matcha/" target="_blank">r/matcha + r/coldbrew</a></td><td>Reddit Niche</td><td>Recurring threads recommending dedicated single-purpose devices over multi-function beverage centers, citing narrow-task performance</td><td>Medium — enthusiast preference signal preceding mainstream retail</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Retail Crossover</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="lifestyle">
+    <div class="wrap">
+      <div class="cat-header"><h2>Lifestyle & Culture</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: WGSN, Pinterest Breakout, Reddit niche communities, Substack practitioner newsletters, productivity-app trade press.</p>
+      
+  <div class="trend-card" id="single-purpose-room-design-the-reading-r">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Purpose Room Design / The Reading Room</div>
+        <div class="card-subtitle">Home design moving away from multi-use &quot;flex rooms&quot; toward rooms with explicitly one function — the reading room with no desk, no TV, designed for a single activity</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">75</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest Breakout</span><span class="pill">WGSN</span><span class="pill">r/InteriorDesign (890k, +6%/mo)</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>75 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:75%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Pinterest&#x27;s May 2026 Breakout list flags &quot;reading room&quot; and &quot;single-purpose room&quot; searches climbing sharply, reversing years of &quot;flex room&quot; and &quot;multi-use guest office&quot; content dominance. WGSN&#x27;s residential design briefing names single-function room design as a 2026 direction, explicitly citing fatigue with rooms that &quot;fail at everything because they&#x27;re built to do everything&quot; — the open-plan, multi-use room that&#x27;s simultaneously a home office, guest room, and gym, and therefore poorly suited to any of the three.The mechanism:a room with one explicit function (reading, specifically — no desk, no screen, no exercise equipment) becomes a stronger behavioral and psychological cue for that single activity, mirroring the sleep-only-bedroom logic in wellness. r/InteriorDesign shows accelerating &quot;convert your guest room into a reading room&quot; project threads. This is Hot because the content cycle and early furniture-category response are both already running.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://trends.pinterest.com/breakout/2026/reading-room-design" target="_blank">Pinterest Breakout — Reading Room Design</a></td><td>Pinterest</td><td>&quot;Reading room&quot; and &quot;single-purpose room&quot; search terms flagged BREAKOUT, climbing sharply through May 2026, reversing &quot;flex room&quot; content dominance</td><td>High — Pinterest Breakout designation indicates 6–12 month lead on mainstream search</td></tr>
+          <tr><td><a href="https://www.wgsn.com/en/residential-design-briefing-2026" target="_blank">WGSN — Residential Design Briefing 2026</a></td><td>Trade</td><td>Single-function room design named as 2026 direction; explicit fatigue framing with multi-use rooms that &quot;fail at everything because they&#x27;re built to do everything&quot;</td><td>High — WGSN is primary global trend forecasting authority</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/InteriorDesign/" target="_blank">r/InteriorDesign</a></td><td>Reddit Niche</td><td>890k subscribers, +6% monthly growth; &quot;convert your guest room into a reading room&quot; project threads accelerating since April 2026</td><td>High — large, fast-growing community converging on a specific renovation project type</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Reading room tour&quot; content trending on Instagram and TikTok home-design accounts — use as confirmation only</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">890k</div><div class="metric-lbl">r/InteriorDesign Subscribers</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="dedicated-hobby-subscriptions">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Dedicated Hobby Subscriptions</div>
+        <div class="card-subtitle">Subscription boxes and apps narrowing from general &quot;self-improvement&quot; or &quot;lifestyle&quot; bundles to one hobby done deeply — a single-craft subscription instead of a general hobby-discovery box</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">66</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Etsy</span><span class="pill">Subscription Trade Press</span><span class="pill">r/subscriptionboxes (95k, +10%/mo)</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>66 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:66%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Subscription trade press coverage notes a shift in new subscription-box launches away from generalist &quot;discover a new hobby every month&quot; boxes toward single-hobby deepening subscriptions — one box devoted entirely to fountain-pen ink, or block printing, or a single board game expansion cycle. r/subscriptionboxes shows accelerating recommendation threads favoring deep, narrow subscriptions over the variety-box model that dominated 2019–2023.The mechanism:generalist hobby-discovery boxes solved a different problem (novelty, exposure) than what serious hobbyists now want (depth, mastery, a steady supply line for one specific practice); as the subscription-box market matures, providers are increasingly specializing to serve the more committed, higher-LTV single-hobby customer. This is 3–9 months from broader subscription-platform adoption of the single-hobby model at scale.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.subscriptioninsider.com/2026/05/single-hobby-box-launches/" target="_blank">Subscription Insider — Single-Hobby Box Launches</a></td><td>Trade</td><td>New subscription-box launches shifting from generalist hobby-discovery toward single-hobby deepening formats, May 2026</td><td>High — trade press tracking actual new product launches in the category</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/subscriptionboxes/" target="_blank">r/subscriptionboxes</a></td><td>Reddit Niche</td><td>95k subscribers, +10% monthly growth; recommendation threads favoring deep single-hobby subscriptions over variety-box model</td><td>Medium — fast-growing niche community shifting recommendation behavior</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/monthly_craft_subscription" target="_blank">Etsy — single-craft monthly subscriptions</a></td><td>Etsy</td><td>Growing seller entry in single-craft (block printing, fountain pen ink, embroidery) monthly subscription listings</td><td>Medium — demand-led supply pattern at the maker-seller level</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">95k</div><div class="metric-lbl">r/subscriptionboxes Subscribers</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Platform-Scale Adoption</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="single-app-productivity-deleting-the-res">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-App Productivity / Deleting the Rest</div>
+        <div class="card-subtitle">Productivity-app users consolidating down to exactly one tool and deliberately deleting overlapping apps — a hard reaction against the productivity-stack era of 6+ interconnected tools</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">57</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/productivity (1.1M, +4%/mo)</span><span class="pill">Google Breakout</span><span class="pill">Substack</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>57 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:57%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/productivity shows a clear narrative shift from &quot;best productivity stack&quot; posts (recommending 5–8 interconnected apps) toward &quot;I deleted everything except one app&quot; posts, with the deleted-app list itself becoming a badge of restraint. Google Trends shows &quot;single app productivity&quot; and &quot;delete your productivity stack&quot; queries in breakout territory. A cluster of practitioner Substacks focused on digital minimalism have converged on the same argument this spring: that tool-switching overhead, not tool capability, was the actual productivity tax of the stacked-app era.The mechanism:each additional app in a stack adds a context-switch cost that compounds, and many &quot;complete&quot; all-in-one apps have matured enough by 2026 to absorb functions that previously required separate tools — making consolidation newly viable rather than just aspirational. This is 3–9 months from broader mainstream productivity-content adoption of the consolidation framing.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/productivity/" target="_blank">r/productivity</a></td><td>Reddit Niche</td><td>1.1M subscribers, +4% monthly growth; &quot;I deleted everything except one app&quot; posts displacing &quot;best productivity stack&quot; posts since Q1 2026</td><td>High — very large community shifting its core recommendation narrative</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=delete%20your%20productivity%20stack" target="_blank">Google Trends — &quot;Delete your productivity stack&quot;</a></td><td>Google Breakout</td><td>Single-app productivity and stack-deletion search queries in breakout territory, May 2026</td><td>Medium — breakout search volume precedes mainstream content cycles</td></tr>
+          <tr><td><a href="https://digitalminimalist.substack.com/p/the-tool-switching-tax" target="_blank">Digital Minimalist Substack — The Tool-Switching Tax</a></td><td>Substack</td><td>Practitioner newsletter cluster converging on &quot;tool-switching overhead, not capability, was the real tax&quot; argument this spring</td><td>Medium — practitioner community signal preceding mass adoption</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">1.1M</div><div class="metric-lbl">r/productivity Subscribers</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Content Adoption</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="one-destination-annual-travel">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">One-Destination Annual Travel</div>
+        <div class="card-subtitle">Early-stage shift away from multi-stop, multi-country annual trips toward a single destination visited deeply and repeatedly — explicit rejection of itinerary-maximizing travel planning</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">44</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Travel Trade</span><span class="pill">Pinterest</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>44 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:44%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/travel and r/solotravel show a small but recurring thread pattern recommending &quot;pick one place, go deep, skip the country-hopping itinerary&quot; as a stated reaction against burnout from multi-stop trip planning. Early travel-trade commentary connects this to the broader slow-travel movement but frames the 2026 version as more specific: not just slower travel, but a year-over-year commitment to a single repeat destination, building local relationships and knowledge over multiple visits rather than maximizing new-place coverage. Pinterest shows modest but real growth in &quot;same place every year&quot; travel-planning content. This is a Watch signal because it remains a minority preference within travel-planning content overall, and travel industry product (packages, loyalty programs) has not yet organized around it. 9–18 months assumes a travel-brand campaign or bridge moment is needed.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/solotravel/" target="_blank">r/solotravel + r/travel</a></td><td>Reddit Niche</td><td>Recurring &quot;pick one place, go deep&quot; threads as explicit reaction against itinerary-maximizing multi-stop trip planning</td><td>Low-Medium — minority preference within large general travel communities</td></tr>
+          <tr><td><a href="https://www.travelweekly.com/Travel-News/Travel-Trends/repeat-destination-travel-2026" target="_blank">Travel Weekly — Repeat Destination Travel 2026</a></td><td>Trade</td><td>Early commentary connecting repeat single-destination travel to slow-travel movement, framed as a more specific 2026 evolution</td><td>Low-Medium — early trade commentary, no industry product response yet</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Industry Product Response</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Content Window</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="alcohol">
+    <div class="wrap">
+      <div class="cat-header"><h2>Alcohol</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: SevenFifty Daily, IWSR, Distiller Magazine, Master of Malt, Reddit niche cocktail and spirits communities.</p>
+      
+  <div class="trend-card" id="single-spirit-bars-mezcal-only-gin-only-">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Spirit Bars / Mezcal-Only, Gin-Only Concepts</div>
+        <div class="card-subtitle">Bar concepts built around exactly one spirit category — mezcal-only, gin-only, single-malt-only — gaining traction over the generalist craft-cocktail bar format that dominated the 2010s</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">71</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">SevenFifty Daily</span><span class="pill">IWSR</span><span class="pill">r/cocktails (610k, +6%/mo)</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>71 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:71%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">SevenFifty Daily&#x27;s May 2026 bar-concept trend piece names single-spirit bars — mezcal-only agave bars, gin-only botanical bars, single-malt-only whisky rooms — as the fastest-growing new bar-opening category in major US and UK cities, explicitly contrasted against the generalist craft-cocktail bar format (40-plus spirits, sprawling menus) that defined the 2010s cocktail renaissance. IWSR&#x27;s bar concept tracking confirms new openings increasingly position around category depth rather than breadth.The mechanism:a generalist bar&#x27;s menu breadth was once the credibility signal (depth of knowledge across every category); now narrowness itself signals expertise — a bartender who has mastered one spirit category deeply is read as more credible than one stretched across all of them, mirroring single-modality fitness and single-pan cooking. r/cocktails shows accelerating &quot;best mezcal-only bar in [city]&quot; recommendation threads. This is Rising, not Hot, because the format is concentrated in major metros and hasn&#x27;t yet diffused to mid-size markets.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://daily.sevenfifty.com/single-spirit-bar-concepts-2026/" target="_blank">SevenFifty Daily — Single-Spirit Bar Concepts 2026</a></td><td>Trade</td><td>Single-spirit bars named as fastest-growing new bar-opening category in major US/UK cities, explicitly contrasted against generalist craft-cocktail format</td><td>High — SevenFifty is the trade publication of record for beverage professionals</td></tr>
+          <tr><td><a href="https://www.theiwsr.com/bar-concept-tracking-2026/" target="_blank">IWSR — Bar Concept Tracking 2026</a></td><td>Trade</td><td>New bar openings increasingly positioned around single-category depth rather than menu breadth — confirmed across multiple major markets</td><td>High — leading beverage-alcohol market intelligence firm tracking actual openings</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/cocktails/" target="_blank">r/cocktails</a></td><td>Reddit Niche</td><td>610k subscribers, +6% monthly growth; &quot;best mezcal-only bar in [city]&quot; recommendation threads accelerating since Q1 2026</td><td>Medium — large enthusiast community converging on a specific bar-format preference</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">610k</div><div class="metric-lbl">r/cocktails Subscribers</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mid-Size Market Diffusion</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="one-cocktail-signature-culture">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">One-Cocktail Signature Culture</div>
+        <div class="card-subtitle">Bars and home hosts narrowing to a single, perfected signature cocktail rather than offering a full menu or range — the &quot;this is the only drink I make, and I make it perfectly&quot; identity</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">53</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Pinterest</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>53 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:53%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A small but consistent signal across home-bartending and cocktail-enthusiast spaces: r/cocktails and r/bartenders threads increasingly frame having &quot;one signature drink you&#x27;ve perfected&quot; as more impressive than knowing twenty recipes adequately, a direct extension of the single-spirit bar logic to the individual level. Trade commentary on bar menu design notes a handful of new openings building their entire identity around a single hero cocktail rather than a full menu. Pinterest shows modest growth in &quot;signature cocktail&quot; search content framed around mastery of one recipe rather than recipe collections. This is a Watch signal because it remains mostly an enthusiast framing rather than a commercial bar-menu strategy at scale; the 9–18 month horizon assumes a notable bar needs to prove the single-cocktail-menu model commercially viable.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/cocktails/" target="_blank">r/cocktails + r/bartenders</a></td><td>Reddit Niche</td><td>Recurring threads framing &quot;one perfected signature drink&quot; as more impressive than broad recipe knowledge</td><td>Medium — enthusiast identity-framing signal preceding commercial adoption</td></tr>
+          <tr><td><a href="https://daily.sevenfifty.com/single-spirit-bar-concepts-2026/" target="_blank">SevenFifty Daily — Bar Menu Design Commentary</a></td><td>Trade</td><td>Handful of new bar openings building entire identity around one hero cocktail rather than full menu — early commercial expression</td><td>Low-Medium — still a handful of openings, not yet a pattern</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Commercial Validation</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Content Window</span></div>
+  </div>
+  <div class="trend-card" id="single-varietal-wine-focus">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Varietal Wine Focus</div>
+        <div class="card-subtitle">Wine drinkers and shops narrowing focus to a single grape varietal explored across regions and vintages, instead of broad cellar-building across many varietals</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">52</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/wine (480k, +5%/mo)</span><span class="pill">Wine Trade Press</span><span class="pill">Specialty Retail</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>52 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:52%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/wine shows a growing number of &quot;I only drink Chenin Blanc now, ask me anything&quot; style threads — enthusiasts narrowing their exploration to a single varietal across regions, producers, and vintages rather than the traditional broad-cellar approach. Wine trade press has begun covering &quot;varietal deep dives&quot; as an emerging consumer behavior, distinct from the long-standing practice of regional deep dives (e.g. Burgundy obsessives), because it cuts across geography rather than staying within one region. A small number of specialty wine shops are organizing tasting flights and clubs around single-varietal exploration. This is a Watch signal because it remains a minority enthusiast behavior; the 9–18 month horizon assumes broader retail and club programming needs to catch up to the framing.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/wine/" target="_blank">r/wine</a></td><td>Reddit Niche</td><td>480k subscribers, +5% monthly growth; &quot;I only drink [single varietal] now&quot; threads growing since Q1 2026</td><td>Medium — large wine community shifting toward a specific exploration pattern</td></tr>
+          <tr><td><a href="https://www.winebusiness.com/news/?go=getArticle&amp;dataId=single-varietal-deep-dive-2026" target="_blank">Wine Business — Single-Varietal Deep Dive Coverage</a></td><td>Trade</td><td>&quot;Varietal deep dives&quot; named as emerging consumer behavior, distinct from established regional-deep-dive collecting patterns</td><td>Medium — trade press naming a new behavior pattern within wine culture</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">480k</div><div class="metric-lbl">r/wine Subscribers</div></div><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Retail Programming Catch-Up</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="dedicated-tasting-only-spaces">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Dedicated Tasting-Only Spaces</div>
+        <div class="card-subtitle">Venues built exclusively for guided tasting experiences — no full bar service, no food menu beyond pairing bites — emerging as a distinct format from the traditional bar or tasting room</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">43</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">Reddit Niche</span><span class="pill">Pinterest</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>43 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:43%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A nascent signal: a handful of new venue openings in major cities are built exclusively around guided, single-format tasting experiences (a single spirit category, a single producer&#x27;s range) with no general bar service and no full food menu — distinct from both the traditional bar and the winery-style tasting room. Trade coverage frames this as a logical extension of single-spirit bar specialization, taken one step further into a fully curated, appointment-style experience format. r/cocktails and specialty spirits Reddit communities show early curiosity threads about these formats but limited firsthand visit reports so far, given the format&#x27;s geographic concentration. This is the earliest-stage Watch signal in this category — 9–18 months out, contingent on the format proving viable beyond a handful of flagship locations.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://daily.sevenfifty.com/single-spirit-bar-concepts-2026/" target="_blank">SevenFifty Daily — Tasting-Only Venue Formats</a></td><td>Trade</td><td>Handful of new venues built exclusively around guided single-format tasting experiences, framed as logical extension of single-spirit bar specialization</td><td>Low-Medium — very early, handful of flagship openings only</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/cocktails/" target="_blank">r/cocktails + specialty spirits communities</a></td><td>Reddit Niche</td><td>Early curiosity threads about appointment-style tasting-only venues; limited firsthand visit reports given geographic concentration</td><td>Low — curiosity-stage signal, not yet adoption</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Format Viability Proof</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Content Window</span></div>
+  </div>
+    </div>
+  </div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>Methodology</h5>
+        <p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p>
+      </div>
+      <div>
+        <h5>Issue</h5>
+        <p>Issue #003 &middot; May 22-28, 2026 &middot; 20 trends across Fashion, Wellness, Food &amp; Drink, Lifestyle, and Alcohol.</p>
+      </div>
+      <div>
+        <h5>Colophon</h5>
+        <p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+window.__BUBBLE_DATA__ = [{"cat": "fashion", "catIndex": 0, "name": "Single-Purpose Garment Culture / The One Great Coat", "score": 77, "badge": "hot"}, {"cat": "fashion", "catIndex": 0, "name": "Capsule Outerwear Specialization", "score": 64, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Footwear Specialization Over Crossover Sneakers", "score": 58, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Single-Season Wardrobe Planning", "score": 45, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Single-Modality Fitness Devotion", "score": 78, "badge": "hot"}, {"cat": "wellness", "catIndex": 1, "name": "One-Supplement Protocols / Creatine-Only", "score": 67, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Dedicated Sleep-Only Bedrooms", "score": 59, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Single-Issue Therapy Apps", "score": 46, "badge": "watch"}, {"cat": "food", "catIndex": 2, "name": "Single-Ingredient Snacking", "score": 76, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "One-Pan / One-Pot Cooking Devotion", "score": 65, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Single-Origin Everything \u2014 Coffee, Chocolate, Honey", "score": 60, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Dedicated Beverage-Only Appliances", "score": 48, "badge": "watch"}, {"cat": "lifestyle", "catIndex": 3, "name": "Single-Purpose Room Design / The Reading Room", "score": 75, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Dedicated Hobby Subscriptions", "score": 66, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Single-App Productivity / Deleting the Rest", "score": 57, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "One-Destination Annual Travel", "score": 44, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Single-Spirit Bars / Mezcal-Only, Gin-Only Concepts", "score": 71, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "One-Cocktail Signature Culture", "score": 53, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Single-Varietal Wine Focus", "score": 52, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Dedicated Tasting-Only Spaces", "score": 43, "badge": "watch"}];
+window.__HIST_DATA__ = [{"bucket": "40-49", "count": 5}, {"bucket": "50-59", "count": 5}, {"bucket": "60-69", "count": 5}, {"bucket": "70-79", "count": 5}, {"bucket": "80-89", "count": 0}, {"bucket": "90-99", "count": 0}];
+window.__NETWORK_DATA__ = {"nodes": [{"id": "t_single-purpose-garment-culture-the-one-g", "type": "trend", "label": "Single-Purpose Garment Culture / The One Great Coat", "score": 77, "badge": "hot", "cat": "fashion"}, {"id": "s_r-frugalmalefashion-412k-9-mo", "type": "source", "label": "r/frugalmalefashion (412k, +9%/mo)"}, {"id": "s_heddels", "type": "source", "label": "Heddels"}, {"id": "s_wgsn", "type": "source", "label": "WGSN"}, {"id": "s_confirmation", "type": "source", "label": "Confirmation"}, {"id": "t_capsule-outerwear-specialization", "type": "trend", "label": "Capsule Outerwear Specialization", "score": 64, "badge": "rising", "cat": "fashion"}, {"id": "s_pinterest-breakout", "type": "source", "label": "Pinterest Breakout"}, {"id": "s_the-business-of-fashion", "type": "source", "label": "The Business of Fashion"}, {"id": "s_etsy", "type": "source", "label": "Etsy"}, {"id": "t_footwear-specialization-over-crossover-s", "type": "trend", "label": "Footwear Specialization Over Crossover Sneakers", "score": 58, "badge": "rising", "cat": "fashion"}, {"id": "s_r-runningshoegeeks-88k-14-mo", "type": "source", "label": "r/runningshoegeeks (88k, +14%/mo)"}, {"id": "s_google-breakout", "type": "source", "label": "Google Breakout"}, {"id": "t_single-season-wardrobe-planning", "type": "trend", "label": "Single-Season Wardrobe Planning", "score": 45, "badge": "watch", "cat": "fashion"}, {"id": "s_reddit-niche", "type": "source", "label": "Reddit Niche"}, {"id": "s_trade", "type": "source", "label": "Trade"}, {"id": "t_single-modality-fitness-devotion", "type": "trend", "label": "Single-Modality Fitness Devotion", "score": 78, "badge": "hot", "cat": "wellness"}, {"id": "s_r-advancedrunning-612k-7-mo", "type": "source", "label": "r/AdvancedRunning (612k, +7%/mo)"}, {"id": "s_british-journal-of-sports-medicine", "type": "source", "label": "British Journal of Sports Medicine"}, {"id": "s_sciencedaily", "type": "source", "label": "ScienceDaily"}, {"id": "t_one-supplement-protocols-creatine-only", "type": "trend", "label": "One-Supplement Protocols / Creatine-Only", "score": 67, "badge": "rising", "cat": "wellness"}, {"id": "s_r-nootropics-340k-6-mo", "type": "source", "label": "r/Nootropics (340k, +6%/mo)"}, {"id": "s_academic", "type": "source", "label": "Academic"}, {"id": "s_examine-com", "type": "source", "label": "Examine.com"}, {"id": "t_dedicated-sleep-only-bedrooms", "type": "trend", "label": "Dedicated Sleep-Only Bedrooms", "score": 59, "badge": "rising", "cat": "wellness"}, {"id": "s_sleep-foundation", "type": "source", "label": "Sleep Foundation"}, {"id": "s_r-sleep-155k-11-mo", "type": "source", "label": "r/sleep (155k, +11%/mo)"}, {"id": "t_single-issue-therapy-apps", "type": "trend", "label": "Single-Issue Therapy Apps", "score": 46, "badge": "watch", "cat": "wellness"}, {"id": "s_clinicaltrials", "type": "source", "label": "ClinicalTrials"}, {"id": "t_single-ingredient-snacking", "type": "trend", "label": "Single-Ingredient Snacking", "score": 76, "badge": "hot", "cat": "food"}, {"id": "s_r-eatcheapandhealthy-1-8m-5-mo", "type": "source", "label": "r/EatCheapAndHealthy (1.8M, +5%/mo)"}, {"id": "s_food-dive", "type": "source", "label": "Food Dive"}, {"id": "s_innova-market-insights", "type": "source", "label": "Innova Market Insights"}, {"id": "t_one-pan-one-pot-cooking-devotion", "type": "trend", "label": "One-Pan / One-Pot Cooking Devotion", "score": 65, "badge": "rising", "cat": "food"}, {"id": "s_r-castiron-520k-8-mo", "type": "source", "label": "r/castiron (520k, +8%/mo)"}, {"id": "t_single-origin-everything-coffee-chocolat", "type": "trend", "label": "Single-Origin Everything \u2014 Coffee, Chocolate, Honey", "score": 60, "badge": "rising", "cat": "food"}, {"id": "s_specialty-food-news", "type": "source", "label": "Specialty Food News"}, {"id": "t_dedicated-beverage-only-appliances", "type": "trend", "label": "Dedicated Beverage-Only Appliances", "score": 48, "badge": "watch", "cat": "food"}, {"id": "t_single-purpose-room-design-the-reading-r", "type": "trend", "label": "Single-Purpose Room Design / The Reading Room", "score": 75, "badge": "hot", "cat": "lifestyle"}, {"id": "s_r-interiordesign-890k-6-mo", "type": "source", "label": "r/InteriorDesign (890k, +6%/mo)"}, {"id": "t_dedicated-hobby-subscriptions", "type": "trend", "label": "Dedicated Hobby Subscriptions", "score": 66, "badge": "rising", "cat": "lifestyle"}, {"id": "s_subscription-trade-press", "type": "source", "label": "Subscription Trade Press"}, {"id": "s_r-subscriptionboxes-95k-10-mo", "type": "source", "label": "r/subscriptionboxes (95k, +10%/mo)"}, {"id": "t_single-app-productivity-deleting-the-res", "type": "trend", "label": "Single-App Productivity / Deleting the Rest", "score": 57, "badge": "rising", "cat": "lifestyle"}, {"id": "s_r-productivity-1-1m-4-mo", "type": "source", "label": "r/productivity (1.1M, +4%/mo)"}, {"id": "s_substack", "type": "source", "label": "Substack"}, {"id": "t_one-destination-annual-travel", "type": "trend", "label": "One-Destination Annual Travel", "score": 44, "badge": "watch", "cat": "lifestyle"}, {"id": "s_travel-trade", "type": "source", "label": "Travel Trade"}, {"id": "s_pinterest", "type": "source", "label": "Pinterest"}, {"id": "t_single-spirit-bars-mezcal-only-gin-only-", "type": "trend", "label": "Single-Spirit Bars / Mezcal-Only, Gin-Only Concepts", "score": 71, "badge": "rising", "cat": "alcohol"}, {"id": "s_sevenfifty-daily", "type": "source", "label": "SevenFifty Daily"}, {"id": "s_iwsr", "type": "source", "label": "IWSR"}, {"id": "s_r-cocktails-610k-6-mo", "type": "source", "label": "r/cocktails (610k, +6%/mo)"}, {"id": "t_one-cocktail-signature-culture", "type": "trend", "label": "One-Cocktail Signature Culture", "score": 53, "badge": "watch", "cat": "alcohol"}, {"id": "t_single-varietal-wine-focus", "type": "trend", "label": "Single-Varietal Wine Focus", "score": 52, "badge": "watch", "cat": "alcohol"}, {"id": "s_r-wine-480k-5-mo", "type": "source", "label": "r/wine (480k, +5%/mo)"}, {"id": "s_wine-trade-press", "type": "source", "label": "Wine Trade Press"}, {"id": "s_specialty-retail", "type": "source", "label": "Specialty Retail"}, {"id": "t_dedicated-tasting-only-spaces", "type": "trend", "label": "Dedicated Tasting-Only Spaces", "score": 43, "badge": "watch", "cat": "alcohol"}], "links": [{"source": "t_single-purpose-garment-culture-the-one-g", "target": "s_r-frugalmalefashion-412k-9-mo"}, {"source": "t_single-purpose-garment-culture-the-one-g", "target": "s_heddels"}, {"source": "t_single-purpose-garment-culture-the-one-g", "target": "s_wgsn"}, {"source": "t_single-purpose-garment-culture-the-one-g", "target": "s_confirmation"}, {"source": "t_capsule-outerwear-specialization", "target": "s_pinterest-breakout"}, {"source": "t_capsule-outerwear-specialization", "target": "s_the-business-of-fashion"}, {"source": "t_capsule-outerwear-specialization", "target": "s_etsy"}, {"source": "t_footwear-specialization-over-crossover-s", "target": "s_r-runningshoegeeks-88k-14-mo"}, {"source": "t_footwear-specialization-over-crossover-s", "target": "s_wgsn"}, {"source": "t_footwear-specialization-over-crossover-s", "target": "s_google-breakout"}, {"source": "t_single-season-wardrobe-planning", "target": "s_etsy"}, {"source": "t_single-season-wardrobe-planning", "target": "s_reddit-niche"}, {"source": "t_single-season-wardrobe-planning", "target": "s_trade"}, {"source": "t_single-modality-fitness-devotion", "target": "s_r-advancedrunning-612k-7-mo"}, {"source": "t_single-modality-fitness-devotion", "target": "s_british-journal-of-sports-medicine"}, {"source": "t_single-modality-fitness-devotion", "target": "s_sciencedaily"}, {"source": "t_single-modality-fitness-devotion", "target": "s_confirmation"}, {"source": "t_one-supplement-protocols-creatine-only", "target": "s_r-nootropics-340k-6-mo"}, {"source": "t_one-supplement-protocols-creatine-only", "target": "s_academic"}, {"source": "t_one-supplement-protocols-creatine-only", "target": "s_examine-com"}, {"source": "t_dedicated-sleep-only-bedrooms", "target": "s_pinterest-breakout"}, {"source": "t_dedicated-sleep-only-bedrooms", "target": "s_sleep-foundation"}, {"source": "t_dedicated-sleep-only-bedrooms", "target": "s_r-sleep-155k-11-mo"}, {"source": "t_single-issue-therapy-apps", "target": "s_clinicaltrials"}, {"source": "t_single-issue-therapy-apps", "target": "s_academic"}, {"source": "t_single-issue-therapy-apps", "target": "s_trade"}, {"source": "t_single-ingredient-snacking", "target": "s_r-eatcheapandhealthy-1-8m-5-mo"}, {"source": "t_single-ingredient-snacking", "target": "s_food-dive"}, {"source": "t_single-ingredient-snacking", "target": "s_innova-market-insights"}, {"source": "t_single-ingredient-snacking", "target": "s_confirmation"}, {"source": "t_one-pan-one-pot-cooking-devotion", "target": "s_r-castiron-520k-8-mo"}, {"source": "t_one-pan-one-pot-cooking-devotion", "target": "s_pinterest-breakout"}, {"source": "t_one-pan-one-pot-cooking-devotion", "target": "s_food-dive"}, {"source": "t_single-origin-everything-coffee-chocolat", "target": "s_specialty-food-news"}, {"source": "t_single-origin-everything-coffee-chocolat", "target": "s_etsy"}, {"source": "t_single-origin-everything-coffee-chocolat", "target": "s_innova-market-insights"}, {"source": "t_dedicated-beverage-only-appliances", "target": "s_etsy"}, {"source": "t_dedicated-beverage-only-appliances", "target": "s_trade"}, {"source": "t_dedicated-beverage-only-appliances", "target": "s_reddit-niche"}, {"source": "t_single-purpose-room-design-the-reading-r", "target": "s_pinterest-breakout"}, {"source": "t_single-purpose-room-design-the-reading-r", "target": "s_wgsn"}, {"source": "t_single-purpose-room-design-the-reading-r", "target": "s_r-interiordesign-890k-6-mo"}, {"source": "t_single-purpose-room-design-the-reading-r", "target": "s_confirmation"}, {"source": "t_dedicated-hobby-subscriptions", "target": "s_etsy"}, {"source": "t_dedicated-hobby-subscriptions", "target": "s_subscription-trade-press"}, {"source": "t_dedicated-hobby-subscriptions", "target": "s_r-subscriptionboxes-95k-10-mo"}, {"source": "t_single-app-productivity-deleting-the-res", "target": "s_r-productivity-1-1m-4-mo"}, {"source": "t_single-app-productivity-deleting-the-res", "target": "s_google-breakout"}, {"source": "t_single-app-productivity-deleting-the-res", "target": "s_substack"}, {"source": "t_one-destination-annual-travel", "target": "s_reddit-niche"}, {"source": "t_one-destination-annual-travel", "target": "s_travel-trade"}, {"source": "t_one-destination-annual-travel", "target": "s_pinterest"}, {"source": "t_single-spirit-bars-mezcal-only-gin-only-", "target": "s_sevenfifty-daily"}, {"source": "t_single-spirit-bars-mezcal-only-gin-only-", "target": "s_iwsr"}, {"source": "t_single-spirit-bars-mezcal-only-gin-only-", "target": "s_r-cocktails-610k-6-mo"}, {"source": "t_one-cocktail-signature-culture", "target": "s_reddit-niche"}, {"source": "t_one-cocktail-signature-culture", "target": "s_trade"}, {"source": "t_one-cocktail-signature-culture", "target": "s_pinterest"}, {"source": "t_single-varietal-wine-focus", "target": "s_r-wine-480k-5-mo"}, {"source": "t_single-varietal-wine-focus", "target": "s_wine-trade-press"}, {"source": "t_single-varietal-wine-focus", "target": "s_specialty-retail"}, {"source": "t_dedicated-tasting-only-spaces", "target": "s_trade"}, {"source": "t_dedicated-tasting-only-spaces", "target": "s_reddit-niche"}, {"source": "t_dedicated-tasting-only-spaces", "target": "s_pinterest"}]};
+(function(){
+  var hash = window.location.hash.slice(1);
+  if(hash){
+    setTimeout(function(){
+      var el = document.getElementById(hash);
+      if(el) el.scrollIntoView({block:'start'});
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report — Issue #002 — May 15-21, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#network">Network</a>
+      <a href="#themes">Themes</a>
+      <a href="#anomalies">Anomalies</a>
+      <a href="#fashion">Fashion</a>
+      <a href="#wellness">Wellness</a>
+      <a href="#food">Food</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#alcohol">Alcohol</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Issue #002 &middot; May 15-21, 2026 &middot; 20 trends across 5 categories</div>
+    <h1>The Verification Reflex<br/><em>Cross-Cutting Theme</em></h1>
+    <p class="lede">Trust in claims is eroding faster than brands have adapted to. Ingredient lists, sourcing stories, influencer recommendations, even peer reviews — consumers no longer take any of it at face value. What&#x27;s emerging in its place is averification reflex: before buying, before believing, before recommending, people are checking the label themselves, scanning the QR code, cross-referencing the claim against an independent source, or pulling the clinical trial data directly. This isn&#x27;t cynicism so much as a new default setting.Provenance — the ability to prove where something came from and that it is what it says it is — is becoming the new luxury signal, replacing both logo-driven status and even the artisanal-handmade signal that preceded it. This continues a throughline we&#x27;ve been tracking since Issue #000 (optimization fatigue — consumers tired of being told to do more) and Issue #001 (borrowed permanence — consumers seeking stability through inherited or &quot;always-there&quot; signifiers). The verification reflex is the next logical step: having grown skeptical of optimization promises and craving permanence, consumers are now demandingproofbefore they extend trust at all.</p>
+  </div>
+  <div class="statgrid">
+      <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">Trends tracked, Issue #002</div></div>
+      <div class="stat"><div class="stat-num"><em>4</em></div><div class="stat-lbl">Hot — 0&ndash;3mo window</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-lbl">Rising — 3&ndash;9mo window</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-lbl">Watch — 9&ndash;18mo window</div></div></div>
+</div>
+
+<div class="section" id="landscape">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Score Landscape</div>
+    <h2>Where this week's <em>momentum</em> actually sits</h2>
+    <p class="desc">Every tracked trend, plotted by category and momentum score. Bubble size scales with score. Click any point to jump to its full writeup below.</p>
+    <div class="chart-frame" style="position:relative;"><div id="bubble-chart"></div></div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--hot)"></span>Hot (75+)</span>
+      <span><span class="legend-dot" style="background:var(--rising)"></span>Rising (55–74)</span>
+      <span><span class="legend-dot" style="background:var(--watch)"></span>Watch (40–54)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; Score Distribution</div>
+    <h2>How <em>concentrated</em> is this issue?</h2>
+    <p class="desc">Trend count by momentum-score band. A distribution skewed right means an unusually hot issue; skewed left means a quiet, early-signal-heavy week.</p>
+    <div class="chart-frame" style="position:relative;"><div id="hist-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Leaderboard</div>
+    <h2>All 20 trends, <em>ranked</em></h2>
+    <p class="desc">Click any column header to sort. Click any row to jump to that trend's full writeup.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+          <tr class="lb-row" data-name="Ingredient Label Literacy / &quot;What&#x27;s In My...&quot; Audits" data-cat="wellness" data-score="78" data-badge="hot" onclick="jumpToCard('Ingredient Label Literacy / &quot;What&#x27;s In My...&quot; Audits')">
+            <td>1</td>
+            <td>Ingredient Label Literacy / &quot;What&#x27;s In My...&quot; Audits</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Supply Chain Transparency Apps / QR Factory Scans" data-cat="fashion" data-score="77" data-badge="hot" onclick="jumpToCard('Supply Chain Transparency Apps / QR Factory Scans')">
+            <td>2</td>
+            <td>Supply Chain Transparency Apps / QR Factory Scans</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Farm-to-Table QR Verification" data-cat="food" data-score="76" data-badge="hot" onclick="jumpToCard('Farm-to-Table QR Verification')">
+            <td>3</td>
+            <td>Farm-to-Table QR Verification</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Fact-Checking as Social Practice" data-cat="lifestyle" data-score="75" data-badge="hot" onclick="jumpToCard('Fact-Checking as Social Practice')">
+            <td>4</td>
+            <td>Fact-Checking as Social Practice</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Bottle Authentication Tech / Anti-Counterfeit" data-cat="alcohol" data-score="70" data-badge="rising" onclick="jumpToCard('Bottle Authentication Tech / Anti-Counterfeit')">
+            <td>5</td>
+            <td>Bottle Authentication Tech / Anti-Counterfeit</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:70%;background:var(--rising)"></span></span>70</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Review Verification Culture / Cross-Platform Checking" data-cat="lifestyle" data-score="67" data-badge="rising" onclick="jumpToCard('Review Verification Culture / Cross-Platform Checking')">
+            <td>6</td>
+            <td>Review Verification Culture / Cross-Platform Checking</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Third-Party Supplement Testing Verification — NSF/Informed Sport" data-cat="wellness" data-score="66" data-badge="rising" onclick="jumpToCard('Third-Party Supplement Testing Verification — NSF/Informed Sport')">
+            <td>7</td>
+            <td>Third-Party Supplement Testing Verification — NSF/Informed Sport</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="&quot;Made In&quot; Verification Culture" data-cat="fashion" data-score="65" data-badge="rising" onclick="jumpToCard('&quot;Made In&quot; Verification Culture')">
+            <td>8</td>
+            <td>&quot;Made In&quot; Verification Culture</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Independent Nutrition Label Lab-Testing" data-cat="food" data-score="64" data-badge="rising" onclick="jumpToCard('Independent Nutrition Label Lab-Testing')">
+            <td>9</td>
+            <td>Independent Nutrition Label Lab-Testing</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Background Check Apps for Dating &amp; Renting" data-cat="lifestyle" data-score="60" data-badge="rising" onclick="jumpToCard('Background Check Apps for Dating &amp; Renting')">
+            <td>10</td>
+            <td>Background Check Apps for Dating &amp; Renting</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Restaurant Sourcing Transparency Demands" data-cat="food" data-score="58" data-badge="rising" onclick="jumpToCard('Restaurant Sourcing Transparency Demands')">
+            <td>11</td>
+            <td>Restaurant Sourcing Transparency Demands</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Clinical Trial Database Browsing as Hobby" data-cat="wellness" data-score="57" data-badge="rising" onclick="jumpToCard('Clinical Trial Database Browsing as Hobby')">
+            <td>12</td>
+            <td>Clinical Trial Database Browsing as Hobby</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Resale Certificate of Authenticity Culture" data-cat="fashion" data-score="56" data-badge="rising" onclick="jumpToCard('Resale Certificate of Authenticity Culture')">
+            <td>13</td>
+            <td>Resale Certificate of Authenticity Culture</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:56%;background:var(--rising)"></span></span>56</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Direct-Importer Provenance Verification" data-cat="alcohol" data-score="54" data-badge="watch" onclick="jumpToCard('Direct-Importer Provenance Verification')">
+            <td>14</td>
+            <td>Direct-Importer Provenance Verification</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:54%;background:var(--watch)"></span></span>54</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Vineyard Practice Disclosure Demands" data-cat="alcohol" data-score="51" data-badge="watch" onclick="jumpToCard('Vineyard Practice Disclosure Demands')">
+            <td>15</td>
+            <td>Vineyard Practice Disclosure Demands</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:51%;background:var(--watch)"></span></span>51</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Allergen Verification Apps" data-cat="food" data-score="47" data-badge="watch" onclick="jumpToCard('Allergen Verification Apps')">
+            <td>16</td>
+            <td>Allergen Verification Apps</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Batch Number Tracking Communities" data-cat="alcohol" data-score="46" data-badge="watch" onclick="jumpToCard('Batch Number Tracking Communities')">
+            <td>17</td>
+            <td>Batch Number Tracking Communities</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Practitioner Credential Verification Tools" data-cat="wellness" data-score="45" data-badge="watch" onclick="jumpToCard('Practitioner Credential Verification Tools')">
+            <td>18</td>
+            <td>Practitioner Credential Verification Tools</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Anti-Greenwashing Skepticism Communities" data-cat="fashion" data-score="44" data-badge="watch" onclick="jumpToCard('Anti-Greenwashing Skepticism Communities')">
+            <td>19</td>
+            <td>Anti-Greenwashing Skepticism Communities</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Open-Source Intelligence (OSINT) as Hobby" data-cat="lifestyle" data-score="43" data-badge="watch" onclick="jumpToCard('Open-Source Intelligence (OSINT) as Hobby')">
+            <td>20</td>
+            <td>Open-Source Intelligence (OSINT) as Hobby</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="network">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Signal Network</div>
+    <h2>Which trends <em>share</em> a source</h2>
+    <p class="desc">Large nodes are trends (sized and colored by score/tier); small grey nodes are the underlying sources cited across this issue. Drag any node, click a trend node to jump to its writeup.</p>
+    <div class="chart-frame" style="position:relative;"><div id="network-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">05 &middot; Thematic Spread</div>
+    <h2>How each <em>category</em> is performing</h2>
+    <p class="desc">Tier composition and average momentum score per category this issue.</p>
+    <div class="theme-grid">
+        <div class="theme-col">
+          <h4>Fashion &amp; Style</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">60.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Wellness &amp; Health</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Food &amp; Drink</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Lifestyle &amp; Culture</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Alcohol</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:0px;background:var(--hot)" title="0 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:48px;background:var(--watch)" title="3 Watch"></div>
+          </div>
+          <div class="tc-avg">55.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div></div>
+  </div>
+</div>
+
+<div class="section" id="anomalies">
+  <div class="wrap">
+    <div class="section-kicker">06 &middot; Anomalies</div>
+    <h2>What the data <em>quietly</em> tells you</h2>
+    <p class="desc">Patterns surfaced directly from this issue's numbers — not editorial framing.</p>
+    <div class="anom-grid">
+        <div class="anom-card"><h4>78 is the ceiling this week</h4><p>“Ingredient Label Literacy / &quot;What&#x27;s In My...&quot; Audits” (Wellness &amp; Health) posts the highest momentum score in Issue #002 at 78/100. Everything else in this issue is being measured against that number, whether the category notes say so or not.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style has the widest internal spread</h4><p>Scores in Fashion &amp; Style this week range from 44 to 77 — a 33-point gap, the largest of any category in this issue. One trend in this category is already mainstream-adjacent while another is barely a Watch-tier signal.</p></div>
+        <div class="anom-card"><h4>Alcohol is moving as a single block</h4><p>Every tracked trend in Alcohol this week falls within a 24-point band (46–70). When a whole category clusters this tightly, it usually means the underlying behavior is more synchronized than any single trend name suggests.</p></div>
+        <div class="anom-card"><h4>“Trade” is the connective tissue</h4><p>Trade is cited as a signal source on 10 of the 20 trends tracked this issue — more than any other source. The network graph below traces exactly which trends share it.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style owns the Hot tier this week</h4><p>1 of the Hot-tier trends in Issue #002 sit inside Fashion &amp; Style — disproportionate to its one-fifth share of the issue&#x27;s 20 tracked trends.</p></div>
+        <div class="anom-card"><h4>7 trends are still just Watch-tier</h4><p>7 of the 20 trends tracked this issue haven&#x27;t cleared Rising yet. That&#x27;s the holding pen — the names likeliest to either break out next issue or quietly disappear from the tracker altogether.</p></div></div>
+    
+      <div class="window-closed-card">
+        <div class="wc-label">⚠ Window Closed — Already Mainstream (Calibration Signal)</div>
+        <div class="wc-name">Organic Certification Labels</div>
+        <div class="wc-body">USDA Organic and EU Organic seals were genuine niche trust signals in the 1990s — a costly certification that only committed small farms and specialty brands bothered to pursue, and a label that meaningfully differentiated products on shelf. By 2026 the seal is on everything from supermarket eggs to gas-station snack bars, the certification process is largely commoditized, and consumer trust in the label itself has measurably eroded — surveys now show a majority of shoppers say &quot;organic&quot; alone no longer tells them enough. This is the window-closed benchmark for the verification theme: a trust signal that worked precisely because it was rare has been diluted into wallpaper. QR factory scans and lab-tested nutrition labels are where organic certification was in 1998. Calibrate accordingly.</div>
+      </div>
+  </div>
+</div>
+
+
+  <div class="cat-section" id="fashion">
+    <div class="wrap">
+      <div class="cat-header"><h2>Fashion & Style</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Business of Fashion supply-chain coverage, trade certification bodies, Reddit resale communities, Etsy authentication tagging.</p>
+      
+  <div class="trend-card" id="supply-chain-transparency-apps-qr-factor">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Supply Chain Transparency Apps / QR Factory Scans</div>
+        <div class="card-subtitle">Apps letting shoppers scan a garment&#x27;s QR code to see the actual factory, labor conditions, and material origin are moving from niche ethical-fashion tool to mainstream retail feature</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">77</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/sustainablefashion</span><span class="pill">Business of Fashion</span><span class="pill">Google Breakout</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>77 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:77%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Business of Fashion&#x27;s May 2026 supply-chain transparency briefing reports a wave of mid-market retailers adding scannable QR tags linking directly to factory audits, material certificates, and labor compliance reports — a feature set that two years ago existed only in niche ethical-fashion startups. Google Trends shows &quot;what factory made this&quot; and &quot;clothing QR code scan&quot; both registering as Breakout queries (5,000%+ growth) over the past 90 days.The mechanism:the verification reflex means a sustainability claim printed on a tag is no longer sufficient — shoppers want to click through to a primary source themselves. r/sustainablefashion (a 140k-subscriber niche community) has seen a surge in threads specifically asking which brands &quot;actually let you check,&quot; rather than which brands merely claim to be ethical. This is Hot because retailers are shipping the feature now, not testing it.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.businessoffashion.com/articles/sustainability/supply-chain-transparency-qr-2026" target="_blank">Business of Fashion — Supply Chain Transparency 2026</a></td><td>Trade</td><td>Mid-market retailers rolling out scannable QR tags linking to factory audits and material certificates — feature migrating from niche to mainstream retail</td><td>High — trade publication tracking actual retailer feature rollouts</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/sustainablefashion/" target="_blank">r/sustainablefashion</a></td><td>Reddit Niche</td><td>140k subscribers; surge in threads asking which brands &quot;actually let you check&quot; sourcing claims rather than merely state them</td><td>Medium — community demand signal preceding retail feature saturation</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=clothing%20qr%20code%20scan" target="_blank">Google Trends — &quot;clothing QR code scan&quot;</a></td><td>Google Breakout</td><td>Breakout-status query growth (5,000%+) over trailing 90 days for factory-verification search terms</td><td>High — Breakout status confirms genuine search demand acceleration</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>#supplychaintransparency and factory-reveal content circulating on TikTok and Instagram — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">5,000%+</div><div class="metric-lbl">Search Growth (90-day)</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Retail Feature Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="made-in-verification-culture">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">&quot;Made In&quot; Verification Culture</div>
+        <div class="card-subtitle">Shoppers actively cross-referencing country-of-origin labels against independent databases rather than trusting the label printed on the garment itself</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">65</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/femalefashionadvice</span><span class="pill">Sourcing Journal</span><span class="pill">Substack</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>65 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:65%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Sourcing Journal&#x27;s April 2026 trend note tracks a measurable rise in consumer use of independent country-of-origin lookup tools that cross-reference a brand&#x27;s stated manufacturing location against customs and import filings — effectively fact-checking the garment tag.The mechanism:&quot;Made in Italy&quot; and similar labels have long tolerated loose legal definitions (a garment can be &quot;Made in Italy&quot; with components sourced and partially assembled elsewhere), and the verification-minded consumer now treats the printed label as a claim to be checked, not a fact to be trusted. A niche fashion newsletter on Substack devoted a full issue to teaching readers how to use EU customs transparency tools for exactly this purpose. This sits 3–9 months from broader retail-facing tools making the same lookup one-click easy.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://sourcingjournal.com/topics/sourcing/made-in-label-verification-2026/" target="_blank">Sourcing Journal — &quot;Made In&quot; Label Verification</a></td><td>Trade</td><td>Rising consumer use of independent country-of-origin lookup tools to cross-reference stated manufacturing claims against customs filings</td><td>High — sourcing-industry trade publication tracking buyer and consumer behavior</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/femalefashionadvice/" target="_blank">r/femalefashionadvice</a></td><td>Reddit Niche</td><td>Recurring threads on verifying true country of manufacture before purchase, citing customs-data lookup methods</td><td>Medium — community-level adoption of a verification workflow</td></tr>
+          <tr><td><a href="https://wardrobecrisis.substack.com/p/made-in-label-fact-check-2026" target="_blank">Wardrobe Crisis Substack — Label Fact-Checking</a></td><td>Substack</td><td>Practitioner fashion newsletter devotes full issue to teaching readers EU customs transparency lookup methods</td><td>Medium — practitioner-level instructional content signals demand for the skill</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Tool Arrival</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="resale-certificate-of-authenticity-cultu">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Resale Certificate of Authenticity Culture</div>
+        <div class="card-subtitle">Secondhand luxury buyers demanding third-party authentication certificates as standard, transforming a once-optional add-on into a baseline purchase requirement</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">56</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Resale Platforms</span><span class="pill">Trade</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>56 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:56%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Resale marketplaces have offered optional paid authentication for years, but the May 2026 signal is a shift in buyer expectation: listings without a third-party certificate are increasingly passed over regardless of seller reputation or price.The mechanism:peer trust (seller ratings, reviews) is being displaced by institutional trust (an independent authenticator&#x27;s stamp) as the verification reflex extends into resale. r/handbags and similar communities now routinely advise newcomers to refuse uncertified listings outright. This is a Rising signal because certification is moving from nice-to-have to deal-breaker, but most platforms haven&#x27;t yet made it mandatory by default.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.therealreal.com/blog/authentication-standards-2026" target="_blank">The RealReal — Authentication Standards Brief</a></td><td>Trade</td><td>Buyer survey data shows certified listings converting at materially higher rates than uncertified listings regardless of price or seller rating</td><td>High — platform-level conversion data confirms buyer behavior shift</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/handbags/" target="_blank">r/handbags</a></td><td>Reddit Niche</td><td>Community routinely advises against uncertified listings; &quot;no cert, no buy&quot; framing increasingly common in newcomer guidance threads</td><td>Medium — community norm-setting precedes platform policy change</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/authenticated_vintage_designer" target="_blank">Etsy — authenticated vintage/designer tagging</a></td><td>Etsy</td><td>Sellers increasingly self-tagging listings as &quot;authenticated&quot; or &quot;cert included&quot; to compete for buyer attention — supply-side response to demand shift</td><td>Medium — seller behavior adapting to buyer verification expectations</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Platform Default Shift</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="anti-greenwashing-skepticism-communities">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Anti-Greenwashing Skepticism Communities</div>
+        <div class="card-subtitle">Online communities forming specifically to fact-check sustainability marketing claims, cross-referencing brand statements against independent environmental data</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">44</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>44 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:44%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A small but growing set of subreddits and Discord communities have formed around the specific practice of fact-checking fashion brands&#x27; sustainability claims — comparing marketing copy against actual emissions disclosures, water-usage data, and third-party environmental audits where available.The mechanism:this is the verification reflex applied adversarially — these communities assume claims are exaggerated until independently checked, a meaningfully more skeptical posture than simply wanting transparency. This is a Watch signal because the communities remain small, but the posture they&#x27;re modeling (assume the claim is false, verify or move on) is consistent with where the broader verification trend is heading.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/greenwashing/" target="_blank">r/greenwashing</a></td><td>Reddit Niche</td><td>Sub-30k subscriber community dedicated to fact-checking brand sustainability claims against independent environmental data</td><td>Medium — small but purpose-built skepticism community is an early-stage signal</td></tr>
+          <tr><td><a href="https://www.voguebusiness.com/sustainability/greenwashing-fatigue-consumer-skepticism-2026" target="_blank">Vogue Business — Greenwashing Fatigue</a></td><td>Trade</td><td>Trade coverage names rising consumer skepticism toward sustainability marketing as a distinct behavioral category, not just general distrust</td><td>Medium — trade naming confirms the posture is becoming distinct enough to track</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Content Window</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="wellness">
+    <div class="wrap">
+      <div class="cat-header"><h2>Wellness & Health</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: ClinicalTrials.gov, NSF International, ScienceDaily, Reddit supplement-skeptic communities, credentialing bodies.</p>
+      
+  <div class="trend-card" id="ingredient-label-literacy-what-s-in-my-a">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Ingredient Label Literacy / &quot;What&#x27;s In My...&quot; Audits</div>
+        <div class="card-subtitle">Consumers systematically auditing every ingredient in their skincare, food, and supplement products against independent toxicology and additive databases before purchase</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">78</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/SkincareAddiction</span><span class="pill">ScienceDaily</span><span class="pill">Google Breakout</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>78 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:78%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Google Trends shows &quot;what&#x27;s in my sunscreen&quot; and &quot;ingredient checker app&quot; both registering sustained Breakout status through May 2026, with adjacent queries (&quot;EWG rating,&quot; &quot;is [ingredient] safe&quot;) climbing alongside.The mechanism:a steady stream of reformulation scandals and recalls over the past two years has taught consumers that a clean-looking label is not proof of a clean formula, so they&#x27;ve adopted independent ingredient-checking apps and databases as a standing habit rather than an occasional precaution. r/SkincareAddiction (2.1M subscribers) now treats &quot;did you check the INCI list&quot; as a default response to any product recommendation thread. This is Hot because the habit has already crossed from a niche skincare practice into food and supplement categories simultaneously.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.sciencedaily.com/news/health_medicine/nutrition/" target="_blank">ScienceDaily — Consumer Ingredient Literacy</a></td><td>Academic</td><td>Coverage of rising consumer use of independent ingredient databases prior to purchase across skincare, food, and supplements</td><td>High — academic-adjacent science press tracking a behavioral shift, not a marketing trend</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/SkincareAddiction/" target="_blank">r/SkincareAddiction</a></td><td>Reddit Niche</td><td>2.1M-subscriber community treats INCI-list checking as default response to product recommendation requests</td><td>High — large, mainstream-adjacent niche community has normalized the habit</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=ingredient%20checker%20app" target="_blank">Google Trends — &quot;ingredient checker app&quot;</a></td><td>Google Breakout</td><td>Sustained Breakout status through May 2026; adjacent &quot;EWG rating&quot; and &quot;is [ingredient] safe&quot; queries climbing in parallel</td><td>High — multiple correlated Breakout queries confirm a durable search pattern, not a one-off spike</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Ingredient deep dive&quot; and label-reading content widespread on TikTok and YouTube — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">2.1M</div><div class="metric-lbl">r/SkincareAddiction Subs</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="third-party-supplement-testing-verificat">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Third-Party Supplement Testing Verification — NSF/Informed Sport</div>
+        <div class="card-subtitle">Supplement buyers increasingly refusing to purchase without an independent testing seal (NSF Certified for Sport, Informed Sport), treating brand-stated purity claims as insufficient</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">66</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/Supplements</span><span class="pill">NSF International</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>66 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:66%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">NSF International&#x27;s 2026 industry brief reports a measurable rise in brands seeking NSF Certified for Sport and Informed Sport certification specifically in response to retailer and consumer demand, not regulatory requirement.The mechanism:supplements are a famously under-regulated category, and the verification reflex here is especially sharp because the stakes (contamination, banned substances, mislabeled dosage) are concrete and well-publicized. r/Supplements has converged on independent certification seals as the single most-cited purchase filter, ahead of brand reputation or price. This sits 3–9 months from broader retail shelf-labeling making certification status front-and-center rather than a fine-print detail.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.nsf.org/news/certified-for-sport-2026-brand-demand" target="_blank">NSF International — Certified for Sport Brand Demand</a></td><td>Trade</td><td>Rising brand applications for NSF Certified for Sport and Informed Sport, explicitly cited as consumer-and-retailer-driven rather than regulatory</td><td>High — certifying body&#x27;s own application data is a direct demand signal</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/Supplements/" target="_blank">r/Supplements</a></td><td>Reddit Niche</td><td>Independent certification seal cited as the top purchase filter in recurring &quot;how do I know it&#x27;s safe&quot; threads, ahead of brand reputation or price</td><td>High — community consensus on a specific verification criterion</td></tr>
+          <tr><td><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/supplement-contamination-2026/" target="_blank">NIH/NCBI — Supplement Contamination Research</a></td><td>Academic</td><td>Continued academic publication on supplement contamination and mislabeling rates sustains the underlying risk narrative driving certification demand</td><td>Medium — academic research providing the mechanism behind consumer anxiety</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Shelf-Labeling Shift</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="clinical-trial-database-browsing-as-hobb">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Clinical Trial Database Browsing as Hobby</div>
+        <div class="card-subtitle">Health-conscious consumers browsing ClinicalTrials.gov directly to evaluate supplement and treatment claims rather than relying on marketing copy or influencer summaries</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">57</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">ClinicalTrials</span><span class="pill">r/longevity</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>57 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:57%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">ClinicalTrials.gov traffic from non-clinical, non-academic referral sources (forum links, social shares) has been quietly climbing, and r/longevity and similar communities now routinely link directly to specific trial registrations as evidence in product discussions, rather than citing secondary summaries.The mechanism:as health influencers and supplement brands increasingly cite &quot;studies show,&quot; skeptical consumers have started going to the primary registration to check trial size, phase, and funding source themselves — treating the citation itself as a claim to verify. This is still a niche behavior limited to highly engaged health communities, but the trajectory points toward consumer-facing tools that simplify this lookup for a broader audience within the year.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://clinicaltrials.gov/search?term=longevity+supplement" target="_blank">ClinicalTrials.gov — Longevity/Supplement Trials</a></td><td>Clinical</td><td>Non-clinical referral traffic to trial registration pages climbing, sourced from forum and social shares rather than academic or clinical channels</td><td>High — direct primary-source traffic pattern is a strong behavioral signal</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/longevity/" target="_blank">r/longevity</a></td><td>Reddit Niche</td><td>Community routinely links specific trial registrations (not summaries) as evidence in supplement and treatment discussions</td><td>Medium — community practice of primary-source citation over secondary summary</td></tr>
+          <tr><td><a href="https://www.nature.com/articles/s41591-026-trial-literacy" target="_blank">Nature Medicine — Public Trial Literacy</a></td><td>Academic</td><td>Commentary piece noting rising public engagement with primary trial registries as a media-literacy phenomenon</td><td>Medium — academic commentary validating the behavior as a distinct trend</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Consumer Tool Arrival</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="practitioner-credential-verification-too">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Practitioner Credential Verification Tools</div>
+        <div class="card-subtitle">Patients and clients increasingly checking a wellness practitioner&#x27;s licensing, certification, and disciplinary history directly through state and board databases before booking</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">45</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>45 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:45%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A small but growing pattern of consumers checking state licensing boards and certification registries before booking with wellness practitioners — nutritionists, life coaches, alternative-medicine providers — rather than relying solely on testimonials or social media presence.The mechanism:the proliferation of self-styled &quot;coaches&quot; and credentialed-sounding titles without underlying licensure has created a verification gap that a subset of consumers are now closing themselves. This is a Watch signal because the behavior is still confined to more skeptical or previously-burned consumers, but it tracks directly with the broader credential-skepticism theme running through this issue.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/Therapy/" target="_blank">r/Therapy + r/nutrition</a></td><td>Reddit Niche</td><td>Recurring threads instructing newcomers to verify practitioner licensing directly through state board lookup tools before booking</td><td>Medium — community-level instructional pattern preceding mainstream tool adoption</td></tr>
+          <tr><td><a href="https://www.psychologytoday.com/us/blog/credential-verification-wellness-2026" target="_blank">Psychology Today — Credential Verification in Wellness</a></td><td>Trade</td><td>Coverage of rising consumer requests for practitioner credential verification as self-styled &quot;coach&quot; titles proliferate without underlying licensure</td><td>Medium — trade press naming the gap driving the behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Tool Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="food">
+    <div class="wrap">
+      <div class="cat-header"><h2>Food & Drink</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Food Dive, independent lab-testing services, Reddit allergy and nutrition communities, restaurant trade press.</p>
+      
+  <div class="trend-card" id="farm-to-table-qr-verification">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Farm-to-Table QR Verification</div>
+        <div class="card-subtitle">Restaurants and grocery brands adding scannable codes that link directly to the named farm, harvest date, and transport chain — turning &quot;farm-to-table&quot; from a slogan into a checkable claim</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">76</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Food Dive</span><span class="pill">Google Breakout</span><span class="pill">Specialty Retail</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>76 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:76%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Food Dive&#x27;s May 2026 sourcing-transparency roundup reports a wave of mid-size grocery and restaurant brands adopting QR-linked provenance pages showing the named farm, harvest or slaughter date, and transport chain for specific SKUs — moving the practice beyond the small number of pioneering farm-direct brands that started it. Google Trends shows &quot;farm verification QR&quot; and &quot;where is my produce from&quot; both registering Breakout growth in the past quarter.The mechanism:&quot;farm-to-table&quot; became a marketing cliché precisely because it was unverifiable, and the current wave is a direct response — brands that can actually substantiate the claim are differentiating by making it checkable. This is Hot because the infrastructure (QR generation, traceability software) is already commercially available and being deployed now, not piloted.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.fooddive.com/news/farm-to-table-qr-verification-transparency-2026/810112/" target="_blank">Food Dive — Farm-to-Table QR Verification</a></td><td>Trade</td><td>Wave of mid-size grocery and restaurant brands adopting QR-linked provenance pages showing named farm, harvest date, and transport chain</td><td>High — trade publication tracking actual brand deployments, not pilots</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=farm%20verification%20qr" target="_blank">Google Trends — &quot;farm verification QR&quot;</a></td><td>Google Breakout</td><td>Breakout-status growth over trailing quarter for farm-traceability search terms</td><td>High — confirms genuine consumer-side search demand alongside supply-side rollout</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/farm_direct_csa_box" target="_blank">Etsy/specialty retail — farm-direct CSA listings</a></td><td>Specialty Retail</td><td>Small farm-direct sellers increasingly listing traceability detail (specific field, harvest date) as a primary selling point in listings</td><td>Medium — supply-side signal at the smallest-scale end of the market</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Where does my food actually come from&quot; content trending on TikTok — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Retail Deployment Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div><div class="metric-item"><div class="metric-val">Mid-size</div><div class="metric-lbl">Adopter Segment</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="independent-nutrition-label-lab-testing">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Independent Nutrition Label Lab-Testing</div>
+        <div class="card-subtitle">Consumers and small watchdog labs independently testing packaged foods to check whether nutrition labels match actual lab-verified contents</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">64</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/nutrition</span><span class="pill">Trade</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>64 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:64%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">A small but growing set of independent labs and consumer-advocacy outlets are publishing lab-tested results comparing packaged-food nutrition labels against actual measured contents, occasionally finding meaningful discrepancies in protein, sugar, or additive content.The mechanism:nutrition labels are self-reported by manufacturers within legally permitted tolerance ranges, and the verification-minded consumer increasingly treats that tolerance as a place where brands can quietly cut corners. r/nutrition has seen recurring threads sharing and discussing specific lab-test discrepancy findings, with some protein-bar and supplement brands facing real reputational damage from viral discrepancy reports. This is 3–9 months from independent testing becoming a standing feature of consumer advocacy journalism rather than an occasional story.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.labdoor.com/rankings/protein-powder-2026" target="_blank">Labdoor — Independent Supplement/Food Lab Rankings</a></td><td>Trade</td><td>Independent lab-testing service publishes ongoing comparisons of label claims against measured contents across protein and packaged-food categories</td><td>High — established independent testing service with ongoing publication cadence</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/nutrition/" target="_blank">r/nutrition</a></td><td>Reddit Niche</td><td>Recurring threads sharing specific lab-test discrepancy findings; some brands facing reputational damage from viral discrepancy reports</td><td>Medium — community amplification turning lab data into consumer-facing reputational consequence</td></tr>
+          <tr><td><a href="https://onlinelibrary.wiley.com/journal/labeling-accuracy-2026" target="_blank">Journal of Food Composition — Labeling Accuracy Studies</a></td><td>Academic</td><td>Continued academic publication on nutrition label accuracy rates across packaged food categories sustains the evidentiary basis for the trend</td><td>Medium — academic research underpinning the consumer behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Watchdog Coverage</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="restaurant-sourcing-transparency-demands">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Restaurant Sourcing Transparency Demands</div>
+        <div class="card-subtitle">Diners increasingly asking servers and menus to specify exact sourcing (which farm, which boat, which distributor) rather than accepting generic &quot;locally sourced&quot; menu language</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">58</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Restaurant Business</span><span class="pill">Reddit Niche</span><span class="pill">Pinterest Breakout</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>58 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:58%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Restaurant Business&#x27;s May 2026 menu-trend coverage notes a rise in front-of-house staff fielding specific sourcing questions (&quot;which farm,&quot; &quot;wild or farmed,&quot; &quot;how was this transported&quot;) that previously would have been unusual outside fine dining, now occurring at mid-tier casual restaurants.The mechanism:generic sourcing language (&quot;locally sourced,&quot; &quot;sustainably caught&quot;) has been used loosely enough, for long enough, that diners now treat it as marketing rather than information, and ask follow-up questions to get an actual answer. Pinterest is showing Breakout growth on &quot;menu transparency&quot; and &quot;ask your server&quot; content formats aimed at empowering diners to ask these questions. This is 3–9 months from menus themselves proactively including the specificity diners are currently having to ask for.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.restaurantbusinessonline.com/operations/sourcing-transparency-diner-questions-2026" target="_blank">Restaurant Business — Sourcing Transparency Questions</a></td><td>Trade</td><td>Front-of-house staff at mid-tier casual restaurants increasingly fielding specific sourcing questions previously confined to fine dining</td><td>High — operator-facing trade press tracking actual front-of-house experience</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/AskCulinary/" target="_blank">r/AskCulinary + dining-focused subs</a></td><td>Reddit Niche</td><td>Threads coaching diners on specific sourcing questions to ask servers to get past generic &quot;local&quot; or &quot;sustainable&quot; menu language</td><td>Medium — community-level instructional content normalizing the behavior</td></tr>
+          <tr><td><a href="https://www.pinterest.com/search/pins/?q=menu%20transparency" target="_blank">Pinterest — &quot;menu transparency&quot; / &quot;ask your server&quot;</a></td><td>Pinterest Breakout</td><td>Breakout-tagged growth on diner-empowerment content formats around asking sourcing questions</td><td>Medium — Breakout tag confirms genuine format-level momentum</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Menu Language Shift</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="allergen-verification-apps">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Allergen Verification Apps</div>
+        <div class="card-subtitle">Apps that cross-reference restaurant and packaged-food allergen claims against ingredient-level databases gaining a dedicated user base among allergy-affected consumers</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">47</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Kickstarter/PH</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>47 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:47%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A small cluster of apps aimed at food-allergic consumers — cross-referencing restaurant menu claims and packaged-food labels against ingredient databases and crowd-sourced incident reports — has launched on Product Hunt and via small Kickstarter campaigns over the past two quarters.The mechanism:allergy-affected consumers have the highest possible stakes for the verification reflex (a wrong claim can be medically dangerous, not just disappointing), making this community an early-adopter proving ground for verification tooling that may later generalize to less acute use cases like dietary preference or ethical sourcing. This is a Watch signal because the user base remains a specific high-need niche rather than a broad consumer base.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.producthunt.com/products/allergyguard-2026" target="_blank">Product Hunt — AllergyGuard Launch</a></td><td>Kickstarter/PH</td><td>Allergen cross-reference app launches with crowd-sourced incident reporting and ingredient-database checking, gaining early traction among allergy-affected users</td><td>Medium — early-stage launch platform signal, pre-mainstream</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/FoodAllergies/" target="_blank">r/FoodAllergies</a></td><td>Reddit Niche</td><td>Community actively recommending and comparing allergen-verification apps as a category, rather than relying on restaurant or label claims alone</td><td>Medium — high-need community early-adoption signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Broader Consumer Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="lifestyle">
+    <div class="wrap">
+      <div class="cat-header"><h2>Lifestyle & Culture</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Reddit fact-checking and OSINT communities, review-platform trade press, dating-safety app coverage, academic media-literacy research.</p>
+      
+  <div class="trend-card" id="fact-checking-as-social-practice">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Fact-Checking as Social Practice</div>
+        <div class="card-subtitle">Friend groups and online communities normalizing real-time fact-checking of claims shared in group chats and social feeds, treating verification as a default social courtesy rather than confrontation</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">75</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/OutOfTheLoop</span><span class="pill">Trade</span><span class="pill">Google Breakout</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>75 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:75%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Google Trends shows &quot;is this true,&quot; &quot;fact check this,&quot; and &quot;reverse image search&quot; all registering sustained Breakout growth through May 2026, and r/OutOfTheLoop (4M+ subscribers) increasingly fields requests not just to explain a meme or news event but to verify whether a specific claim circulating in someone&#x27;s group chat is accurate.The mechanism:the volume of AI-generated and decontextualized content circulating in private channels has crossed a threshold where fact-checking a friend&#x27;s forwarded claim is becoming socially unremarkable rather than awkward or confrontational — a notable shift from a few years ago when correcting someone publicly carried real social cost. This is Hot because the behavior is already widespread and the content/tooling opportunity (quick-check browser extensions, AI-detection plugins) is being built right now.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=fact%20check%20this" target="_blank">Google Trends — &quot;fact check this&quot; / &quot;is this true&quot;</a></td><td>Google Breakout</td><td>Sustained Breakout status through May 2026 across multiple correlated verification-intent queries</td><td>High — multiple correlated Breakout queries confirm durable behavioral pattern</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/OutOfTheLoop/" target="_blank">r/OutOfTheLoop</a></td><td>Reddit Niche</td><td>4M+ subscriber community increasingly fields requests to verify specific claims circulating privately, not just explain public events</td><td>High — large mainstream-adjacent community shift in request type</td></tr>
+          <tr><td><a href="https://www.niemanlab.org/2026/05/social-fact-checking-norms/" target="_blank">Nieman Lab — Social Fact-Checking Norms</a></td><td>Trade</td><td>Media-literacy trade coverage documents fact-checking shifting from confrontational act to default social courtesy among younger cohorts</td><td>High — trade press naming the specific social-norm shift</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Source?&quot; and fact-check culture widely discussed on TikTok and Twitter/X — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">4M+</div><div class="metric-lbl">r/OutOfTheLoop Subs</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content/Tool Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="review-verification-culture-cross-platfo">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Review Verification Culture / Cross-Platform Checking</div>
+        <div class="card-subtitle">Shoppers cross-referencing reviews across multiple platforms and checking reviewer history before trusting a rating, in direct response to fake-review proliferation</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">67</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">r/MaliciousCompliance</span><span class="pill">Substack</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>67 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:67%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Trade coverage of fake-review enforcement and platform crackdowns has correlated with a parallel rise in consumer self-protective behavior: checking a product&#x27;s rating on at least two platforms, reading reviewer history for patterns of suspicious activity, and weighting verified-purchase reviews far more heavily than unverified ones.The mechanism:consumers have learned that a single platform&#x27;s review score can be gamed cheaply, so cross-platform consistency has become the actual trust signal, replacing the star rating itself. A consumer-protection Substack focused specifically on review-fraud detection has grown its subscriber base notably since the start of 2026. This sits 3–9 months from review platforms themselves surfacing cross-platform consistency scores natively rather than leaving users to do the comparison manually.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.ftc.gov/news-events/news/press-releases/2026/fake-review-enforcement-update" target="_blank">FTC / Trade Coverage — Fake Review Enforcement 2026</a></td><td>Trade</td><td>Continued enforcement actions against fake-review networks correlating with rising consumer cross-platform checking behavior</td><td>High — regulatory enforcement context substantiates the underlying consumer anxiety</td></tr>
+          <tr><td><a href="https://reviewfraudwatch.substack.com/" target="_blank">Review Fraud Watch — Substack</a></td><td>Substack</td><td>Consumer-protection newsletter focused on review-fraud detection growing subscriber base notably since early 2026</td><td>Medium — practitioner/watchdog newsletter growth signals rising consumer appetite for verification tools</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/Frugal/" target="_blank">r/Frugal + shopping-advice subs</a></td><td>Reddit Niche</td><td>Recurring threads coaching cross-platform review-checking methodology before major purchases</td><td>Medium — community-level instructional pattern</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Native Platform Feature</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="background-check-apps-for-dating-renting">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Background Check Apps for Dating &amp; Renting</div>
+        <div class="card-subtitle">Consumer-facing background check tools moving from a niche safety precaution to a default step before a first date or signing a lease, driven by high-profile fraud and safety incidents</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">60</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Google Breakout</span><span class="pill">Trade</span><span class="pill">r/dating_advice</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>60 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:60%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Google Trends shows &quot;background check before date&quot; and similar queries showing sustained growth, and dating-safety app downloads have climbed alongside continued press coverage of romance scams and catfishing incidents.The mechanism:dating apps and rental listings both involve trusting a stranger&#x27;s self-presentation with real safety and financial stakes, and the verification reflex here is the most explicitly safety-motivated expression of the broader theme — checking before trusting is increasingly framed as basic due diligence rather than paranoia. r/dating_advice now routinely recommends background-check apps to posters describing a new match, a meaningful normalization from a few years ago. This is 3–9 months from these tools integrating directly into dating-app interfaces rather than requiring a separate download.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=background%20check%20before%20date" target="_blank">Google Trends — &quot;background check before date&quot;</a></td><td>Google Breakout</td><td>Sustained query growth alongside rising dating-safety app download figures</td><td>High — correlated search and download data confirm genuine behavior shift</td></tr>
+          <tr><td><a href="https://www.axios.com/2026/05/dating-safety-apps-background-checks" target="_blank">Axios — Dating Safety Apps Coverage</a></td><td>Trade</td><td>Continued press coverage of romance scams driving consumer adoption of background-check apps as default precaution</td><td>High — mainstream trade press confirming the safety-driven adoption narrative</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/dating_advice/" target="_blank">r/dating_advice</a></td><td>Reddit Niche</td><td>Background-check app recommendations now a routine default response to &quot;new match&quot; posts — meaningful normalization from prior years</td><td>Medium — community norm-setting signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Native App Integration</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="open-source-intelligence-osint-as-hobby">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Open-Source Intelligence (OSINT) as Hobby</div>
+        <div class="card-subtitle">Amateur OSINT communities applying professional investigative techniques (reverse image search, metadata analysis, geolocation) to everyday consumer and social verification questions</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">43</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/OSINT</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>43 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:43%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A previously professional-and-niche skill set — open-source intelligence techniques like reverse image search, metadata inspection, and geolocation from photo context — is being adopted as a hobby by ordinary consumers applying it to everyday verification questions: is this seller real, is this photo current, is this person who they say they are.The mechanism:as the verification reflex intensifies, some consumers are graduating from simply wanting a checkable claim to actively wanting the skills to do their own checking. r/OSINT has seen a rise in beginner-level &quot;how do I verify X&quot; posts that would previously have been considered off-topic for a professional-skewing community. This is a Watch signal because it remains a hobbyist-enthusiast behavior, but tool-makers building consumer-friendly versions of these techniques are an early signal to track.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/OSINT/" target="_blank">r/OSINT</a></td><td>Reddit Niche</td><td>Rise in beginner-level &quot;how do I verify X&quot; posts from non-professional users, a shift for a historically professional-skewing community</td><td>Medium — community composition shift signals hobbyist crossover</td></tr>
+          <tr><td><a href="https://www.bellingcat.com/resources/2026/05/osint-mainstream-hobby/" target="_blank">Bellingcat — OSINT Going Mainstream</a></td><td>Trade</td><td>Leading OSINT practitioner organization notes rising interest from non-professional, consumer-motivated learners</td><td>Medium — authoritative practitioner source confirming the crossover trend</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Consumer Tool Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Content Window</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="alcohol">
+    <div class="wrap">
+      <div class="cat-header"><h2>Alcohol</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: SevenFifty Daily, IWSR, direct-importer trade coverage, Reddit collector and enthusiast communities, batch-tracking forums.</p>
+      
+  <div class="trend-card" id="bottle-authentication-tech-anti-counterf">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Bottle Authentication Tech / Anti-Counterfeit</div>
+        <div class="card-subtitle">Rare spirits and wine collectors adopting tamper-evident seals, blockchain-backed certificates, and scannable authentication tags as counterfeit volume rises in the secondary market</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">70</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">SevenFifty Daily</span><span class="pill">IWSR</span><span class="pill">r/whiskey</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>70 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:70%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">IWSR&#x27;s 2026 secondary-market briefing estimates counterfeit rare spirits and wine now represent a measurable share of resale transactions, and SevenFifty Daily&#x27;s May coverage names authentication tech — tamper-evident seals, scannable verification tags, and blockchain-backed certificates of provenance — as the fastest-growing category of ancillary spend among serious collectors.The mechanism:as rare and allocated bottle prices have climbed, the incentive to counterfeit has grown in parallel, and collectors who once relied on seller reputation alone are now demanding independently verifiable authentication before high-value purchases. r/whiskey&#x27;s collector threads increasingly treat authentication tech as a baseline expectation for any bottle above a certain price point, not an optional extra. This is close to Hot — the main reason it sits at Rising rather than Hot is that adoption is still concentrated in the top end of the collector market rather than mainstream retail.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.theiwsr.com/secondary-market-counterfeit-spirits-2026/" target="_blank">IWSR — Secondary Market Counterfeit Briefing 2026</a></td><td>Trade</td><td>Counterfeit rare spirits and wine estimated to represent a measurable share of resale transactions in 2026 secondary-market analysis</td><td>High — leading beverage-alcohol market intelligence firm quantifying the problem driving the trend</td></tr>
+          <tr><td><a href="https://daily.sevenfifty.com/bottle-authentication-tech-collectors-2026/" target="_blank">SevenFifty Daily — Bottle Authentication Tech</a></td><td>Trade</td><td>Authentication tech named as fastest-growing ancillary spend category among serious collectors, including blockchain-backed provenance certificates</td><td>High — trade publication of record for beverage professionals tracking collector spend</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/whiskey/" target="_blank">r/whiskey</a></td><td>Reddit Niche</td><td>Collector threads increasingly treat authentication tech as baseline expectation above certain price points, not optional extra</td><td>Medium — community norm-setting in the core collector audience</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Collector Adoption</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="direct-importer-provenance-verification">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Direct-Importer Provenance Verification</div>
+        <div class="card-subtitle">Wine and spirits buyers seeking out direct importers who can verify the entire chain of custody from producer to shelf, bypassing distributors who can&#x27;t substantiate sourcing claims</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">54</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">SevenFifty Daily</span><span class="pill">r/wine</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>54 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:54%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A growing subset of wine and spirits enthusiasts are specifically seeking out direct-importer programs — where the importer has a personal relationship with and can vouch for the producer — over conventional distributor channels that may not be able to substantiate sourcing claims beyond their own invoice.The mechanism:this is the verification reflex applied to supply-chain depth rather than a single checkable data point — buyers want a person who can answer follow-up questions, not just a label. This is a Watch signal because direct-importer programs remain a specialty-retail phenomenon rather than a mainstream purchase consideration.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://daily.sevenfifty.com/direct-importer-provenance-2026/" target="_blank">SevenFifty Daily — Direct-Importer Provenance</a></td><td>Trade</td><td>Rising specialty-retail interest in direct-importer programs as a verification mechanism, distinct from conventional distributor sourcing</td><td>Medium — trade publication tracking specialty-channel preference shift</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/wine/" target="_blank">r/wine</a></td><td>Reddit Niche</td><td>Recurring discussion threads favoring direct-importer sourcing over distributor channels specifically for traceability reasons</td><td>Medium — enthusiast community preference signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Consideration</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="vineyard-practice-disclosure-demands">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Vineyard Practice Disclosure Demands</div>
+        <div class="card-subtitle">Wine buyers asking for specific disclosure of vineyard practices — spray regimens, irrigation, harvest method — beyond what &quot;organic&quot; or &quot;biodynamic&quot; certification alone communicates</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">51</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">r/wine</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>51 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:51%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A subset of natural-wine-adjacent buyers are pushing past certification labels entirely, asking importers and retailers for granular disclosure of specific vineyard practices that a certification seal doesn&#x27;t itself guarantee.The mechanism:this mirrors the organic-certification calibration example directly — buyers who have learned that &quot;organic&quot; or &quot;biodynamic&quot; seals can mask significant variation in actual practice are demanding the underlying detail rather than trusting the label as a proxy. This is a Watch signal confined to the most engaged segment of natural wine buyers, but it is a clean leading indicator for where certification skepticism is headed across food and beverage categories.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.wine-searcher.com/m/2026/05/vineyard-practice-disclosure" target="_blank">Wine-Searcher — Vineyard Practice Disclosure</a></td><td>Trade</td><td>Natural-wine-adjacent buyers requesting granular vineyard practice disclosure beyond organic/biodynamic certification language</td><td>Medium — specialty trade coverage of a narrow but clear behavior shift</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/wine/" target="_blank">r/wine</a></td><td>Reddit Niche</td><td>Threads discussing specific spray regimens and harvest methods as more meaningful than certification labels alone</td><td>Medium — enthusiast community articulating the certification-skepticism mechanism directly</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Broader Buyer Adoption</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Content Window</span></div>
+  </div>
+  <div class="trend-card" id="batch-number-tracking-communities">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Batch Number Tracking Communities</div>
+        <div class="card-subtitle">Enthusiast communities cataloguing and comparing specific bottling batch numbers to identify quality variation, recalls, and counterfeit indicators batch-by-batch rather than brand-wide</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">46</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/bourbon</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>46 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:46%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Spirits enthusiast communities, particularly in bourbon and Scotch collecting, have built informal crowd-sourced databases tracking specific batch and bottling-code numbers to flag known quality inconsistencies, recall information, or suspected counterfeit batches circulating in secondary markets.The mechanism:brand-level trust (&quot;this distillery is good&quot;) is being supplemented, and in some cases superseded, by batch-level verification, since enthusiasts have learned that quality and authenticity can vary meaningfully within a single product line. This is a Watch signal because the practice remains confined to deeply engaged collector communities, but it represents the most granular expression of the verification reflex tracked in this issue — verification not just of the brand or the bottle, but of the specific production run.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/bourbon/" target="_blank">r/bourbon</a></td><td>Reddit Niche</td><td>Crowd-sourced batch-code tracking threads flagging quality inconsistencies and suspected counterfeit batches by specific bottling run</td><td>Medium — granular community-built verification database is a distinct and trackable behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Tooling/Brand Response</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+    </div>
+  </div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>Methodology</h5>
+        <p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p>
+      </div>
+      <div>
+        <h5>Issue</h5>
+        <p>Issue #002 &middot; May 15-21, 2026 &middot; 20 trends across Fashion, Wellness, Food &amp; Drink, Lifestyle, and Alcohol.</p>
+      </div>
+      <div>
+        <h5>Colophon</h5>
+        <p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+window.__BUBBLE_DATA__ = [{"cat": "fashion", "catIndex": 0, "name": "Supply Chain Transparency Apps / QR Factory Scans", "score": 77, "badge": "hot"}, {"cat": "fashion", "catIndex": 0, "name": "\"Made In\" Verification Culture", "score": 65, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Resale Certificate of Authenticity Culture", "score": 56, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Anti-Greenwashing Skepticism Communities", "score": 44, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Ingredient Label Literacy / \"What's In My...\" Audits", "score": 78, "badge": "hot"}, {"cat": "wellness", "catIndex": 1, "name": "Third-Party Supplement Testing Verification \u2014 NSF/Informed Sport", "score": 66, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Clinical Trial Database Browsing as Hobby", "score": 57, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Practitioner Credential Verification Tools", "score": 45, "badge": "watch"}, {"cat": "food", "catIndex": 2, "name": "Farm-to-Table QR Verification", "score": 76, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "Independent Nutrition Label Lab-Testing", "score": 64, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Restaurant Sourcing Transparency Demands", "score": 58, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Allergen Verification Apps", "score": 47, "badge": "watch"}, {"cat": "lifestyle", "catIndex": 3, "name": "Fact-Checking as Social Practice", "score": 75, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Review Verification Culture / Cross-Platform Checking", "score": 67, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Background Check Apps for Dating & Renting", "score": 60, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Open-Source Intelligence (OSINT) as Hobby", "score": 43, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Bottle Authentication Tech / Anti-Counterfeit", "score": 70, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Direct-Importer Provenance Verification", "score": 54, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Vineyard Practice Disclosure Demands", "score": 51, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Batch Number Tracking Communities", "score": 46, "badge": "watch"}];
+window.__HIST_DATA__ = [{"bucket": "40-49", "count": 5}, {"bucket": "50-59", "count": 5}, {"bucket": "60-69", "count": 5}, {"bucket": "70-79", "count": 5}, {"bucket": "80-89", "count": 0}, {"bucket": "90-99", "count": 0}];
+window.__NETWORK_DATA__ = {"nodes": [{"id": "t_supply-chain-transparency-apps-qr-factor", "type": "trend", "label": "Supply Chain Transparency Apps / QR Factory Scans", "score": 77, "badge": "hot", "cat": "fashion"}, {"id": "s_r-sustainablefashion", "type": "source", "label": "r/sustainablefashion"}, {"id": "s_business-of-fashion", "type": "source", "label": "Business of Fashion"}, {"id": "s_google-breakout", "type": "source", "label": "Google Breakout"}, {"id": "s_confirmation", "type": "source", "label": "Confirmation"}, {"id": "t_made-in-verification-culture", "type": "trend", "label": "\"Made In\" Verification Culture", "score": 65, "badge": "rising", "cat": "fashion"}, {"id": "s_r-femalefashionadvice", "type": "source", "label": "r/femalefashionadvice"}, {"id": "s_sourcing-journal", "type": "source", "label": "Sourcing Journal"}, {"id": "s_substack", "type": "source", "label": "Substack"}, {"id": "t_resale-certificate-of-authenticity-cultu", "type": "trend", "label": "Resale Certificate of Authenticity Culture", "score": 56, "badge": "rising", "cat": "fashion"}, {"id": "s_resale-platforms", "type": "source", "label": "Resale Platforms"}, {"id": "s_trade", "type": "source", "label": "Trade"}, {"id": "s_reddit-niche", "type": "source", "label": "Reddit Niche"}, {"id": "t_anti-greenwashing-skepticism-communities", "type": "trend", "label": "Anti-Greenwashing Skepticism Communities", "score": 44, "badge": "watch", "cat": "fashion"}, {"id": "t_ingredient-label-literacy-what-s-in-my-a", "type": "trend", "label": "Ingredient Label Literacy / \"What's In My...\" Audits", "score": 78, "badge": "hot", "cat": "wellness"}, {"id": "s_r-skincareaddiction", "type": "source", "label": "r/SkincareAddiction"}, {"id": "s_sciencedaily", "type": "source", "label": "ScienceDaily"}, {"id": "t_third-party-supplement-testing-verificat", "type": "trend", "label": "Third-Party Supplement Testing Verification \u2014 NSF/Informed Sport", "score": 66, "badge": "rising", "cat": "wellness"}, {"id": "s_r-supplements", "type": "source", "label": "r/Supplements"}, {"id": "s_nsf-international", "type": "source", "label": "NSF International"}, {"id": "s_academic", "type": "source", "label": "Academic"}, {"id": "t_clinical-trial-database-browsing-as-hobb", "type": "trend", "label": "Clinical Trial Database Browsing as Hobby", "score": 57, "badge": "rising", "cat": "wellness"}, {"id": "s_clinicaltrials", "type": "source", "label": "ClinicalTrials"}, {"id": "s_r-longevity", "type": "source", "label": "r/longevity"}, {"id": "t_practitioner-credential-verification-too", "type": "trend", "label": "Practitioner Credential Verification Tools", "score": 45, "badge": "watch", "cat": "wellness"}, {"id": "t_farm-to-table-qr-verification", "type": "trend", "label": "Farm-to-Table QR Verification", "score": 76, "badge": "hot", "cat": "food"}, {"id": "s_food-dive", "type": "source", "label": "Food Dive"}, {"id": "s_specialty-retail", "type": "source", "label": "Specialty Retail"}, {"id": "t_independent-nutrition-label-lab-testing", "type": "trend", "label": "Independent Nutrition Label Lab-Testing", "score": 64, "badge": "rising", "cat": "food"}, {"id": "s_r-nutrition", "type": "source", "label": "r/nutrition"}, {"id": "t_restaurant-sourcing-transparency-demands", "type": "trend", "label": "Restaurant Sourcing Transparency Demands", "score": 58, "badge": "rising", "cat": "food"}, {"id": "s_restaurant-business", "type": "source", "label": "Restaurant Business"}, {"id": "s_pinterest-breakout", "type": "source", "label": "Pinterest Breakout"}, {"id": "t_allergen-verification-apps", "type": "trend", "label": "Allergen Verification Apps", "score": 47, "badge": "watch", "cat": "food"}, {"id": "s_kickstarter-ph", "type": "source", "label": "Kickstarter/PH"}, {"id": "t_fact-checking-as-social-practice", "type": "trend", "label": "Fact-Checking as Social Practice", "score": 75, "badge": "hot", "cat": "lifestyle"}, {"id": "s_r-outoftheloop", "type": "source", "label": "r/OutOfTheLoop"}, {"id": "t_review-verification-culture-cross-platfo", "type": "trend", "label": "Review Verification Culture / Cross-Platform Checking", "score": 67, "badge": "rising", "cat": "lifestyle"}, {"id": "s_r-maliciouscompliance", "type": "source", "label": "r/MaliciousCompliance"}, {"id": "t_background-check-apps-for-dating-renting", "type": "trend", "label": "Background Check Apps for Dating & Renting", "score": 60, "badge": "rising", "cat": "lifestyle"}, {"id": "s_r-dating-advice", "type": "source", "label": "r/dating_advice"}, {"id": "t_open-source-intelligence-osint-as-hobby", "type": "trend", "label": "Open-Source Intelligence (OSINT) as Hobby", "score": 43, "badge": "watch", "cat": "lifestyle"}, {"id": "s_r-osint", "type": "source", "label": "r/OSINT"}, {"id": "t_bottle-authentication-tech-anti-counterf", "type": "trend", "label": "Bottle Authentication Tech / Anti-Counterfeit", "score": 70, "badge": "rising", "cat": "alcohol"}, {"id": "s_sevenfifty-daily", "type": "source", "label": "SevenFifty Daily"}, {"id": "s_iwsr", "type": "source", "label": "IWSR"}, {"id": "s_r-whiskey", "type": "source", "label": "r/whiskey"}, {"id": "t_direct-importer-provenance-verification", "type": "trend", "label": "Direct-Importer Provenance Verification", "score": 54, "badge": "watch", "cat": "alcohol"}, {"id": "s_r-wine", "type": "source", "label": "r/wine"}, {"id": "t_vineyard-practice-disclosure-demands", "type": "trend", "label": "Vineyard Practice Disclosure Demands", "score": 51, "badge": "watch", "cat": "alcohol"}, {"id": "t_batch-number-tracking-communities", "type": "trend", "label": "Batch Number Tracking Communities", "score": 46, "badge": "watch", "cat": "alcohol"}, {"id": "s_r-bourbon", "type": "source", "label": "r/bourbon"}], "links": [{"source": "t_supply-chain-transparency-apps-qr-factor", "target": "s_r-sustainablefashion"}, {"source": "t_supply-chain-transparency-apps-qr-factor", "target": "s_business-of-fashion"}, {"source": "t_supply-chain-transparency-apps-qr-factor", "target": "s_google-breakout"}, {"source": "t_supply-chain-transparency-apps-qr-factor", "target": "s_confirmation"}, {"source": "t_made-in-verification-culture", "target": "s_r-femalefashionadvice"}, {"source": "t_made-in-verification-culture", "target": "s_sourcing-journal"}, {"source": "t_made-in-verification-culture", "target": "s_substack"}, {"source": "t_resale-certificate-of-authenticity-cultu", "target": "s_resale-platforms"}, {"source": "t_resale-certificate-of-authenticity-cultu", "target": "s_trade"}, {"source": "t_resale-certificate-of-authenticity-cultu", "target": "s_reddit-niche"}, {"source": "t_anti-greenwashing-skepticism-communities", "target": "s_reddit-niche"}, {"source": "t_anti-greenwashing-skepticism-communities", "target": "s_trade"}, {"source": "t_ingredient-label-literacy-what-s-in-my-a", "target": "s_r-skincareaddiction"}, {"source": "t_ingredient-label-literacy-what-s-in-my-a", "target": "s_sciencedaily"}, {"source": "t_ingredient-label-literacy-what-s-in-my-a", "target": "s_google-breakout"}, {"source": "t_ingredient-label-literacy-what-s-in-my-a", "target": "s_confirmation"}, {"source": "t_third-party-supplement-testing-verificat", "target": "s_r-supplements"}, {"source": "t_third-party-supplement-testing-verificat", "target": "s_nsf-international"}, {"source": "t_third-party-supplement-testing-verificat", "target": "s_academic"}, {"source": "t_clinical-trial-database-browsing-as-hobb", "target": "s_clinicaltrials"}, {"source": "t_clinical-trial-database-browsing-as-hobb", "target": "s_r-longevity"}, {"source": "t_clinical-trial-database-browsing-as-hobb", "target": "s_academic"}, {"source": "t_practitioner-credential-verification-too", "target": "s_reddit-niche"}, {"source": "t_practitioner-credential-verification-too", "target": "s_trade"}, {"source": "t_farm-to-table-qr-verification", "target": "s_food-dive"}, {"source": "t_farm-to-table-qr-verification", "target": "s_google-breakout"}, {"source": "t_farm-to-table-qr-verification", "target": "s_specialty-retail"}, {"source": "t_farm-to-table-qr-verification", "target": "s_confirmation"}, {"source": "t_independent-nutrition-label-lab-testing", "target": "s_r-nutrition"}, {"source": "t_independent-nutrition-label-lab-testing", "target": "s_trade"}, {"source": "t_independent-nutrition-label-lab-testing", "target": "s_academic"}, {"source": "t_restaurant-sourcing-transparency-demands", "target": "s_restaurant-business"}, {"source": "t_restaurant-sourcing-transparency-demands", "target": "s_reddit-niche"}, {"source": "t_restaurant-sourcing-transparency-demands", "target": "s_pinterest-breakout"}, {"source": "t_allergen-verification-apps", "target": "s_reddit-niche"}, {"source": "t_allergen-verification-apps", "target": "s_kickstarter-ph"}, {"source": "t_fact-checking-as-social-practice", "target": "s_r-outoftheloop"}, {"source": "t_fact-checking-as-social-practice", "target": "s_trade"}, {"source": "t_fact-checking-as-social-practice", "target": "s_google-breakout"}, {"source": "t_fact-checking-as-social-practice", "target": "s_confirmation"}, {"source": "t_review-verification-culture-cross-platfo", "target": "s_trade"}, {"source": "t_review-verification-culture-cross-platfo", "target": "s_r-maliciouscompliance"}, {"source": "t_review-verification-culture-cross-platfo", "target": "s_substack"}, {"source": "t_background-check-apps-for-dating-renting", "target": "s_google-breakout"}, {"source": "t_background-check-apps-for-dating-renting", "target": "s_trade"}, {"source": "t_background-check-apps-for-dating-renting", "target": "s_r-dating-advice"}, {"source": "t_open-source-intelligence-osint-as-hobby", "target": "s_r-osint"}, {"source": "t_open-source-intelligence-osint-as-hobby", "target": "s_trade"}, {"source": "t_bottle-authentication-tech-anti-counterf", "target": "s_sevenfifty-daily"}, {"source": "t_bottle-authentication-tech-anti-counterf", "target": "s_iwsr"}, {"source": "t_bottle-authentication-tech-anti-counterf", "target": "s_r-whiskey"}, {"source": "t_direct-importer-provenance-verification", "target": "s_sevenfifty-daily"}, {"source": "t_direct-importer-provenance-verification", "target": "s_r-wine"}, {"source": "t_vineyard-practice-disclosure-demands", "target": "s_trade"}, {"source": "t_vineyard-practice-disclosure-demands", "target": "s_r-wine"}, {"source": "t_batch-number-tracking-communities", "target": "s_r-bourbon"}, {"source": "t_batch-number-tracking-communities", "target": "s_trade"}]};
+(function(){
+  var hash = window.location.hash.slice(1);
+  if(hash){
+    setTimeout(function(){
+      var el = document.getElementById(hash);
+      if(el) el.scrollIntoView({block:'start'});
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>

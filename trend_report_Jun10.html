@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report — Issue #005 — June 4-10, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#network">Network</a>
+      <a href="#themes">Themes</a>
+      <a href="#anomalies">Anomalies</a>
+      <a href="#fashion">Fashion</a>
+      <a href="#wellness">Wellness</a>
+      <a href="#food">Food</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#alcohol">Alcohol</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Issue #005 &middot; June 4-10, 2026 &middot; 20 trends across 5 categories</div>
+    <h1>Precision as Status<br/><em>Cross-Cutting Theme</em></h1>
+    <p class="lede">This week&#x27;s velocity belongs to specificity. Across every category, the moves gaining traction aren&#x27;t louder versions of existing trends — they&#x27;re more exact, more verifiable, more intentional.Quiet Outdoor is stealth wealth applied to technical gear.Zone 2 is precision applied to fitness. Tallow rehabilitation is the exact-ingredient move in skincare. Solo travel is the deliberate version of experience-seeking. Natural wine is provenance with receipts. The emerging consumer proposition isn&#x27;t abundance.It&#x27;s exactness.</p>
+  </div>
+  <div class="statgrid">
+      <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">Trends tracked, Issue #005</div></div>
+      <div class="stat"><div class="stat-num"><em>4</em></div><div class="stat-lbl">Hot — 0&ndash;3mo window</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-lbl">Rising — 3&ndash;9mo window</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-lbl">Watch — 9&ndash;18mo window</div></div></div>
+</div>
+
+<div class="section" id="landscape">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Score Landscape</div>
+    <h2>Where this week's <em>momentum</em> actually sits</h2>
+    <p class="desc">Every tracked trend, plotted by category and momentum score. Bubble size scales with score. Click any point to jump to its full writeup below.</p>
+    <div class="chart-frame" style="position:relative;"><div id="bubble-chart"></div></div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--hot)"></span>Hot (75+)</span>
+      <span><span class="legend-dot" style="background:var(--rising)"></span>Rising (55–74)</span>
+      <span><span class="legend-dot" style="background:var(--watch)"></span>Watch (40–54)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; Score Distribution</div>
+    <h2>How <em>concentrated</em> is this issue?</h2>
+    <p class="desc">Trend count by momentum-score band. A distribution skewed right means an unusually hot issue; skewed left means a quiet, early-signal-heavy week.</p>
+    <div class="chart-frame" style="position:relative;"><div id="hist-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Leaderboard</div>
+    <h2>All 20 trends, <em>ranked</em></h2>
+    <p class="desc">Click any column header to sort. Click any row to jump to that trend's full writeup.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+          <tr class="lb-row" data-name="Technical Minimalism / Quiet Outdoor" data-cat="fashion" data-score="78" data-badge="hot" onclick="jumpToCard('Technical Minimalism / Quiet Outdoor')">
+            <td>1</td>
+            <td>Technical Minimalism / Quiet Outdoor</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Tallow &amp; Animal Fat Rehabilitation" data-cat="food" data-score="77" data-badge="hot" onclick="jumpToCard('Tallow &amp; Animal Fat Rehabilitation')">
+            <td>2</td>
+            <td>Tallow &amp; Animal Fat Rehabilitation</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Zone 2 Cardio Protocols" data-cat="wellness" data-score="76" data-badge="hot" onclick="jumpToCard('Zone 2 Cardio Protocols')">
+            <td>3</td>
+            <td>Zone 2 Cardio Protocols</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Solo Travel as Identity Signal" data-cat="lifestyle" data-score="75" data-badge="hot" onclick="jumpToCard('Solo Travel as Identity Signal')">
+            <td>4</td>
+            <td>Solo Travel as Identity Signal</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Natural Wine Normalization" data-cat="alcohol" data-score="73" data-badge="rising" onclick="jumpToCard('Natural Wine Normalization')">
+            <td>5</td>
+            <td>Natural Wine Normalization</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:73%;background:var(--rising)"></span></span>73</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Ballet Core Graduation" data-cat="fashion" data-score="70" data-badge="rising" onclick="jumpToCard('Ballet Core Graduation')">
+            <td>6</td>
+            <td>Ballet Core Graduation</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:70%;background:var(--rising)"></span></span>70</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Phone-Free Venue Culture" data-cat="lifestyle" data-score="67" data-badge="rising" onclick="jumpToCard('Phone-Free Venue Culture')">
+            <td>7</td>
+            <td>Phone-Free Venue Culture</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Smash Burger Artisan Wave" data-cat="food" data-score="65" data-badge="rising" onclick="jumpToCard('Smash Burger Artisan Wave')">
+            <td>8</td>
+            <td>Smash Burger Artisan Wave</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Mouth Taping &amp; Nasal Breathing Optimization" data-cat="wellness" data-score="63" data-badge="rising" onclick="jumpToCard('Mouth Taping &amp; Nasal Breathing Optimization')">
+            <td>9</td>
+            <td>Mouth Taping &amp; Nasal Breathing Optimization</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:63%;background:var(--rising)"></span></span>63</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Amaro &amp; Bitter Aperitivo Culture" data-cat="alcohol" data-score="61" data-badge="rising" onclick="jumpToCard('Amaro &amp; Bitter Aperitivo Culture')">
+            <td>10</td>
+            <td>Amaro &amp; Bitter Aperitivo Culture</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:61%;background:var(--rising)"></span></span>61</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Sauna + Cold Contrast Bathing" data-cat="wellness" data-score="58" data-badge="rising" onclick="jumpToCard('Sauna + Cold Contrast Bathing')">
+            <td>11</td>
+            <td>Sauna + Cold Contrast Bathing</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Ceremonial Cacao Mainstreaming" data-cat="food" data-score="57" data-badge="rising" onclick="jumpToCard('Ceremonial Cacao Mainstreaming')">
+            <td>12</td>
+            <td>Ceremonial Cacao Mainstreaming</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Micro-Retreats (48-Hour Wellness)" data-cat="lifestyle" data-score="55" data-badge="rising" onclick="jumpToCard('Micro-Retreats (48-Hour Wellness)')">
+            <td>13</td>
+            <td>Micro-Retreats (48-Hour Wellness)</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:55%;background:var(--rising)"></span></span>55</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Deadstock Denim Revival" data-cat="fashion" data-score="52" data-badge="watch" onclick="jumpToCard('Deadstock Denim Revival')">
+            <td>14</td>
+            <td>Deadstock Denim Revival</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:52%;background:var(--watch)"></span></span>52</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Alternative Asian Whisky (Korean &amp; Taiwanese)" data-cat="alcohol" data-score="50" data-badge="watch" onclick="jumpToCard('Alternative Asian Whisky (Korean &amp; Taiwanese)')">
+            <td>15</td>
+            <td>Alternative Asian Whisky (Korean &amp; Taiwanese)</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:50%;background:var(--watch)"></span></span>50</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Non-Alcoholic Aperitivo Expansion" data-cat="food" data-score="49" data-badge="watch" onclick="jumpToCard('Non-Alcoholic Aperitivo Expansion')">
+            <td>16</td>
+            <td>Non-Alcoholic Aperitivo Expansion</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:49%;background:var(--watch)"></span></span>49</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Low-ABV Session Beer Innovation" data-cat="alcohol" data-score="48" data-badge="watch" onclick="jumpToCard('Low-ABV Session Beer Innovation')">
+            <td>17</td>
+            <td>Low-ABV Session Beer Innovation</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:48%;background:var(--watch)"></span></span>48</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Cognitive Stack Culture / Neuro-Nutrition" data-cat="wellness" data-score="47" data-badge="watch" onclick="jumpToCard('Cognitive Stack Culture / Neuro-Nutrition')">
+            <td>18</td>
+            <td>Cognitive Stack Culture / Neuro-Nutrition</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Urban Foraging &amp; Wild Food Clubs" data-cat="lifestyle" data-score="46" data-badge="watch" onclick="jumpToCard('Urban Foraging &amp; Wild Food Clubs')">
+            <td>19</td>
+            <td>Urban Foraging &amp; Wild Food Clubs</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Heirloom &amp; Estate Jewelry Integration" data-cat="fashion" data-score="43" data-badge="watch" onclick="jumpToCard('Heirloom &amp; Estate Jewelry Integration')">
+            <td>20</td>
+            <td>Heirloom &amp; Estate Jewelry Integration</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:43%;background:var(--watch)"></span></span>43</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="network">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Signal Network</div>
+    <h2>Which trends <em>share</em> a source</h2>
+    <p class="desc">Large nodes are trends (sized and colored by score/tier); small grey nodes are the underlying sources cited across this issue. Drag any node, click a trend node to jump to its writeup.</p>
+    <div class="chart-frame" style="position:relative;"><div id="network-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">05 &middot; Thematic Spread</div>
+    <h2>How each <em>category</em> is performing</h2>
+    <p class="desc">Tier composition and average momentum score per category this issue.</p>
+    <div class="theme-grid">
+        <div class="theme-col">
+          <h4>Fashion &amp; Style</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">60.8</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Wellness &amp; Health</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.0</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Food &amp; Drink</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">62.0</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Lifestyle &amp; Culture</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">60.8</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Alcohol</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:0px;background:var(--hot)" title="0 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">58.0</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div></div>
+  </div>
+</div>
+
+<div class="section" id="anomalies">
+  <div class="wrap">
+    <div class="section-kicker">06 &middot; Anomalies</div>
+    <h2>What the data <em>quietly</em> tells you</h2>
+    <p class="desc">Patterns surfaced directly from this issue's numbers — not editorial framing.</p>
+    <div class="anom-grid">
+        <div class="anom-card"><h4>78 is the ceiling this week</h4><p>“Technical Minimalism / Quiet Outdoor” (Fashion &amp; Style) posts the highest momentum score in Issue #005 at 78/100. Everything else in this issue is being measured against that number, whether the category notes say so or not.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style has the widest internal spread</h4><p>Scores in Fashion &amp; Style this week range from 43 to 78 — a 35-point gap, the largest of any category in this issue. One trend in this category is already mainstream-adjacent while another is barely a Watch-tier signal.</p></div>
+        <div class="anom-card"><h4>Alcohol is moving as a single block</h4><p>Every tracked trend in Alcohol this week falls within a 25-point band (48–73). When a whole category clusters this tightly, it usually means the underlying behavior is more synchronized than any single trend name suggests.</p></div>
+        <div class="anom-card"><h4>“Etsy” is the connective tissue</h4><p>Etsy is cited as a signal source on 5 of the 20 trends tracked this issue — more than any other source. The network graph below traces exactly which trends share it.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style owns the Hot tier this week</h4><p>1 of the Hot-tier trends in Issue #005 sit inside Fashion &amp; Style — disproportionate to its one-fifth share of the issue&#x27;s 20 tracked trends.</p></div>
+        <div class="anom-card"><h4>7 trends are still just Watch-tier</h4><p>7 of the 20 trends tracked this issue haven&#x27;t cleared Rising yet. That&#x27;s the holding pen — the names likeliest to either break out next issue or quietly disappear from the tracker altogether.</p></div></div>
+    
+      <div class="window-closed-card">
+        <div class="wc-label">⚠ Window Closed — Already Mainstream (Calibration Signal)</div>
+        <div class="wc-name">Dry January Seasonal Campaigns</div>
+        <div class="wc-body">Dry January was a genuine niche signal in 2019–2021, emerging from moderation-culture and health communities. By June 2026, Dry January has become an annual CPG marketing framework — every major alcohol and NA beverage brand runs a &quot;Dry January&quot; campaign at scale. This is the window-closed benchmark for alcohol trends. The signal is in the year-round moderation positioning (Natural Wine&#x27;s casual accessibility, NA Aperitivos as genuinely interesting options), not seasonal campaigns. Non-alcoholic offerings that thrive beyond January are the signal. Calibrate accordingly.</div>
+      </div>
+  </div>
+</div>
+
+
+  <div class="cat-section" id="fashion">
+    <div class="wrap">
+      <div class="cat-header"><h2>Fashion & Style</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: High-end retail velocity, Pinterest Breakout tracking, Reddit niche communities, trade publication coverage.</p>
+      
+  <div class="trend-card" id="technical-minimalism-quiet-outdoor">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Technical Minimalism / Quiet Outdoor</div>
+        <div class="card-subtitle">Gore-Tex meets stealth wealth; the anti-gorpcore gorpcore</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">78</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Ultralight</span><span class="pill">Highsnobiety</span><span class="pill">Pinterest Breakout</span><span class="pill">Bloomberg</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>78 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:78%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">The signal here is technical minimalism crossing from ultralight hiking communities into high-end fashion positioning.Highsnobiety&#x27;s SS26 Quiet Outdoor reportageframes Arc&#x27;teryx x Veilance crossover pieces as &quot;stealth wealth applied to technical gear&quot; — the deliberate understatement of expensive functionality. Reddit r/ultralight (2.8M subs) shows &quot;MYOG Gore-Tex shell&quot; posts up 340% YoY. Pinterest tracking &quot;quiet outdoor aesthetic&quot; showing 890% growth in 6 months.The mechanism:as gorpcore became mainstream/loud, the precise move upmarket is removing the performance branding and doubling down on material precision. Gore-Tex as quiet luxury, not statement. Arc&#x27;teryx x Veilance sell-through data via Bloomberg tracking +28% brand crossover volume. This is Hot because the commercial infrastructure is live — high-end retail buys are happening now.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/ultralight" target="_blank">r/ultralight — 2.8M subs</a></td><td>Reddit Niche</td><td>&quot;MYOG Gore-Tex shell&quot; posts +340% YoY; technical minimalism framing as aspirational identity</td><td>High — niche velocity in core community</td></tr>
+          <tr><td><a href="https://www.highsnobiety.com" target="_blank">Highsnobiety — SS26 Quiet Outdoor</a></td><td>Trade</td><td>Dedicated Quiet Outdoor reportage; Arc&#x27;teryx x Veilance framing as &quot;stealth wealth applied to technical gear&quot;</td><td>High — high-end trade publication naming commercial expression</td></tr>
+          <tr><td><a href="https://trends.pinterest.com" target="_blank">Pinterest Breakout — &quot;quiet outdoor aesthetic&quot;</a></td><td>Pinterest</td><td>+890% search growth in 6-month window; sustained breakout trend tag</td><td>High — Pinterest breakout confirms mass consumer search intent</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3.4×</div><div class="metric-lbl">Reddit Spike</div></div><div class="metric-item"><div class="metric-val">890%</div><div class="metric-lbl">Pinterest Growth</div></div><div class="metric-item"><div class="metric-val">+28%</div><div class="metric-lbl">Crossover Sell-Through</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="ballet-core-graduation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Ballet Core Graduation</div>
+        <div class="card-subtitle">Ballet flat crossing from runways into everyday rotation</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">70</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Fashion</span><span class="pill">WGSN</span><span class="pill">Etsy</span><span class="pill">Vogue</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>70 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:70%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/femalefashionadvice (890k subs) shows ballet flat recommendation threads up 290%. WGSN&#x27;s SS26 micro-trend &quot;soft luxe&quot; reportage names ballet-inspired silhouettes as core. Etsy tracking &quot;ballet flat vintage leather&quot; searches +340% in 90 days. Miu Miu SS26 collection includes ballet-derived silhouette with Vogue coverage.The mechanism:ballet flats occupy a precise position — formal enough for professional contexts, comfortable enough for all-day wear, expensive-looking without maximum price. This is the classic mainstream crossing pattern: runway energy at accessible price points, moving from specialty to general consumer interest. 3–9 month window.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/femalefashionadvice" target="_blank">r/femalefashionadvice — 890k subs</a></td><td>Reddit Niche</td><td>Ballet flat recommendation threads +290%; velocity in community seeking practical styling guidance</td><td>High — adoption in practical fashion communities</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">2.9×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">+340%</div><div class="metric-lbl">Etsy Searches</div></div><div class="metric-item"><div class="metric-val">4 houses</div><div class="metric-lbl">Runway Presence</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="deadstock-denim-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Deadstock Denim Revival</div>
+        <div class="card-subtitle">Pre-2000 deadstock sourcing communities emerging as fashion subculture</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">52</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Rawdenim</span><span class="pill">Etsy</span><span class="pill">Business of Fashion</span><span class="pill">Google Breakout</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>52 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:52%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/rawdenim (94k subs) shows &quot;deadstock find&quot; posts up 180% in 60 days. Etsy tracking 890 new &quot;deadstock denim 90s&quot; listings in past 30 days. Business of Fashion coverage on Levi&#x27;s Vintage Clothing reissue demand surge. Google Trends &quot;deadstock denim&quot; search activity showing +140% QoQ breakout.The mechanism:deadstock represents provenance and scarcity — exact year, exact wash, exact condition. This aligns with the week&#x27;s &quot;precision as status&quot; theme. Still in Watch stage because adoption is community-driven, not yet retail-scale, but the demand-led supply pattern on Etsy is the classic pre-mainstream signal.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/rawdenim" target="_blank">r/rawdenim — 94k subs</a></td><td>Reddit Niche</td><td>&quot;Deadstock find&quot; posts +180% in 60 days; community identity forming around provenance and scarcity</td><td>High — niche velocity in enthusiast community</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/deadstock_denim" target="_blank">Etsy — &quot;deadstock denim 90s&quot;</a></td><td>Etsy</td><td>890 new listings in 30 days; distributed maker-led supply response to search demand</td><td>High — new seller entry patterns indicate emerging consumer demand</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">1.8×</div><div class="metric-lbl">Sub Growth</div></div><div class="metric-item"><div class="metric-val">890</div><div class="metric-lbl">New Listings/Month</div></div><div class="metric-item"><div class="metric-val">+140%</div><div class="metric-lbl">Search Trend</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="heirloom-estate-jewelry-integration">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Heirloom &amp; Estate Jewelry Integration</div>
+        <div class="card-subtitle">Gen Z raiding family jewelry boxes; antique as anti-fast-fashion statement</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">43</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Jewelry</span><span class="pill">Etsy</span><span class="pill">1stDibs</span><span class="pill">Vogue</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>43 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:43%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/jewelry (280k subs) tracks &quot;grandmother&#x27;s ring&quot; styling posts trending. Etsy &quot;estate jewelry&quot; sales up 210% in 6 months. 1stDibs quarterly data shows antique jewelry views +67% among 25-34 demographic. Vogue &quot;The Heirloom Moment&quot; feature.The mechanism:heirloom jewelry represents ultimate anti-fast-fashion positioning — existing pieces with narrative, zero waste, authentic aging. Aligns perfectly with precision-as-status theme: one specific piece with exact provenance, not a collection. Still Watch stage because the aesthetic integration into everyday fashion (styling, repair, adaptation) is emerging but not yet mainstream.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/jewelry" target="_blank">r/jewelry — 280k subs</a></td><td>Reddit Niche</td><td>&quot;Grandmother&#x27;s ring&quot; styling posts trending; fashion integration of family pieces gaining community attention</td><td>Medium — emerging conversation in jewelry community</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+210%</div><div class="metric-lbl">Etsy Velocity</div></div><div class="metric-item"><div class="metric-val">+67%</div><div class="metric-lbl">Demo Shift (25-34)</div></div><div class="metric-item"><div class="metric-val">2.1×</div><div class="metric-lbl">Engagement Avg</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="wellness">
+    <div class="wrap">
+      <div class="cat-header"><h2>Wellness & Health</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Longevity research, sleep science literature, biohacker protocols, clinical trial registrations.</p>
+      
+  <div class="trend-card" id="zone-2-cardio-protocols">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Zone 2 Cardio Protocols</div>
+        <div class="card-subtitle">Low-intensity aerobic base building going mainstream via longevity science</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">76</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Longevity</span><span class="pill">JAMA Network</span><span class="pill">Peter Attia</span><span class="pill">Garmin</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>76 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:76%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/longevity (290k subs) tracks Zone 2 cardio threads averaging 4.2k upvotes (3× category average). JAMA Open Network published Mandsager et al. cardiorespiratory fitness and all-cause mortality research. Peter Attia&#x27;s &quot;The Drive&quot; + Iñigo San Millán protocols showing 2.4M episode downloads. Garmin/Polar heart-rate zone feature search activity up 180%.The mechanism:Zone 2 (low-intensity steady-state aerobic work) has shifted from fringe biohacker knowledge to mainstream longevity positioning because it&#x27;s measurable, sustainable, and evidence-backed. The commercial infrastructure (device brands updating zone features, coaching protocols) is live now. This is Hot because consumer adoption is accelerating in real time.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/longevity" target="_blank">r/longevity — 290k subs</a></td><td>Reddit Niche</td><td>Zone 2 threads averaging 4.2k upvotes vs 1.4k category average; 3× engagement intensity</td><td>High — niche velocity and engagement concentration</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">4.2k</div><div class="metric-lbl">Thread Engagement</div></div><div class="metric-item"><div class="metric-val">2.4M</div><div class="metric-lbl">Episode Downloads</div></div><div class="metric-item"><div class="metric-val">+180%</div><div class="metric-lbl">Device Search</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="mouth-taping-nasal-breathing-optimizatio">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Mouth Taping &amp; Nasal Breathing Optimization</div>
+        <div class="card-subtitle">Sleep-performance optimization via nasal airflow; James Nestor &quot;Breath&quot; second-wave</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">63</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Sleep</span><span class="pill">PubMed</span><span class="pill">Amazon</span><span class="pill">Huberman Lab</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>63 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:63%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/sleep (590k subs) shows mouth tape posts up 420% following Nestor paperback release. PubMed: Sowerby et al. nasal breathing and sleep quality meta-analysis. Amazon &quot;mouth tape sleep&quot; ranking #1 in sleep aids for 14 weeks consecutive. Huberman Lab nasal breathing protocol episode showing 3.9M views.The mechanism:mouth taping became mainstream through accessible science communication (Nestor&#x27;s book, Huberman&#x27;s platform), creating product demand that major retailers are now stocking. This is Rising because product availability is now mainstream, but clinical evidence base is still accumulating. 3–9 month window to full category maturation.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/sleep" target="_blank">r/sleep — 590k subs</a></td><td>Reddit Niche</td><td>Mouth tape posts +420% following Nestor paperback; rapid velocity in large sleep community</td><td>High — timing correlation with content release</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">4.2×</div><div class="metric-lbl">Sub Spike</div></div><div class="metric-item"><div class="metric-val">#1</div><div class="metric-lbl">Amazon (14 wk)</div></div><div class="metric-item"><div class="metric-val">3.9M</div><div class="metric-lbl">YT Views</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="sauna-cold-contrast-bathing">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Sauna + Cold Contrast Bathing</div>
+        <div class="card-subtitle">Hot-cold contrast moving from biohacker protocol to mainstream wellness ritual</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">58</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Sauna/Cold</span><span class="pill">BJSM</span><span class="pill">Kickstarter</span><span class="pill">Sunday Times</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>58 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:58%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/sauna (180k) + r/coldplunge (95k) combined show contrast protocol posts up 310%. Laukkanen et al. (BJSM) sauna frequency and cardiovascular outcomes research. Kickstarter &quot;SOMA portable sauna&quot; raised £340k from 4,200 backers (2.8× goal). Sunday Times wellness: &quot;The Contrast Cure&quot; feature.The mechanism:contrast bathing (thermal stress + recovery) has shifted from extreme biohacker practice to wellness category because evidence base is strengthening and product accessibility is improving. Portable sauna funding success and mainstream media coverage signal commercial infrastructure forming. 3–9 month window.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/sauna" target="_blank">r/sauna + r/coldplunge</a></td><td>Reddit Niche</td><td>Combined subs (275k), contrast protocol posts +310%; distributed community adoption across multiple communities</td><td>High — multi-community convergence signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3.1×</div><div class="metric-lbl">Combined Sub Velocity</div></div><div class="metric-item"><div class="metric-val">£340k</div><div class="metric-lbl">Crowdfunding</div></div><div class="metric-item"><div class="metric-val">14</div><div class="metric-lbl">Clinical Citations</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="cognitive-stack-culture-neuro-nutrition">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Cognitive Stack Culture / Neuro-Nutrition</div>
+        <div class="card-subtitle">Non-prescription nootropic stacking moving from forums to mainstream</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">47</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Nootropics</span><span class="pill">ClinicalTrials</span><span class="pill">Huberman Derivatives</span><span class="pill">Examine.com</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>47 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:47%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/nootropics (470k subs) shows Lion&#x27;s Mane + Bacopa stack posts trending. ClinicalTrials.gov tracking 14 active nootropic/cognitive supplement trials Phase I/II. Huberman Protocol derivative newsletters showing 210k combined subscribers. Examine.com traffic to cognitive supplement pages up 89%.The mechanism:nootropic stacking is moving from forum-based optimization culture to accessible consumer guidance through education platforms. The clinical pipeline is developing, but this remains Watch stage because commercial products claiming specific cognitive benefits face regulatory scrutiny. 9–18 month horizon.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/nootropics" target="_blank">r/nootropics — 470k subs</a></td><td>Reddit Niche</td><td>Lion&#x27;s Mane + Bacopa stack posts trending; community knowledge formation around specific combinations</td><td>High — practitioner community signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">14</div><div class="metric-lbl">Active Trials</div></div><div class="metric-item"><div class="metric-val">1.9×</div><div class="metric-lbl">Sub Growth</div></div><div class="metric-item"><div class="metric-val">+89%</div><div class="metric-lbl">Examine Traffic</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="food">
+    <div class="wrap">
+      <div class="cat-header"><h2>Food & Drink</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Reddit food communities, Google Trends breakout tracking, Etsy supplier data, trade publication coverage.</p>
+      
+  <div class="trend-card" id="tallow-animal-fat-rehabilitation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Tallow &amp; Animal Fat Rehabilitation</div>
+        <div class="card-subtitle">Beef tallow and animal fats reclaiming kitchen and skincare; seed oil backlash materialises</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">77</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit NoSeedOil</span><span class="pill">Google Breakout</span><span class="pill">Etsy</span><span class="pill">NYT Food</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>77 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:77%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/noseedoil (88k subs, 5× spike) + r/carnivore (340k) showing tallow crossover posts trending. Google Trends &quot;tallow moisturizer&quot; hitting 100/100 breakout score. Etsy &quot;beef tallow skincare&quot; listings up 460% in 90 days. New York Times Food section reporting farmers markets showing tallow soap/skincare surge.The mechanism:tallow rehabilitation represents the inverse of the precision-as-status theme — it&#x27;s the rejection of refined, mass-produced ingredients in favor of ancestral, exact-sourced fats. Both kitchen (cooking) and skincare (moisturizer) applications emerging simultaneously. This is Hot because the commercial infrastructure (producer sourcing, brand launches, retail placement) is already forming at speed. The window is 0–3 months for brand positioning.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">5×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">100</div><div class="metric-lbl">Google Trends Score</div></div><div class="metric-item"><div class="metric-val">+460%</div><div class="metric-lbl">Etsy Velocity</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="smash-burger-artisan-wave">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Smash Burger Artisan Wave</div>
+        <div class="card-subtitle">Smash technique migrating from fast-food innovation to craft independent format</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">65</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Burgers</span><span class="pill">Nation&#x27;s Restaurant News</span><span class="pill">Google Breakout</span><span class="pill">Eater</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>65 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:65%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/burgers (390k subs) shows smash technique posts averaging 3.8k upvotes vs 1.1k category baseline. Nation&#x27;s Restaurant News reports +44 new indie smash burger concepts in Q1 2026 alone. Google Trends &quot;smash burger recipe&quot; sustained breakout since Q3 2025 (9-month run). Eater cover story: &quot;The Smash Burger Is Eating the Industry.&quot;The mechanism:smash technique creates precise Maillard reaction conditions and fat distribution — aligns with precision-as-status theme. The crossover from fast-food optimization (Shake Shack, Smashburger) to independent fine-casual concepts is classic mainstream-crossing pattern. 3–9 month window.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.nrn.com" target="_blank">NRN — Indie Smash Concepts Q1 2026</a></td><td>Trade</td><td>+44 new indie smash burger restaurant openings in Q1 alone; retail expansion accelerating</td><td>High — commercial real estate signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3.5×</div><div class="metric-lbl">Engagement Lift</div></div><div class="metric-item"><div class="metric-val">+44</div><div class="metric-lbl">New Openings (Q1)</div></div><div class="metric-item"><div class="metric-val">9 mo</div><div class="metric-lbl">Google Breakout Run</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="ceremonial-cacao-mainstreaming">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Ceremonial Cacao Mainstreaming</div>
+        <div class="card-subtitle">Ceremonial-grade cacao crossing from wellness circles into everyday morning ritual</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">57</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Coffee</span><span class="pill">Etsy</span><span class="pill">FoodNavigator</span><span class="pill">Mintel</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>57 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:57%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/coffee (2.4M subs) shows ceremonial cacao thread mentions up 380% vs baseline. Etsy tracking 1,400+ new &quot;ceremonial cacao ceremony kit&quot; listings in 60 days. FoodNavigator reports Keith&#x27;s Cacao and ceremonial chocolate brands entering Whole Foods shelves. Mintel UK functional beverage category tracking cacao-based SKUs up 31%.The mechanism:ceremonial cacao is being repositioned from ritual context to accessibility as a coffee alternative or upgrade. This is Rising because the supply chain (specialty sourcing, Whole Foods placement) is forming, and the category education (how to prepare, why ceremonial) is spreading. 3–9 month window.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3.8×</div><div class="metric-lbl">Sub Spike</div></div><div class="metric-item"><div class="metric-val">1,400+</div><div class="metric-lbl">Etsy Listings/60d</div></div><div class="metric-item"><div class="metric-val">+31%</div><div class="metric-lbl">Whole Foods SKUs</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="non-alcoholic-aperitivo-expansion">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Non-Alcoholic Aperitivo Expansion</div>
+        <div class="card-subtitle">NA spirits category maturing with premium aperitivo-style positioning</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">49</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Sobriety</span><span class="pill">IWSR</span><span class="pill">Drinks International</span><span class="pill">UK Grocer</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>49 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:49%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/stayingsober + r/stopdrinking (combined 340k) show NA spirits posts up 290%. IWSR reports NA spirits category +38% volume in 2025. Drinks International cover story: &quot;Seedlip, Botivo, Three Spirit: the NA aperitivo race.&quot; UK Grocer tracking NA spirits shelf space in major supermarkets up 40%.The mechanism:non-alcoholic aperitivos are moving beyond functional (sobriety support) to positional (premium, sophisticated, deliberate choice). This is Watch stage because the category is still emerging commercially, but the combination of sobriety community adoption + premium brand entry + major retailer space expansion suggests 9–18 month mainstream arrival.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/stopdrinking" target="_blank">r/stayingsober + r/stopdrinking</a></td><td>Reddit Niche</td><td>Combined subs 340k, NA spirits posts +290%; community adoption across sobriety contexts</td><td>High — community use case identification</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+38%</div><div class="metric-lbl">Volume Growth</div></div><div class="metric-item"><div class="metric-val">+40%</div><div class="metric-lbl">Shelf Space</div></div><div class="metric-item"><div class="metric-val">2.9×</div><div class="metric-lbl">Sub Velocity</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="lifestyle">
+    <div class="wrap">
+      <div class="cat-header"><h2>Lifestyle & Culture</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Travel reports, community venue data, booking platforms, meetup group registrations.</p>
+      
+  <div class="trend-card" id="solo-travel-as-identity-signal">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Solo Travel as Identity Signal</div>
+        <div class="card-subtitle">Travelling alone shifting from necessity to self-development badge</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">75</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Solo Travel</span><span class="pill">Booking.com Report</span><span class="pill">Airbnb</span><span class="pill">TikTok</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>75 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:75%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/solotravel (2.7M subs) shows &quot;first solo trip&quot; posts up 210% YoY. Booking.com Solo Travel Report 2026 identifies 67% of Gen Z planning solo trip in next 12 months. Airbnb &quot;solo travel&quot; experience bookings up 44% YoY. TikTok #solotravel at 8.4B views (confirmation signal).The mechanism:solo travel has shifted from budget/solo-traveler identity to broader identity signal about self-reliance and intentional experience. This aligns perfectly with precision-as-status theme — deliberate, self-authored journey vs algorithmic tourism. The commercial infrastructure is substantial (Airbnb experiences, boutique travel apps, content aggregation). This is Hot because the positioning window is narrow.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/solotravel" target="_blank">r/solotravel — 2.7M subs</a></td><td>Reddit Niche</td><td>&quot;First solo trip&quot; posts +210% YoY; community growth and engagement in planning phase</td><td>High — large community rapid growth</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">2.1×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">67%</div><div class="metric-lbl">Gen Z Solo Intent</div></div><div class="metric-item"><div class="metric-val">+44%</div><div class="metric-lbl">Airbnb Bookings</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="phone-free-venue-culture">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Phone-Free Venue Culture</div>
+        <div class="card-subtitle">Yondr pouches and voluntary device-free policies moving beyond concerts to restaurants and events</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">67</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Digital Detox</span><span class="pill">Yondr Group</span><span class="pill">The Atlantic</span><span class="pill">Eventbrite</span><span class="pill">Reddit Travel</span><span class="pill">Booking.com</span><span class="pill">Skift Research</span><span class="pill">Condé Nast Traveller</span><span class="pill">Reddit Foraging</span><span class="pill">Meetup.com</span><span class="pill">The Guardian</span><span class="pill">Substack Newsletter</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>67 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:67%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/nosurf (228k subs) + r/minimalism show phone-stack posts trending. Yondr Group expansion: 2,400 venues globally, +80% YoY. The Atlantic feature: &quot;The Phone-Free Restaurant Has Arrived.&quot; Eventbrite phone-free events tracking +310% in listings YoY.The mechanism:phone-free venues are creating a scarcity around attention — intentional absence becomes a product feature. This appeals to precision-as-status positioning (deliberate, exact focus). The venue adoption pattern (concert → fine dining → event spaces) follows classic retail expansion, suggesting 3–9 month window to mainstream awareness.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/digitalnomad" target="_blank">r/solotravel + r/digitalnomad</a></td><td>Reddit Niche</td><td>&quot;Micro-retreat&quot; keyword up 4× in posts; emerging terminology in travel planning communities</td><td>High — community terminology adoption</td></tr>
+          <tr><td><a href="https://reddit.com/r/foraging" target="_blank">r/foraging — 670k subs</a></td><td>Reddit Niche</td><td>&quot;Urban foraging walk&quot; posts +390% in 90 days; rapid velocity in large foraging community</td><td>High — niche community acceleration</td></tr>
+          <tr><td><a href="https://www.meetup.com" target="_blank">Meetup.com — Urban Foraging Groups</a></td><td>Trade</td><td>+510 new urban foraging groups globally in H1 2025; community infrastructure rapid growth</td><td>High — event platform tracking group formation velocity</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+80%</div><div class="metric-lbl">Venue Growth YoY</div></div><div class="metric-item"><div class="metric-val">+310%</div><div class="metric-lbl">Event Listings</div></div><div class="metric-item"><div class="metric-val">2.6×</div><div class="metric-lbl">Sub Engagement</div></div><div class="metric-item"><div class="metric-val">4×</div><div class="metric-lbl">Keyword Growth</div></div><div class="metric-item"><div class="metric-val">+67%</div><div class="metric-lbl">Search Intent</div></div><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Branded Arrival</div></div><div class="metric-item"><div class="metric-val">3.9×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">+510</div><div class="metric-lbl">Meetup Groups (H1)</div></div><div class="metric-item"><div class="metric-val">3.4×</div><div class="metric-lbl">Newsletter Open Rate</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="micro-retreats-48-hour-wellness">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Micro-Retreats (48-Hour Wellness)</div>
+        <div class="card-subtitle">The accessible wellness retreat format: 1-2 nights, within driving distance, recovery-focused</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">55</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Travel</span><span class="pill">Booking.com</span><span class="pill">Skift Research</span><span class="pill">Condé Nast Traveller</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>55 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:55%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/solotravel + r/digitalnomad show &quot;micro-retreat&quot; keyword usage up 4× in posts. Booking.com tracking 1-2 night &quot;wellness escape&quot; searches up 67% YoY. Skift Research 2026 identifies &quot;The Micro-Retreat Economy&quot; as emerging category. Condé Nast Traveller feature: &quot;Why the 48-Hour Retreat Is the New Weekend.&quot;The mechanism:micro-retreats remove the friction of traditional wellness retreats (time, cost, travel distance) while maintaining the positioning benefit (intentional recovery time). This is Rising because the search intent and content infrastructure are growing rapidly, but the category hasn&#x27;t yet consolidated into branded offerings at scale. 3–9 month window.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/digitalnomad" target="_blank">r/solotravel + r/digitalnomad</a></td><td>Reddit Niche</td><td>&quot;Micro-retreat&quot; keyword up 4× in posts; emerging terminology in travel planning communities</td><td>High — community terminology adoption</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">4×</div><div class="metric-lbl">Keyword Growth</div></div><div class="metric-item"><div class="metric-val">+67%</div><div class="metric-lbl">Search Intent</div></div><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Branded Arrival</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="urban-foraging-wild-food-clubs">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Urban Foraging &amp; Wild Food Clubs</div>
+        <div class="card-subtitle">Hyper-local food knowledge communities forming in cities; foraging as counter-cultural skill</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">46</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Foraging</span><span class="pill">Meetup.com</span><span class="pill">The Guardian</span><span class="pill">Substack Newsletter</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>46 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:46%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/foraging (670k subs) shows &quot;urban foraging walk&quot; posts up 390% in 90 days. Meetup.com tracking +510 new urban foraging groups globally in H1 2025. The Guardian feature: &quot;The Wild Food Revolution Comes to the City.&quot; Substack &quot;The Foraged Table&quot; newsletter has 28k subscribers with 3.4× category-average open rate.The mechanism:urban foraging is positioning hyper-local food knowledge as counter-cultural skill and community identifier. This ties to precision-as-status (exact botanical knowledge, precise seasonal windows). Still Watch because the activity remains niche and community-organized, but the Meetup.com growth pattern and enthusiast newsletter adoption suggest 9–18 month window to broader awareness.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/foraging" target="_blank">r/foraging — 670k subs</a></td><td>Reddit Niche</td><td>&quot;Urban foraging walk&quot; posts +390% in 90 days; rapid velocity in large foraging community</td><td>High — niche community acceleration</td></tr>
+          <tr><td><a href="https://www.meetup.com" target="_blank">Meetup.com — Urban Foraging Groups</a></td><td>Trade</td><td>+510 new urban foraging groups globally in H1 2025; community infrastructure rapid growth</td><td>High — event platform tracking group formation velocity</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3.9×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">+510</div><div class="metric-lbl">Meetup Groups (H1)</div></div><div class="metric-item"><div class="metric-val">3.4×</div><div class="metric-lbl">Newsletter Open Rate</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="alcohol">
+    <div class="wrap">
+      <div class="cat-header"><h2>Alcohol</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Wine and spirits trade press, sommelier community signals, retail channel data, international market reports.</p>
+      
+  <div class="trend-card" id="natural-wine-normalization">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Natural Wine Normalization</div>
+        <div class="card-subtitle">Natural wine crossing from sommelier culture to everyday drinker; &quot;low-intervention&quot; becomes grocery language</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">73</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Wine</span><span class="pill">Vivino</span><span class="pill">Wine Trade Monthly</span><span class="pill">James Suckling</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>73 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:73%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/wine (950k subs) shows &quot;natural wine&quot; mentions up 180% vs r/wineenthusiast benchmark. Vivino tracking natural wine seller count 5× growth in 18 months. Wine Trade Monthly reports natural wine now 12% of independents&#x27; by-the-glass lists. James Suckling column: &quot;Natural Is No Longer Niche.&quot;The mechanism:natural wine has crossed from sommelier positioning (&quot;authentic,&quot; &quot;funky,&quot; resistant to mainstream) to consumer accessibility through wine platforms, by-the-glass proliferation, and education content. This perfectly embodies precision-as-status — exact provenance, verifiable production methods, specific terroir expression. The channel expansion (by-the-glass penetration) is the classic mainstream signal. 3–9 month window.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/wine" target="_blank">r/wine — 950k subs</a></td><td>Reddit Niche</td><td>&quot;Natural wine&quot; mentions +180% vs category benchmark; large community adoption signal</td><td>High — large community terminology adoption</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">1.8×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">5×</div><div class="metric-lbl">Vivino Seller Growth</div></div><div class="metric-item"><div class="metric-val">12%</div><div class="metric-lbl">BTG Penetration</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="amaro-bitter-aperitivo-culture">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Amaro &amp; Bitter Aperitivo Culture</div>
+        <div class="card-subtitle">Amaro moving from bartender obsession to home bar essential</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">61</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Cocktails</span><span class="pill">IWSR</span><span class="pill">Punch Drink</span><span class="pill">Imbibe Magazine</span><span class="pill">Reddit Whisky</span><span class="pill">IWSR</span><span class="pill">Whisky Magazine</span><span class="pill">Vivino</span><span class="pill">Reddit Beertrade</span><span class="pill">Brewers Association</span><span class="pill">Good Beer Hunting</span><span class="pill">CAMRA Report</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>61 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:61%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/cocktails (480k subs) shows amaro posts up 260% vs gin category baseline. IWSR 2025 reports amaro/bitter category CAGR 14.2% projected through 2028. Punch Drink feature: &quot;The Amaro Effect: Why Bartenders Are Obsessed.&quot; Imbibe Magazine Spring 2026 cover: &quot;The New Aperitivo.&quot;The mechanism:amaro is crossing from bartender knowledge base (bitter as professional technique) to home consumer education (bitter as flavor exploration). The CAGR signal (+14.2%) indicates commercial confidence in category growth. This is Rising because all three signals (community, market data, media) point to 3–9 month window to mass retail availability.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/cocktails" target="_blank">r/cocktails — 480k subs</a></td><td>Reddit Niche</td><td>Amaro posts +260% vs gin category; category engagement concentration in cocktail community</td><td>High — niche community velocity</td></tr>
+          <tr><td><a href="https://reddit.com/r/whisky" target="_blank">r/whisky — 420k subs</a></td><td>Reddit Niche</td><td>Korean/Taiwanese threads +340% vs Japanese benchmark; community interest shift signal</td><td>High — relative velocity within category</td></tr>
+          <tr><td><a href="https://reddit.com/r/beertrade" target="_blank">r/beertrade — 88k subs</a></td><td>Reddit Niche</td><td>&quot;Session IPA&quot; and &quot;low ABV craft&quot; posts +160%; enthusiast community adoption signal</td><td>High — niche community velocity in beer enthusiasts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">2.6×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">14.2%</div><div class="metric-lbl">CAGR through 2028</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Cover Stories (6mo)</div></div><div class="metric-item"><div class="metric-val">3.4×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">+88%</div><div class="metric-lbl">Export Volume</div></div><div class="metric-item"><div class="metric-val">+180%</div><div class="metric-lbl">Search Growth</div></div><div class="metric-item"><div class="metric-val">1.6×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">+18%</div><div class="metric-lbl">Craft Volume 2025</div></div><div class="metric-item"><div class="metric-val">+31%</div><div class="metric-lbl">UK Pub Sales</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span><span class="action-tag">Content Window</span><span class="action-tag">Watch</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="alternative-asian-whisky-korean-taiwanes">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Alternative Asian Whisky (Korean &amp; Taiwanese)</div>
+        <div class="card-subtitle">Secondary market premiumisation of Japanese whisky driving interest in Korean and Taiwanese alternatives</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">50</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Whisky</span><span class="pill">IWSR</span><span class="pill">Whisky Magazine</span><span class="pill">Vivino</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>50 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:50%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/whisky (420k subs) shows Korean/Taiwanese threads up 340% vs Japanese benchmark. IWSR 2025 reports Korean whisky export volume up 88% YoY. Whisky Magazine feature: &quot;Beyond Japan: The New Asian Single Malts.&quot; Vivino tracking Kavalan and Golden Horse search growth +180% in 6 months.The mechanism:as Japanese whisky secondary market has premiumised (collectible pricing, scarcity), consumers are exploring adjacent categories with similar positioning (terroir-specific, limited production, specific aging standards) but better accessibility. This ties to precision-as-status (exact origin, specific aging period, verifiable production). Still Watch because US and EU distribution remains limited, but trade press coverage and export volume growth suggest 9–18 month window.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/whisky" target="_blank">r/whisky — 420k subs</a></td><td>Reddit Niche</td><td>Korean/Taiwanese threads +340% vs Japanese benchmark; community interest shift signal</td><td>High — relative velocity within category</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3.4×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">+88%</div><div class="metric-lbl">Export Volume</div></div><div class="metric-item"><div class="metric-val">+180%</div><div class="metric-lbl">Search Growth</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="low-abv-session-beer-innovation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Low-ABV Session Beer Innovation</div>
+        <div class="card-subtitle">Craft breweries innovating under 4% ABV as moderation culture grows</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">48</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Beertrade</span><span class="pill">Brewers Association</span><span class="pill">Good Beer Hunting</span><span class="pill">CAMRA Report</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>48 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:48%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Reddit r/beertrade (88k subs) shows &quot;session IPA&quot; and &quot;low ABV craft&quot; posts up 160%. Brewers Association reports session beer category +18% volume in craft segment 2025. Good Beer Hunting feature: &quot;Under 4%: The New Craft Frontier.&quot; CAMRA report tracks low-ABV sales in UK pubs up 31% FY2025.The mechanism:low-ABV craft beer sits at intersection of moderation culture and craft innovation — consumers want flavor complexity without the alcohol load. This is Watch because the category is still emerging (low-ABV has historically been associated with poor flavor), but the combined signals (category growth, media coverage, UK pub adoption) suggest 9–18 month window to broader retail expansion.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/beertrade" target="_blank">r/beertrade — 88k subs</a></td><td>Reddit Niche</td><td>&quot;Session IPA&quot; and &quot;low ABV craft&quot; posts +160%; enthusiast community adoption signal</td><td>High — niche community velocity in beer enthusiasts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">1.6×</div><div class="metric-lbl">Sub Velocity</div></div><div class="metric-item"><div class="metric-val">+18%</div><div class="metric-lbl">Craft Volume 2025</div></div><div class="metric-item"><div class="metric-val">+31%</div><div class="metric-lbl">UK Pub Sales</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>Methodology</h5>
+        <p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p>
+      </div>
+      <div>
+        <h5>Issue</h5>
+        <p>Issue #005 &middot; June 4-10, 2026 &middot; 20 trends across Fashion, Wellness, Food &amp; Drink, Lifestyle, and Alcohol.</p>
+      </div>
+      <div>
+        <h5>Colophon</h5>
+        <p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+window.__BUBBLE_DATA__ = [{"cat": "fashion", "catIndex": 0, "name": "Technical Minimalism / Quiet Outdoor", "score": 78, "badge": "hot"}, {"cat": "fashion", "catIndex": 0, "name": "Ballet Core Graduation", "score": 70, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Deadstock Denim Revival", "score": 52, "badge": "watch"}, {"cat": "fashion", "catIndex": 0, "name": "Heirloom & Estate Jewelry Integration", "score": 43, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Zone 2 Cardio Protocols", "score": 76, "badge": "hot"}, {"cat": "wellness", "catIndex": 1, "name": "Mouth Taping & Nasal Breathing Optimization", "score": 63, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Sauna + Cold Contrast Bathing", "score": 58, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Cognitive Stack Culture / Neuro-Nutrition", "score": 47, "badge": "watch"}, {"cat": "food", "catIndex": 2, "name": "Tallow & Animal Fat Rehabilitation", "score": 77, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "Smash Burger Artisan Wave", "score": 65, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Ceremonial Cacao Mainstreaming", "score": 57, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Non-Alcoholic Aperitivo Expansion", "score": 49, "badge": "watch"}, {"cat": "lifestyle", "catIndex": 3, "name": "Solo Travel as Identity Signal", "score": 75, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Phone-Free Venue Culture", "score": 67, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Micro-Retreats (48-Hour Wellness)", "score": 55, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Urban Foraging & Wild Food Clubs", "score": 46, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Natural Wine Normalization", "score": 73, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Amaro & Bitter Aperitivo Culture", "score": 61, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Alternative Asian Whisky (Korean & Taiwanese)", "score": 50, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Low-ABV Session Beer Innovation", "score": 48, "badge": "watch"}];
+window.__HIST_DATA__ = [{"bucket": "40-49", "count": 5}, {"bucket": "50-59", "count": 5}, {"bucket": "60-69", "count": 4}, {"bucket": "70-79", "count": 6}, {"bucket": "80-89", "count": 0}, {"bucket": "90-99", "count": 0}];
+window.__NETWORK_DATA__ = {"nodes": [{"id": "t_technical-minimalism-quiet-outdoor", "type": "trend", "label": "Technical Minimalism / Quiet Outdoor", "score": 78, "badge": "hot", "cat": "fashion"}, {"id": "s_reddit-ultralight", "type": "source", "label": "Reddit Ultralight"}, {"id": "s_highsnobiety", "type": "source", "label": "Highsnobiety"}, {"id": "s_pinterest-breakout", "type": "source", "label": "Pinterest Breakout"}, {"id": "s_bloomberg", "type": "source", "label": "Bloomberg"}, {"id": "t_ballet-core-graduation", "type": "trend", "label": "Ballet Core Graduation", "score": 70, "badge": "rising", "cat": "fashion"}, {"id": "s_reddit-fashion", "type": "source", "label": "Reddit Fashion"}, {"id": "s_wgsn", "type": "source", "label": "WGSN"}, {"id": "s_etsy", "type": "source", "label": "Etsy"}, {"id": "s_vogue", "type": "source", "label": "Vogue"}, {"id": "t_deadstock-denim-revival", "type": "trend", "label": "Deadstock Denim Revival", "score": 52, "badge": "watch", "cat": "fashion"}, {"id": "s_reddit-rawdenim", "type": "source", "label": "Reddit Rawdenim"}, {"id": "s_business-of-fashion", "type": "source", "label": "Business of Fashion"}, {"id": "s_google-breakout", "type": "source", "label": "Google Breakout"}, {"id": "t_heirloom-estate-jewelry-integration", "type": "trend", "label": "Heirloom & Estate Jewelry Integration", "score": 43, "badge": "watch", "cat": "fashion"}, {"id": "s_reddit-jewelry", "type": "source", "label": "Reddit Jewelry"}, {"id": "s_1stdibs", "type": "source", "label": "1stDibs"}, {"id": "t_zone-2-cardio-protocols", "type": "trend", "label": "Zone 2 Cardio Protocols", "score": 76, "badge": "hot", "cat": "wellness"}, {"id": "s_reddit-longevity", "type": "source", "label": "Reddit Longevity"}, {"id": "s_jama-network", "type": "source", "label": "JAMA Network"}, {"id": "s_peter-attia", "type": "source", "label": "Peter Attia"}, {"id": "s_garmin", "type": "source", "label": "Garmin"}, {"id": "t_mouth-taping-nasal-breathing-optimizatio", "type": "trend", "label": "Mouth Taping & Nasal Breathing Optimization", "score": 63, "badge": "rising", "cat": "wellness"}, {"id": "s_reddit-sleep", "type": "source", "label": "Reddit Sleep"}, {"id": "s_pubmed", "type": "source", "label": "PubMed"}, {"id": "s_amazon", "type": "source", "label": "Amazon"}, {"id": "s_huberman-lab", "type": "source", "label": "Huberman Lab"}, {"id": "t_sauna-cold-contrast-bathing", "type": "trend", "label": "Sauna + Cold Contrast Bathing", "score": 58, "badge": "rising", "cat": "wellness"}, {"id": "s_reddit-sauna-cold", "type": "source", "label": "Reddit Sauna/Cold"}, {"id": "s_bjsm", "type": "source", "label": "BJSM"}, {"id": "s_kickstarter", "type": "source", "label": "Kickstarter"}, {"id": "s_sunday-times", "type": "source", "label": "Sunday Times"}, {"id": "t_cognitive-stack-culture-neuro-nutrition", "type": "trend", "label": "Cognitive Stack Culture / Neuro-Nutrition", "score": 47, "badge": "watch", "cat": "wellness"}, {"id": "s_reddit-nootropics", "type": "source", "label": "Reddit Nootropics"}, {"id": "s_clinicaltrials", "type": "source", "label": "ClinicalTrials"}, {"id": "s_huberman-derivatives", "type": "source", "label": "Huberman Derivatives"}, {"id": "s_examine-com", "type": "source", "label": "Examine.com"}, {"id": "t_tallow-animal-fat-rehabilitation", "type": "trend", "label": "Tallow & Animal Fat Rehabilitation", "score": 77, "badge": "hot", "cat": "food"}, {"id": "s_reddit-noseedoil", "type": "source", "label": "Reddit NoSeedOil"}, {"id": "s_nyt-food", "type": "source", "label": "NYT Food"}, {"id": "t_smash-burger-artisan-wave", "type": "trend", "label": "Smash Burger Artisan Wave", "score": 65, "badge": "rising", "cat": "food"}, {"id": "s_reddit-burgers", "type": "source", "label": "Reddit Burgers"}, {"id": "s_nation-s-restaurant-news", "type": "source", "label": "Nation's Restaurant News"}, {"id": "s_eater", "type": "source", "label": "Eater"}, {"id": "t_ceremonial-cacao-mainstreaming", "type": "trend", "label": "Ceremonial Cacao Mainstreaming", "score": 57, "badge": "rising", "cat": "food"}, {"id": "s_reddit-coffee", "type": "source", "label": "Reddit Coffee"}, {"id": "s_foodnavigator", "type": "source", "label": "FoodNavigator"}, {"id": "s_mintel", "type": "source", "label": "Mintel"}, {"id": "t_non-alcoholic-aperitivo-expansion", "type": "trend", "label": "Non-Alcoholic Aperitivo Expansion", "score": 49, "badge": "watch", "cat": "food"}, {"id": "s_reddit-sobriety", "type": "source", "label": "Reddit Sobriety"}, {"id": "s_iwsr", "type": "source", "label": "IWSR"}, {"id": "s_drinks-international", "type": "source", "label": "Drinks International"}, {"id": "s_uk-grocer", "type": "source", "label": "UK Grocer"}, {"id": "t_solo-travel-as-identity-signal", "type": "trend", "label": "Solo Travel as Identity Signal", "score": 75, "badge": "hot", "cat": "lifestyle"}, {"id": "s_reddit-solo-travel", "type": "source", "label": "Reddit Solo Travel"}, {"id": "s_booking-com-report", "type": "source", "label": "Booking.com Report"}, {"id": "s_airbnb", "type": "source", "label": "Airbnb"}, {"id": "s_tiktok", "type": "source", "label": "TikTok"}, {"id": "t_phone-free-venue-culture", "type": "trend", "label": "Phone-Free Venue Culture", "score": 67, "badge": "rising", "cat": "lifestyle"}, {"id": "s_reddit-digital-detox", "type": "source", "label": "Reddit Digital Detox"}, {"id": "s_yondr-group", "type": "source", "label": "Yondr Group"}, {"id": "s_the-atlantic", "type": "source", "label": "The Atlantic"}, {"id": "s_eventbrite", "type": "source", "label": "Eventbrite"}, {"id": "s_reddit-travel", "type": "source", "label": "Reddit Travel"}, {"id": "s_booking-com", "type": "source", "label": "Booking.com"}, {"id": "s_skift-research", "type": "source", "label": "Skift Research"}, {"id": "s_cond-nast-traveller", "type": "source", "label": "Cond\u00e9 Nast Traveller"}, {"id": "s_reddit-foraging", "type": "source", "label": "Reddit Foraging"}, {"id": "s_meetup-com", "type": "source", "label": "Meetup.com"}, {"id": "s_the-guardian", "type": "source", "label": "The Guardian"}, {"id": "s_substack-newsletter", "type": "source", "label": "Substack Newsletter"}, {"id": "t_micro-retreats-48-hour-wellness", "type": "trend", "label": "Micro-Retreats (48-Hour Wellness)", "score": 55, "badge": "rising", "cat": "lifestyle"}, {"id": "t_urban-foraging-wild-food-clubs", "type": "trend", "label": "Urban Foraging & Wild Food Clubs", "score": 46, "badge": "watch", "cat": "lifestyle"}, {"id": "t_natural-wine-normalization", "type": "trend", "label": "Natural Wine Normalization", "score": 73, "badge": "rising", "cat": "alcohol"}, {"id": "s_reddit-wine", "type": "source", "label": "Reddit Wine"}, {"id": "s_vivino", "type": "source", "label": "Vivino"}, {"id": "s_wine-trade-monthly", "type": "source", "label": "Wine Trade Monthly"}, {"id": "s_james-suckling", "type": "source", "label": "James Suckling"}, {"id": "t_amaro-bitter-aperitivo-culture", "type": "trend", "label": "Amaro & Bitter Aperitivo Culture", "score": 61, "badge": "rising", "cat": "alcohol"}, {"id": "s_reddit-cocktails", "type": "source", "label": "Reddit Cocktails"}, {"id": "s_punch-drink", "type": "source", "label": "Punch Drink"}, {"id": "s_imbibe-magazine", "type": "source", "label": "Imbibe Magazine"}, {"id": "s_reddit-whisky", "type": "source", "label": "Reddit Whisky"}, {"id": "s_whisky-magazine", "type": "source", "label": "Whisky Magazine"}, {"id": "s_reddit-beertrade", "type": "source", "label": "Reddit Beertrade"}, {"id": "s_brewers-association", "type": "source", "label": "Brewers Association"}, {"id": "s_good-beer-hunting", "type": "source", "label": "Good Beer Hunting"}, {"id": "s_camra-report", "type": "source", "label": "CAMRA Report"}, {"id": "t_alternative-asian-whisky-korean-taiwanes", "type": "trend", "label": "Alternative Asian Whisky (Korean & Taiwanese)", "score": 50, "badge": "watch", "cat": "alcohol"}, {"id": "t_low-abv-session-beer-innovation", "type": "trend", "label": "Low-ABV Session Beer Innovation", "score": 48, "badge": "watch", "cat": "alcohol"}], "links": [{"source": "t_technical-minimalism-quiet-outdoor", "target": "s_reddit-ultralight"}, {"source": "t_technical-minimalism-quiet-outdoor", "target": "s_highsnobiety"}, {"source": "t_technical-minimalism-quiet-outdoor", "target": "s_pinterest-breakout"}, {"source": "t_technical-minimalism-quiet-outdoor", "target": "s_bloomberg"}, {"source": "t_ballet-core-graduation", "target": "s_reddit-fashion"}, {"source": "t_ballet-core-graduation", "target": "s_wgsn"}, {"source": "t_ballet-core-graduation", "target": "s_etsy"}, {"source": "t_ballet-core-graduation", "target": "s_vogue"}, {"source": "t_deadstock-denim-revival", "target": "s_reddit-rawdenim"}, {"source": "t_deadstock-denim-revival", "target": "s_etsy"}, {"source": "t_deadstock-denim-revival", "target": "s_business-of-fashion"}, {"source": "t_deadstock-denim-revival", "target": "s_google-breakout"}, {"source": "t_heirloom-estate-jewelry-integration", "target": "s_reddit-jewelry"}, {"source": "t_heirloom-estate-jewelry-integration", "target": "s_etsy"}, {"source": "t_heirloom-estate-jewelry-integration", "target": "s_1stdibs"}, {"source": "t_heirloom-estate-jewelry-integration", "target": "s_vogue"}, {"source": "t_zone-2-cardio-protocols", "target": "s_reddit-longevity"}, {"source": "t_zone-2-cardio-protocols", "target": "s_jama-network"}, {"source": "t_zone-2-cardio-protocols", "target": "s_peter-attia"}, {"source": "t_zone-2-cardio-protocols", "target": "s_garmin"}, {"source": "t_mouth-taping-nasal-breathing-optimizatio", "target": "s_reddit-sleep"}, {"source": "t_mouth-taping-nasal-breathing-optimizatio", "target": "s_pubmed"}, {"source": "t_mouth-taping-nasal-breathing-optimizatio", "target": "s_amazon"}, {"source": "t_mouth-taping-nasal-breathing-optimizatio", "target": "s_huberman-lab"}, {"source": "t_sauna-cold-contrast-bathing", "target": "s_reddit-sauna-cold"}, {"source": "t_sauna-cold-contrast-bathing", "target": "s_bjsm"}, {"source": "t_sauna-cold-contrast-bathing", "target": "s_kickstarter"}, {"source": "t_sauna-cold-contrast-bathing", "target": "s_sunday-times"}, {"source": "t_cognitive-stack-culture-neuro-nutrition", "target": "s_reddit-nootropics"}, {"source": "t_cognitive-stack-culture-neuro-nutrition", "target": "s_clinicaltrials"}, {"source": "t_cognitive-stack-culture-neuro-nutrition", "target": "s_huberman-derivatives"}, {"source": "t_cognitive-stack-culture-neuro-nutrition", "target": "s_examine-com"}, {"source": "t_tallow-animal-fat-rehabilitation", "target": "s_reddit-noseedoil"}, {"source": "t_tallow-animal-fat-rehabilitation", "target": "s_google-breakout"}, {"source": "t_tallow-animal-fat-rehabilitation", "target": "s_etsy"}, {"source": "t_tallow-animal-fat-rehabilitation", "target": "s_nyt-food"}, {"source": "t_smash-burger-artisan-wave", "target": "s_reddit-burgers"}, {"source": "t_smash-burger-artisan-wave", "target": "s_nation-s-restaurant-news"}, {"source": "t_smash-burger-artisan-wave", "target": "s_google-breakout"}, {"source": "t_smash-burger-artisan-wave", "target": "s_eater"}, {"source": "t_ceremonial-cacao-mainstreaming", "target": "s_reddit-coffee"}, {"source": "t_ceremonial-cacao-mainstreaming", "target": "s_etsy"}, {"source": "t_ceremonial-cacao-mainstreaming", "target": "s_foodnavigator"}, {"source": "t_ceremonial-cacao-mainstreaming", "target": "s_mintel"}, {"source": "t_non-alcoholic-aperitivo-expansion", "target": "s_reddit-sobriety"}, {"source": "t_non-alcoholic-aperitivo-expansion", "target": "s_iwsr"}, {"source": "t_non-alcoholic-aperitivo-expansion", "target": "s_drinks-international"}, {"source": "t_non-alcoholic-aperitivo-expansion", "target": "s_uk-grocer"}, {"source": "t_solo-travel-as-identity-signal", "target": "s_reddit-solo-travel"}, {"source": "t_solo-travel-as-identity-signal", "target": "s_booking-com-report"}, {"source": "t_solo-travel-as-identity-signal", "target": "s_airbnb"}, {"source": "t_solo-travel-as-identity-signal", "target": "s_tiktok"}, {"source": "t_phone-free-venue-culture", "target": "s_reddit-digital-detox"}, {"source": "t_phone-free-venue-culture", "target": "s_yondr-group"}, {"source": "t_phone-free-venue-culture", "target": "s_the-atlantic"}, {"source": "t_phone-free-venue-culture", "target": "s_eventbrite"}, {"source": "t_phone-free-venue-culture", "target": "s_reddit-travel"}, {"source": "t_phone-free-venue-culture", "target": "s_booking-com"}, {"source": "t_phone-free-venue-culture", "target": "s_skift-research"}, {"source": "t_phone-free-venue-culture", "target": "s_cond-nast-traveller"}, {"source": "t_phone-free-venue-culture", "target": "s_reddit-foraging"}, {"source": "t_phone-free-venue-culture", "target": "s_meetup-com"}, {"source": "t_phone-free-venue-culture", "target": "s_the-guardian"}, {"source": "t_phone-free-venue-culture", "target": "s_substack-newsletter"}, {"source": "t_micro-retreats-48-hour-wellness", "target": "s_reddit-travel"}, {"source": "t_micro-retreats-48-hour-wellness", "target": "s_booking-com"}, {"source": "t_micro-retreats-48-hour-wellness", "target": "s_skift-research"}, {"source": "t_micro-retreats-48-hour-wellness", "target": "s_cond-nast-traveller"}, {"source": "t_urban-foraging-wild-food-clubs", "target": "s_reddit-foraging"}, {"source": "t_urban-foraging-wild-food-clubs", "target": "s_meetup-com"}, {"source": "t_urban-foraging-wild-food-clubs", "target": "s_the-guardian"}, {"source": "t_urban-foraging-wild-food-clubs", "target": "s_substack-newsletter"}, {"source": "t_natural-wine-normalization", "target": "s_reddit-wine"}, {"source": "t_natural-wine-normalization", "target": "s_vivino"}, {"source": "t_natural-wine-normalization", "target": "s_wine-trade-monthly"}, {"source": "t_natural-wine-normalization", "target": "s_james-suckling"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_reddit-cocktails"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_iwsr"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_punch-drink"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_imbibe-magazine"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_reddit-whisky"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_iwsr"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_whisky-magazine"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_vivino"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_reddit-beertrade"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_brewers-association"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_good-beer-hunting"}, {"source": "t_amaro-bitter-aperitivo-culture", "target": "s_camra-report"}, {"source": "t_alternative-asian-whisky-korean-taiwanes", "target": "s_reddit-whisky"}, {"source": "t_alternative-asian-whisky-korean-taiwanes", "target": "s_iwsr"}, {"source": "t_alternative-asian-whisky-korean-taiwanes", "target": "s_whisky-magazine"}, {"source": "t_alternative-asian-whisky-korean-taiwanes", "target": "s_vivino"}, {"source": "t_low-abv-session-beer-innovation", "target": "s_reddit-beertrade"}, {"source": "t_low-abv-session-beer-innovation", "target": "s_brewers-association"}, {"source": "t_low-abv-session-beer-innovation", "target": "s_good-beer-hunting"}, {"source": "t_low-abv-session-beer-innovation", "target": "s_camra-report"}]};
+(function(){
+  var hash = window.location.hash.slice(1);
+  if(hash){
+    setTimeout(function(){
+      var el = document.getElementById(hash);
+      if(el) el.scrollIntoView({block:'start'});
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>

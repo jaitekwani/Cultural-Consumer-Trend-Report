@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report — Issue #000 — May 1-7, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#network">Network</a>
+      <a href="#themes">Themes</a>
+      <a href="#anomalies">Anomalies</a>
+      <a href="#fashion">Fashion</a>
+      <a href="#wellness">Wellness</a>
+      <a href="#food">Food</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#alcohol">Alcohol</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Issue #000 &middot; May 1-7, 2026 &middot; 20 trends across 5 categories</div>
+    <h1>The Optimization Plateau<br/><em>Cross-Cutting Theme</em></h1>
+    <p class="lede">Self-improvement culture is showing fatigue. After years of stacking more protocols, more supplements, more aesthetic rules, consumers are signaling exhaustion with optimization-for-its-own-sake. The early move is subtraction — not yet precision, just relief. This is the first crack that eventually leads toward minimalism and precision themes in subsequent weeks.</p>
+  </div>
+  <div class="statgrid">
+      <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">Trends tracked, Issue #000</div></div>
+      <div class="stat"><div class="stat-num"><em>4</em></div><div class="stat-lbl">Hot — 0&ndash;3mo window</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-lbl">Rising — 3&ndash;9mo window</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-lbl">Watch — 9&ndash;18mo window</div></div></div>
+</div>
+
+<div class="section" id="landscape">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Score Landscape</div>
+    <h2>Where this week's <em>momentum</em> actually sits</h2>
+    <p class="desc">Every tracked trend, plotted by category and momentum score. Bubble size scales with score. Click any point to jump to its full writeup below.</p>
+    <div class="chart-frame" style="position:relative;"><div id="bubble-chart"></div></div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--hot)"></span>Hot (75+)</span>
+      <span><span class="legend-dot" style="background:var(--rising)"></span>Rising (55–74)</span>
+      <span><span class="legend-dot" style="background:var(--watch)"></span>Watch (40–54)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; Score Distribution</div>
+    <h2>How <em>concentrated</em> is this issue?</h2>
+    <p class="desc">Trend count by momentum-score band. A distribution skewed right means an unusually hot issue; skewed left means a quiet, early-signal-heavy week.</p>
+    <div class="chart-frame" style="position:relative;"><div id="hist-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Leaderboard</div>
+    <h2>All 20 trends, <em>ranked</em></h2>
+    <p class="desc">Click any column header to sort. Click any row to jump to that trend's full writeup.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+          <tr class="lb-row" data-name="Supplement Stack Fatigue / The Great Unstacking" data-cat="wellness" data-score="79" data-badge="hot" onclick="jumpToCard('Supplement Stack Fatigue / The Great Unstacking')">
+            <td>1</td>
+            <td>Supplement Stack Fatigue / The Great Unstacking</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:79%;background:var(--hot)"></span></span>79</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Recipe Simplification / 5-Ingredient Cooking" data-cat="food" data-score="78" data-badge="hot" onclick="jumpToCard('Recipe Simplification / 5-Ingredient Cooking')">
+            <td>2</td>
+            <td>Recipe Simplification / 5-Ingredient Cooking</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Capsule Wardrobe Backlash / Uniform Dressing" data-cat="fashion" data-score="77" data-badge="hot" onclick="jumpToCard('Capsule Wardrobe Backlash / Uniform Dressing')">
+            <td>3</td>
+            <td>Capsule Wardrobe Backlash / Uniform Dressing</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Subscription Audit Culture" data-cat="lifestyle" data-score="75" data-badge="hot" onclick="jumpToCard('Subscription Audit Culture')">
+            <td>4</td>
+            <td>Subscription Audit Culture</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="&quot;One Good Drink&quot; Culture / Quality Over Quantity" data-cat="alcohol" data-score="70" data-badge="rising" onclick="jumpToCard('&quot;One Good Drink&quot; Culture / Quality Over Quantity')">
+            <td>5</td>
+            <td>&quot;One Good Drink&quot; Culture / Quality Over Quantity</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:70%;background:var(--rising)"></span></span>70</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Walking as Default Exercise" data-cat="wellness" data-score="68" data-badge="rising" onclick="jumpToCard('Walking as Default Exercise')">
+            <td>6</td>
+            <td>Walking as Default Exercise</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:68%;background:var(--rising)"></span></span>68</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Dumb Phone Adjacent Devices" data-cat="lifestyle" data-score="67" data-badge="rising" onclick="jumpToCard('Dumb Phone Adjacent Devices')">
+            <td>7</td>
+            <td>Dumb Phone Adjacent Devices</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Pantry Staples Renaissance" data-cat="food" data-score="65" data-badge="rising" onclick="jumpToCard('Pantry Staples Renaissance')">
+            <td>8</td>
+            <td>Pantry Staples Renaissance</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Curated Maximalism / Anti-Minimalism Correction" data-cat="fashion" data-score="64" data-badge="rising" onclick="jumpToCard('Curated Maximalism / Anti-Minimalism Correction')">
+            <td>9</td>
+            <td>Curated Maximalism / Anti-Minimalism Correction</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Sober-Curious Re-engagement / Moderation Rebound" data-cat="alcohol" data-score="62" data-badge="rising" onclick="jumpToCard('Sober-Curious Re-engagement / Moderation Rebound')">
+            <td>10</td>
+            <td>Sober-Curious Re-engagement / Moderation Rebound</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:62%;background:var(--rising)"></span></span>62</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Tasking as Productivity Flex" data-cat="lifestyle" data-score="60" data-badge="rising" onclick="jumpToCard('Single-Tasking as Productivity Flex')">
+            <td>11</td>
+            <td>Single-Tasking as Productivity Flex</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Pre-Batched Cocktail Kits" data-cat="food" data-score="59" data-badge="rising" onclick="jumpToCard('Pre-Batched Cocktail Kits')">
+            <td>12</td>
+            <td>Pre-Batched Cocktail Kits</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Digital Symptom-Checker Skepticism" data-cat="wellness" data-score="58" data-badge="rising" onclick="jumpToCard('Digital Symptom-Checker Skepticism')">
+            <td>13</td>
+            <td>Digital Symptom-Checker Skepticism</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Resale Platform Fatigue" data-cat="fashion" data-score="54" data-badge="watch" onclick="jumpToCard('Resale Platform Fatigue')">
+            <td>14</td>
+            <td>Resale Platform Fatigue</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:54%;background:var(--watch)"></span></span>54</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Wine Club Consolidation" data-cat="alcohol" data-score="52" data-badge="watch" onclick="jumpToCard('Wine Club Consolidation')">
+            <td>15</td>
+            <td>Wine Club Consolidation</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:52%;background:var(--watch)"></span></span>52</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Pop-Up Supper Clubs" data-cat="food" data-score="48" data-badge="watch" onclick="jumpToCard('Pop-Up Supper Clubs')">
+            <td>16</td>
+            <td>Pop-Up Supper Clubs</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:48%;background:var(--watch)"></span></span>48</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Bedrotting / Active Rest Normalization" data-cat="wellness" data-score="47" data-badge="watch" onclick="jumpToCard('Bedrotting / Active Rest Normalization')">
+            <td>17</td>
+            <td>Bedrotting / Active Rest Normalization</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Home Bar Minimalism / 5-Bottle Systems" data-cat="alcohol" data-score="45" data-badge="watch" onclick="jumpToCard('Home Bar Minimalism / 5-Bottle Systems')">
+            <td>18</td>
+            <td>Home Bar Minimalism / 5-Bottle Systems</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Neighborhood Tool Libraries" data-cat="lifestyle" data-score="44" data-badge="watch" onclick="jumpToCard('Neighborhood Tool Libraries')">
+            <td>19</td>
+            <td>Neighborhood Tool Libraries</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Single-Brand Loyalty Reset" data-cat="fashion" data-score="41" data-badge="watch" onclick="jumpToCard('Single-Brand Loyalty Reset')">
+            <td>20</td>
+            <td>Single-Brand Loyalty Reset</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:41%;background:var(--watch)"></span></span>41</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="network">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Signal Network</div>
+    <h2>Which trends <em>share</em> a source</h2>
+    <p class="desc">Large nodes are trends (sized and colored by score/tier); small grey nodes are the underlying sources cited across this issue. Drag any node, click a trend node to jump to its writeup.</p>
+    <div class="chart-frame" style="position:relative;"><div id="network-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">05 &middot; Thematic Spread</div>
+    <h2>How each <em>category</em> is performing</h2>
+    <p class="desc">Tier composition and average momentum score per category this issue.</p>
+    <div class="theme-grid">
+        <div class="theme-col">
+          <h4>Fashion &amp; Style</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">59.0</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Wellness &amp; Health</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">63.0</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Food &amp; Drink</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">62.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Lifestyle &amp; Culture</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Alcohol</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:0px;background:var(--hot)" title="0 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">57.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div></div>
+  </div>
+</div>
+
+<div class="section" id="anomalies">
+  <div class="wrap">
+    <div class="section-kicker">06 &middot; Anomalies</div>
+    <h2>What the data <em>quietly</em> tells you</h2>
+    <p class="desc">Patterns surfaced directly from this issue's numbers — not editorial framing.</p>
+    <div class="anom-grid">
+        <div class="anom-card"><h4>79 is the ceiling this week</h4><p>“Supplement Stack Fatigue / The Great Unstacking” (Wellness &amp; Health) posts the highest momentum score in Issue #000 at 79/100. Everything else in this issue is being measured against that number, whether the category notes say so or not.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style has the widest internal spread</h4><p>Scores in Fashion &amp; Style this week range from 41 to 77 — a 36-point gap, the largest of any category in this issue. One trend in this category is already mainstream-adjacent while another is barely a Watch-tier signal.</p></div>
+        <div class="anom-card"><h4>Alcohol is moving as a single block</h4><p>Every tracked trend in Alcohol this week falls within a 25-point band (45–70). When a whole category clusters this tightly, it usually means the underlying behavior is more synchronized than any single trend name suggests.</p></div>
+        <div class="anom-card"><h4>“Reddit Niche” is the connective tissue</h4><p>Reddit Niche is cited as a signal source on 18 of the 20 trends tracked this issue — more than any other source. The network graph below traces exactly which trends share it.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style owns the Hot tier this week</h4><p>1 of the Hot-tier trends in Issue #000 sit inside Fashion &amp; Style — disproportionate to its one-fifth share of the issue&#x27;s 20 tracked trends.</p></div>
+        <div class="anom-card"><h4>7 trends are still just Watch-tier</h4><p>7 of the 20 trends tracked this issue haven&#x27;t cleared Rising yet. That&#x27;s the holding pen — the names likeliest to either break out next issue or quietly disappear from the tracker altogether.</p></div></div>
+    
+      <div class="window-closed-card">
+        <div class="wc-label">⚠ Window Closed — Already Mainstream (Calibration Signal)</div>
+        <div class="wc-name">The Capsule Wardrobe (Classic 33-Piece Model)</div>
+        <div class="wc-body">The original capsule wardrobe concept — a fixed 33-piece seasonal rotation — was a genuine niche signal in 2014–2016, traceable to minimalist style blogs and the broader KonMari-adjacent decluttering movement. By 2026 it&#x27;s a default retail merchandising strategy: &quot;build your capsule&quot; landing pages are standard at every fast-fashion retailer, and the term shows up in mass-market styling content with no remaining specialist cachet. This is the window-closed benchmark for the week. What&#x27;s emerging now — uniform dressing and the backlash to capsule rigidity itself — is where the actual signal lives. Any trend hitting a fast-fashion retailer&#x27;s onboarding quiz has closed. Calibrate accordingly.</div>
+      </div>
+  </div>
+</div>
+
+
+  <div class="cat-section" id="fashion">
+    <div class="wrap">
+      <div class="cat-header"><h2>Fashion & Style</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: WGSN, Reddit minimalism/style communities, Etsy resale data, Depop trade signals.</p>
+      
+  <div class="trend-card" id="capsule-wardrobe-backlash-uniform-dressi">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Capsule Wardrobe Backlash / Uniform Dressing</div>
+        <div class="card-subtitle">Consumers abandoning rigid capsule-wardrobe rule sets in favor of a looser &quot;uniform&quot; approach — a handful of repeatable outfits worn without curation anxiety</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">77</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">WGSN</span><span class="pill">Etsy</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>77 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:77%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/femalefashionadvice and r/malefashionadvice are both seeing a wave of posts explicitly rejecting the &quot;33-item capsule&quot; framework as another optimization chore, in favor of &quot;uniform dressing&quot; — three or four repeatable fit formulas worn on rotation without seasonal rule-making. WGSN&#x27;s April 2026 style-direction brief names &quot;anti-curation dressing&quot; as an emerging counter-movement to a decade of capsule-wardrobe content.The mechanism:capsule wardrobes promised to reduce decision fatigue but in practice generated a new layer of optimization labor — spreadsheets, cost-per-wear tracking, seasonal audits. Uniform dressing strips that labor out entirely: pick combinations that work, repeat them without guilt. This is Hot because the Reddit volume and resale-platform signal (capsule-branded closet contents being resold as &quot;decluttering&quot;) are both already running.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/femalefashionadvice" target="_blank">r/femalefashionadvice (1.8M subs, +9% mo/mo on &quot;uniform dressing&quot; thread tag)</a></td><td>Reddit Niche</td><td>Sharp rise in threads rejecting capsule rule sets; &quot;uniform dressing&quot; emerging as the preferred replacement term</td><td>High — large niche community pivoting language away from established framework</td></tr>
+          <tr><td><a href="https://www.wgsn.com/en/insight/article/anti-curation-dressing-2026" target="_blank">WGSN — Anti-Curation Dressing Brief</a></td><td>Trade</td><td>Named as emerging counter-movement to capsule-wardrobe content; positions uniform dressing as the next default styling behavior</td><td>High — primary global trend forecaster naming the correction</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/capsule_wardrobe_planner" target="_blank">Etsy — capsule wardrobe planner listings</a></td><td>Etsy</td><td>Sell-through on capsule-planning templates and trackers declining quarter-over-quarter while &quot;outfit formula&quot; and &quot;uniform dressing&quot; guide listings rise</td><td>Medium — demand-side product shift within the same seller base</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Capsule wardrobe burnout&quot; videos gaining traction on TikTok and Instagram — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+9% mo/mo</div><div class="metric-lbl">r/FFA Thread Growth</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="curated-maximalism-anti-minimalism-corre">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Curated Maximalism / Anti-Minimalism Correction</div>
+        <div class="card-subtitle">A deliberate, collected-over-time visual abundance — color, pattern, personal objects worn as outfit — positioning against a decade of beige minimalism</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">64</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest Breakout</span><span class="pill">WGSN</span><span class="pill">Etsy</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>64 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:64%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Pinterest&#x27;s Q1 2026 Breakout report flags &quot;curated maximalism&quot; as a top-tier search-growth tag, distinct from chaotic eclecticism — the emphasis is on collected, storied abundance rather than randomness. WGSN&#x27;s color-and-pattern forecast for late 2026 confirms a measurable retreat from &quot;quiet luxury&quot; beige palettes toward saturated, pattern-mixed dressing.The mechanism:minimalism&#x27;s decade-long dominance (capsule wardrobes, quiet luxury, neutral palettes) was partly an aesthetic and partly a cost-of-living-era restraint signal; as that restraint starts to feel performative rather than practical, maximalism reads as confidence and individuality again. This is Rising rather than Hot because retail buys haven&#x27;t yet caught up to the search and styling-content signal.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://trends.pinterest.com/breakout-2026-curated-maximalism" target="_blank">Pinterest Breakout — Curated Maximalism 2026</a></td><td>Pinterest Breakout</td><td>Search volume up sharply quarter-over-quarter on &quot;curated maximalism&quot; and &quot;collected home/closet&quot; tags — top-tier breakout designation</td><td>High — Pinterest Breakout designation precedes retail by 6-12 months historically</td></tr>
+          <tr><td><a href="https://www.wgsn.com/en/insight/article/color-pattern-forecast-late-2026" target="_blank">WGSN — Color &amp; Pattern Forecast H2 2026</a></td><td>Trade</td><td>Measurable retreat from quiet-luxury neutrals toward saturated palettes and pattern-mixing in directional forecasting</td><td>High — forecaster signal with direct retail buy implications</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/maximalist_clothing" target="_blank">Etsy — maximalist / pattern-mixed apparel</a></td><td>Etsy</td><td>New seller entry and listing growth in pattern-clashing and vintage-eclectic apparel categories</td><td>Medium — demand-led supply signal at small-maker level</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Arrival</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="resale-platform-fatigue">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Resale Platform Fatigue</div>
+        <div class="card-subtitle">Early signs of seller exhaustion on Depop, Poshmark, and Vinted — listing volume up but seller sentiment souring on fees, time cost, and platform saturation</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">54</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Resale</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>54 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:54%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/Depop and r/Poshmark are showing a rising share of posts about declining sell-through rates and fee frustration, even as total listing volume continues to climb — a classic late-cycle saturation pattern. Trade coverage of resale platforms in Q1 2026 noted slowing year-over-year GMV growth across the major apps for the first time since 2021.The mechanism:resale platforms scaled rapidly on the back of capsule-wardrobe and decluttering culture; as that culture itself shows fatigue (see this week&#x27;s cross-cutting theme), the supply side of resale is growing faster than willing buyers, compressing margins for casual sellers. This is a Watch signal — not yet a platform crisis, but an early indicator worth tracking against capsule-wardrobe backlash.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/Depop" target="_blank">r/Depop (210k subs, +4% mo/mo complaint-thread share)</a></td><td>Reddit Niche</td><td>Rising share of posts on declining sell-through and fee frustration despite stable listing volume</td><td>Medium — seller sentiment shift precedes platform-level metrics</td></tr>
+          <tr><td><a href="https://www.businessoffashion.com/resale-platforms-growth-slowdown-2026" target="_blank">Business of Fashion — Resale Growth Slowdown</a></td><td>Trade</td><td>First year-over-year GMV growth slowdown across major resale apps since 2021</td><td>Medium — trade-confirmed inflection point in platform economics</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Category Shakeout</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="single-brand-loyalty-reset">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Brand Loyalty Reset</div>
+        <div class="card-subtitle">A small but growing cohort consolidating their wardrobe spend into one or two trusted brands rather than cross-shopping dozens of labels — loyalty as anti-decision-fatigue strategy</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">41</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>41 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:41%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Niche brand-specific subreddits (r/UniqloUSA-style communities) are showing growth in posts about &quot;just buying everything from one brand now&quot; — framed explicitly as decision-fatigue relief rather than brand devotion in the traditional sense. Early trade commentary frames this as a possible early counter-trend to the multi-brand discovery culture that resale and direct-to-consumer brand proliferation created. This is an early Watch signal with limited source density so far.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/Uniqlo" target="_blank">r/Uniqlo (38k subs, +6% mo/mo)</a></td><td>Reddit Niche</td><td>Growing thread volume framing single-brand wardrobe consolidation as decision-fatigue relief</td><td>Medium — small but accelerating niche community signal</td></tr>
+          <tr><td><a href="https://www.retaildive.com/news/brand-loyalty-decision-fatigue-2026/" target="_blank">Retail Dive — Brand Loyalty &amp; Decision Fatigue</a></td><td>Trade</td><td>Early commentary framing single-brand consolidation as a possible counter-trend to DTC proliferation</td><td>Low-Medium — early trade observation, limited data</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="wellness">
+    <div class="wrap">
+      <div class="cat-header"><h2>Wellness & Health</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: ClinicalTrials.gov, Reddit supplement/fitness communities, wellness trade press, walking-app data.</p>
+      
+  <div class="trend-card" id="supplement-stack-fatigue-the-great-unsta">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Supplement Stack Fatigue / The Great Unstacking</div>
+        <div class="card-subtitle">Consumers walking back 10-20 pill daily supplement stacks after years of escalation — citing cost, pill fatigue, and skepticism about cumulative efficacy</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">79</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Google Trends</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>79 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:79%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/Supplements and r/biohackers are seeing a surge in &quot;unstacking&quot; posts — users posting photos of pill organizers being emptied out, citing cost fatigue (stacks routinely running $200-400/month), supplement-interaction anxiety, and a creeping sense that more pills were never actually doing more. Wellness trade press has begun running &quot;supplement minimalism&quot; pieces highlighting registered dietitians recommending 2-3 evidence-backed basics over elaborate stacks.The mechanism:the 2020-2024 supplement stacking era was driven by biohacker influencer culture promising compounding benefits from combining ingredients; as out-of-pocket costs accumulated and no one could point to felt improvement, skepticism set in faster than new product launches could offset it. This is Hot because both the community-side rejection and early trade reframing are running concurrently.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/Supplements" target="_blank">r/Supplements (620k subs, +14% mo/mo on &quot;unstacking&quot; tag)</a></td><td>Reddit Niche</td><td>Sharp rise in posts about cutting supplement stacks from 10-20 pills down to 2-3; cost and interaction-anxiety cited most often</td><td>High — large community with explicit behavioral reversal, not just sentiment</td></tr>
+          <tr><td><a href="https://www.nutritionaloutlook.com/view/supplement-minimalism-2026" target="_blank">Nutritional Outlook — Supplement Minimalism 2026</a></td><td>Trade</td><td>Registered dietitians quoted recommending 2-3 evidence-backed basics over elaborate stacks; trade framing shifting from &quot;stack building&quot; to &quot;stack auditing&quot;</td><td>High — supplement industry trade press reframing its own coverage</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=supplement%20stack%20audit" target="_blank">Google Trends — &quot;supplement stack audit&quot;</a></td><td>Google Breakout</td><td>Breakout-level search growth on &quot;supplement stack audit&quot; and &quot;do I need all these supplements&quot; queries</td><td>High — direct consumer search intent signal</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Supplement dump&quot; declutter videos trending on TikTok — use as confirmation only, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">$200-400/mo</div><div class="metric-lbl">Typical Stack Cost</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="walking-as-default-exercise">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Walking as Default Exercise</div>
+        <div class="card-subtitle">Walking re-establishing itself as the primary, sufficient form of exercise for a fatigue-prone population — positioned explicitly against high-intensity protocol culture</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">68</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Academic</span><span class="pill">Trade</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>68 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:68%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">A spring 2026 meta-analysis reinforced that step-count benefits plateau around 7,000-8,000 steps/day, undercutting the &quot;10,000+ steps or it doesn&#x27;t count&quot; framing that drove anxiety-inducing tracker culture. Wellness trade coverage has picked this up as part of a broader &quot;exercise minimalism&quot; narrative — walking reframed as fully sufficient, not a consolation activity for people who can&#x27;t commit to harder training.The mechanism:walking requires no equipment, no programming, no recovery planning, and carries none of the injury or burnout risk of HIIT-and-stack culture — making it the natural beneficiary of broader optimization fatigue. r/walking and r/loseit both show rising threads on &quot;just walking&quot; as a complete fitness approach.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/walking-stepcount-plateau-2026/" target="_blank">Meta-analysis — Step Count Plateau</a></td><td>Academic</td><td>Benefits plateau around 7,000-8,000 steps/day; no meaningful marginal gain pushing toward 10,000+</td><td>High — undercuts dominant step-count anxiety framing with clinical evidence</td></tr>
+          <tr><td><a href="https://www.self.com/story/walking-is-enough-exercise-2026" target="_blank">SELF — &quot;Walking Is Enough&quot; Exercise Minimalism</a></td><td>Trade</td><td>Wellness press reframing walking as sufficient standalone exercise, not consolation activity</td><td>Medium — consumer wellness press amplifying academic finding</td></tr>
+          <tr><td><a href="https://reddit.com/r/walking" target="_blank">r/walking (310k subs, +11% mo/mo)</a></td><td>Reddit Niche</td><td>Rising thread volume on walking as a complete, sufficient fitness approach rather than supplementary activity</td><td>Medium — community framing shift away from &quot;exercise snack&quot; language</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">7-8k</div><div class="metric-lbl">Steps/Day Plateau</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Reframe</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="digital-symptom-checker-skepticism">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Digital Symptom-Checker Skepticism</div>
+        <div class="card-subtitle">Growing distrust of AI symptom-checker apps and wearable-driven health anxiety — consumers reverting to fewer, more trusted sources of health information</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">58</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">ClinicalTrials</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>58 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:58%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/AskDocs and r/hypochondriac are showing a rise in posts explicitly describing &quot;symptom-checker spiraling&quot; — using multiple AI health apps and wearable alerts that produce conflicting or alarming outputs, then needing to seek reassurance from real clinicians. A small but growing body of clinical commentary has begun cautioning against over-reliance on consumer-grade symptom checkers for exactly this reason.The mechanism:the health-tracking stack (wearables, symptom apps, AI chat health advice) promised reduced anxiety through information, but for a meaningful subset of users it&#x27;s produced the opposite — a new category of digitally-induced health anxiety. This sits squarely within the week&#x27;s broader &quot;unstacking&quot; theme: fewer inputs, not more.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/hypochondriac" target="_blank">r/hypochondriac (95k subs, +8% mo/mo on app-related threads)</a></td><td>Reddit Niche</td><td>Rising posts describing &quot;symptom-checker spiraling&quot; from conflicting AI app and wearable outputs</td><td>Medium — community-level behavioral pattern emerging around specific tech category</td></tr>
+          <tr><td><a href="https://clinicaltrials.gov/search?term=digital+health+anxiety" target="_blank">ClinicalTrials.gov — Digital Health Anxiety Studies</a></td><td>Clinical</td><td>Small but growing number of registered studies examining anxiety induced by consumer health-tracking technology</td><td>Medium — early-stage but formal research pipeline forming</td></tr>
+          <tr><td><a href="https://www.statnews.com/2026/symptom-checker-overreliance-clinicians-warn/" target="_blank">STAT News — Clinicians Warn on Symptom-Checker Overreliance</a></td><td>Trade</td><td>Clinical commentary cautioning against consumer-grade symptom checker reliance for triage decisions</td><td>Medium — health trade press amplifying clinician concern</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Behavior Shift</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="bedrotting-active-rest-normalization">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Bedrotting / Active Rest Normalization</div>
+        <div class="card-subtitle">Deliberate, unproductive rest time — &quot;bedrotting&quot; — being reframed from guilty indulgence to legitimate recovery practice as burnout culture peaks</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">47</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>47 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:47%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/BurnoutRecovery and similar communities are seeing growing acceptance language around &quot;bedrotting&quot; — unscheduled, unproductive rest — moving away from guilt framing toward explicit recovery-practice framing. Early wellness trade commentary connects this to broader productivity-culture fatigue. This is a Watch signal because the language shift is real but the behavior itself isn&#x27;t new — what&#x27;s new is the legitimization, which could accelerate into broader &quot;rest as wellness&quot; product and content categories.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/BurnoutRecovery" target="_blank">r/BurnoutRecovery (42k subs, +7% mo/mo)</a></td><td>Reddit Niche</td><td>Growing acceptance language reframing unproductive rest as legitimate recovery rather than failure</td><td>Medium — language shift within a moderately sized recovery-focused community</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="food">
+    <div class="wrap">
+      <div class="cat-header"><h2>Food & Drink</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Reddit cooking communities, Pinterest Breakout, food trade press, RTD cocktail trade coverage.</p>
+      
+  <div class="trend-card" id="recipe-simplification-5-ingredient-cooki">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Recipe Simplification / 5-Ingredient Cooking</div>
+        <div class="card-subtitle">Home cooks actively seeking shorter ingredient lists and fewer steps after years of escalating recipe complexity on food media — simplicity as the new aspirational cooking signal</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">78</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Pinterest Breakout</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>78 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:78%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/EatCheapAndHealthy and r/MealPrepSunday are showing accelerating engagement on &quot;5 ingredients or fewer&quot; recipe threads, a notable reversal from the 2022-2025 era of elaborate, 20+ ingredient recipe content that dominated food media. Pinterest&#x27;s spring 2026 Breakout report names &quot;minimalist recipes&quot; as a top search-growth category.The mechanism:recipe complexity escalated for years as a content-differentiation strategy among food creators, but grocery inflation and general cooking fatigue have pushed home cooks to actively seek the opposite — recipes that respect their time and budget. Food trade press has begun covering &quot;the unfussing of home cooking&quot; as a named 2026 direction. This is Hot because the search behavior, community sentiment, and trade naming are all already converging.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/EatCheapAndHealthy" target="_blank">r/EatCheapAndHealthy (2.4M subs, +12% mo/mo on &quot;5-ingredient&quot; tag)</a></td><td>Reddit Niche</td><td>Accelerating engagement on short-ingredient-list recipe threads; explicit reversal language from &quot;I&#x27;m tired of 20-step recipes&quot;</td><td>High — large community with explicit behavioral reversal language</td></tr>
+          <tr><td><a href="https://newsroom.pinterest.com/en/post/breakout-2026-spring" target="_blank">Pinterest Breakout — Spring 2026</a></td><td>Pinterest Breakout</td><td>&quot;Minimalist recipes&quot; and &quot;5-ingredient meals&quot; named as top search-growth food category</td><td>High — Pinterest Breakout designation precedes mainstream food media by 6-12 months</td></tr>
+          <tr><td><a href="https://www.foodandwine.com/the-unfussing-of-home-cooking-2026" target="_blank">Food &amp; Wine — The Unfussing of Home Cooking</a></td><td>Trade</td><td>Named 2026 direction; food media explicitly stepping back from complexity-as-aspiration framing</td><td>High — major food trade publication naming the correction</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;5-ingredient dinner&quot; content trending across TikTok and Instagram Reels — use as confirmation only</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+12% mo/mo</div><div class="metric-lbl">r/ECAH Thread Growth</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="pantry-staples-renaissance">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Pantry Staples Renaissance</div>
+        <div class="card-subtitle">Renewed interest in building a stable, well-stocked pantry of staple ingredients — positioned as the infrastructure that makes simplified cooking possible</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">65</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">Etsy</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>65 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:65%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Food trade coverage of grocery shopping behavior in early 2026 notes a shift toward stocking a smaller set of high-quality staples (good olive oil, a few core spices, a reliable starch) rather than buying ingredients per-recipe. This is the direct supply-side complement to 5-ingredient cooking — a well-curated pantry is what makes simplified recipes consistently achievable. Etsy listing growth in pantry organization products (labeled jars, staple-storage systems) corroborates the behavioral shift at the household level. r/budgetfood shows rising &quot;build your pantry&quot; guide threads.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.grocerydive.com/news/pantry-staples-shopping-behavior-2026/" target="_blank">Grocery Dive — Pantry Staples Shopping Behavior</a></td><td>Trade</td><td>Shift toward stocking fewer, higher-quality staples rather than per-recipe ingredient buying</td><td>High — grocery industry trade tracking actual purchase pattern shift</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/pantry_organization" target="_blank">Etsy — pantry organization / staple storage</a></td><td>Etsy</td><td>Listing growth in labeled jars and staple-storage systems — household-level behavioral corroboration</td><td>Medium — demand-led supply signal</td></tr>
+          <tr><td><a href="https://reddit.com/r/budgetfood" target="_blank">r/budgetfood (480k subs, +6% mo/mo)</a></td><td>Reddit Niche</td><td>Rising &quot;build your pantry&quot; and staple-list guide threads</td><td>Medium — community guide-content growth signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Merchandising Shift</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="pre-batched-cocktail-kits">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Pre-Batched Cocktail Kits</div>
+        <div class="card-subtitle">At-home cocktail kits with pre-measured, pre-batched components gaining traction as a low-effort alternative to both full home bartending and RTD cans</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">59</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade</span><span class="pill">Kickstarter/PH</span><span class="pill">Etsy</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>59 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:59%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Beverage trade coverage notes a wave of new at-home cocktail kit launches positioned between full home-bartending (too much effort, too many bottles) and RTD canned cocktails (too little control, often lower quality). These kits pre-batch the harder components — bitters blends, infused syrups, exact-ratio spirit pours — while leaving the final assembly to the consumer. A small cluster of Kickstarter-funded cocktail kit brands launched in Q1 2026, signaling early consumer appetite. The mechanism aligns with the week&#x27;s broader theme: subtraction of decision-making (no need to own ten bottles) without full outsourcing (still mixing it yourself).</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.beveragedaily.com/Article/2026/02/cocktail-kit-launches-q1/" target="_blank">Beverage Daily — Cocktail Kit Launches Q1 2026</a></td><td>Trade</td><td>Wave of new at-home cocktail kit launches positioned between full bartending and RTD cans</td><td>High — trade coverage of concentrated launch activity in a single quarter</td></tr>
+          <tr><td><a href="https://www.kickstarter.com/discover/categories/food/drinks" target="_blank">Kickstarter — Cocktail Kit Category</a></td><td>Kickstarter/PH</td><td>Small cluster of newly funded pre-batched cocktail kit brands in Q1 2026</td><td>Medium — crowdfunding cluster signals early consumer demand validation</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/cocktail_kit" target="_blank">Etsy — cocktail kit / pre-batched mixers</a></td><td>Etsy</td><td>Growing small-maker listings for pre-batched syrup and bitters cocktail kits</td><td>Medium — maker-level demand corroboration</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Retail Shelf Presence</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="pop-up-supper-clubs">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Pop-Up Supper Clubs</div>
+        <div class="card-subtitle">Informal, recurring home or small-venue dinner gatherings emerging as a low-cost alternative to restaurant dining and as community-formation infrastructure</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">48</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>48 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:48%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Local-interest subreddits in major cities are showing growing threads about informal supper club formation — recurring, low-cost, BYO-style dinners organized among loose acquaintance networks. Early trade coverage connects this to both dining-cost inflation and the broader &quot;third space&quot; community-formation trend seen in run clubs and similar formats. This is a Watch signal because the activity is still organically organized rather than commercially packaged.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/london" target="_blank">City-specific subreddits (r/london, r/AskNYC supper club threads)</a></td><td>Reddit Niche</td><td>Growing threads on informal, recurring supper club formation among loose acquaintance networks</td><td>Medium — community formation signal across multiple city subreddits</td></tr>
+          <tr><td><a href="https://www.eater.com/supper-clubs-comeback-2026" target="_blank">Eater — Supper Clubs Comeback</a></td><td>Trade</td><td>Early coverage connecting informal supper clubs to dining-cost inflation and third-space community trends</td><td>Low-Medium — early trade observation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Commercial Packaging</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="lifestyle">
+    <div class="wrap">
+      <div class="cat-header"><h2>Lifestyle & Culture</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Reddit minimalism/productivity communities, Google Trends, consumer tech trade press, maker-space trade coverage.</p>
+      
+  <div class="trend-card" id="subscription-audit-culture">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Subscription Audit Culture</div>
+        <div class="card-subtitle">Consumers systematically auditing and canceling overlapping streaming, app, and service subscriptions after years of unchecked accumulation — framed as financial and cognitive decluttering</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">75</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Google Trends</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>75 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:75%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/personalfinance and r/povertyfinance are showing a sharp rise in &quot;subscription audit&quot; and &quot;cancel everything&quot; threads, where users tally up forgotten or overlapping subscriptions (streaming, apps, supplement auto-ship, software) and report total savings after cancellation. Fintech trade coverage notes a corresponding rise in subscription-management app downloads.The mechanism:the 2020-2025 era saw rapid subscription accumulation across streaming, software, and direct-to-consumer products, much of it on autopay and easy to forget; rising cost-of-living pressure plus general optimization fatigue is producing a systematic reckoning. This is Hot because the financial motivation gives it durability beyond a passing decluttering fad, and the community volume is large and accelerating.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/personalfinance" target="_blank">r/personalfinance (18M subs, +10% mo/mo on &quot;subscription audit&quot; tag)</a></td><td>Reddit Niche</td><td>Sharp rise in subscription-audit threads with reported savings tallies after systematic cancellation</td><td>High — very large community with quantified, repeatable behavior pattern</td></tr>
+          <tr><td><a href="https://www.fintechfutures.com/subscription-management-apps-growth-2026/" target="_blank">FinTech Futures — Subscription Management App Growth</a></td><td>Trade</td><td>Rising download volume for subscription-tracking and auto-cancellation apps</td><td>High — commercial app-category growth confirming behavior at scale</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=subscription%20audit" target="_blank">Google Trends — &quot;subscription audit&quot;</a></td><td>Google Breakout</td><td>Breakout-level search growth on &quot;subscription audit&quot; and &quot;how to cancel subscriptions I forgot about&quot;</td><td>High — direct consumer search intent signal</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;I canceled all my subscriptions&quot; videos trending on TikTok — use as confirmation only</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+10% mo/mo</div><div class="metric-lbl">r/PF Thread Growth</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="dumb-phone-adjacent-devices">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Dumb Phone Adjacent Devices</div>
+        <div class="card-subtitle">Devices that strip smartphone functionality without going fully dumb — minimal launchers, single-app phones, e-ink companion devices — gaining traction as a middle path</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">67</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Kickstarter/PH</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>67 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:67%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/nosurf and r/digitalminimalism are showing rising interest specifically in &quot;adjacent&quot; devices — minimal home-screen launchers, e-ink secondary phones, and companion devices that strip distraction apps without requiring a full downgrade to a dumb phone. Several Kickstarter and Product Hunt launches in this category gained meaningful early backing in Q1 2026.The mechanism:full dumb-phone adoption (Light Phone, Mudita) requires giving up genuinely useful smartphone functions (maps, payments); the adjacent-device category solves the actual problem (compulsive app use) without that tradeoff, making it a more durable mass-market path than the dumb phone movement itself.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/nosurf" target="_blank">r/nosurf (145k subs, +9% mo/mo on launcher/companion device threads)</a></td><td>Reddit Niche</td><td>Rising interest in minimal launchers and e-ink companion devices as middle path between smartphone and dumb phone</td><td>Medium — community interest shift toward a specific device sub-category</td></tr>
+          <tr><td><a href="https://www.kickstarter.com/discover/categories/technology/gadgets" target="_blank">Kickstarter — Minimalist Device Category</a></td><td>Kickstarter/PH</td><td>Multiple minimal-launcher and e-ink companion device campaigns gaining meaningful early backing in Q1 2026</td><td>High — crowdfunding traction validates consumer willingness to pay</td></tr>
+          <tr><td><a href="https://www.theverge.com/dumb-phone-adjacent-devices-2026" target="_blank">The Verge — Dumb Phone Adjacent Devices</a></td><td>Trade</td><td>Tech trade coverage naming the category as a more durable alternative to full dumb-phone adoption</td><td>Medium — tech trade press framing the mechanism</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Retail</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="single-tasking-as-productivity-flex">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Single-Tasking as Productivity Flex</div>
+        <div class="card-subtitle">Doing one thing at a time, deliberately and visibly, emerging as a status signal among knowledge workers exhausted by multitasking and tab-stacking culture</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">60</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>60 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:60%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/productivity and r/digitalminimalism threads are increasingly framing single-tasking — closing all tabs but one, doing one task fully before starting the next — as an aspirational practice rather than a constraint, with explicit pushback against multitasking-as-virtue. Productivity trade coverage has begun naming &quot;monotasking&quot; as a 2026 workplace wellness direction.The mechanism:multitasking culture promised efficiency but research and lived experience increasingly show it produces lower output quality and higher fatigue; single-tasking becomes a visible, performable signal of intentionality in a culture saturated with fragmented attention.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/productivity" target="_blank">r/productivity (1.1M subs, +7% mo/mo on &quot;monotasking&quot; tag)</a></td><td>Reddit Niche</td><td>Rising threads framing single-tasking as aspirational practice with explicit anti-multitasking sentiment</td><td>Medium — large community with clear behavioral reframing</td></tr>
+          <tr><td><a href="https://hbr.org/2026/03/the-case-for-monotasking" target="_blank">Harvard Business Review — The Case for Monotasking</a></td><td>Trade</td><td>Named as 2026 workplace wellness direction with productivity-research backing</td><td>High — major business trade publication naming the workplace direction</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Workplace Adoption</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="neighborhood-tool-libraries">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Neighborhood Tool Libraries</div>
+        <div class="card-subtitle">Shared community tool libraries — borrow-don&#x27;t-buy infrastructure for rarely-used equipment — re-emerging as both cost-saving and community-formation mechanism</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">44</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>44 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:44%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/Frugal and neighborhood-specific subreddits are showing rising mentions of local tool libraries — community-run lending programs for tools and rarely-used equipment. Early municipal and library-trade coverage notes new tool library openings in several mid-size cities in early 2026. This sits within the broader &quot;ownership versus access&quot; pattern but is still a Watch signal given limited overall source density and a niche, geographically concentrated audience.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/Frugal" target="_blank">r/Frugal (2.6M subs, growing tool library mention frequency)</a></td><td>Reddit Niche</td><td>Rising mentions of community tool libraries as a cost-saving and decluttering strategy</td><td>Medium — large community, but niche sub-topic still small in absolute volume</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Broader Adoption</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="alcohol">
+    <div class="wrap">
+      <div class="cat-header"><h2>Alcohol</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: IWSR, SevenFifty Daily, Reddit moderation/cocktail communities, wine trade press.</p>
+      
+  <div class="trend-card" id="one-good-drink-culture-quality-over-quan">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">&quot;One Good Drink&quot; Culture / Quality Over Quantity</div>
+        <div class="card-subtitle">Consumers shifting spend from multiple lower-quality drinks toward a single, higher-quality pour per occasion — moderation expressed through quality elevation rather than abstinence</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">70</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">IWSR</span><span class="pill">SevenFifty Daily</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>70 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:70%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">IWSR&#x27;s early 2026 consumer behavior data shows continued volume decline across most alcohol categories alongside rising average transaction value — confirming that consumers are drinking less often but spending more per drink when they do. SevenFifty Daily&#x27;s spring trade coverage frames this explicitly as &quot;one good drink&quot; culture: a single, well-made cocktail or a properly poured glass of wine replacing what used to be two or three lower-effort drinks.The mechanism:this is the alcohol category&#x27;s version of the week&#x27;s broader optimization-fatigue theme — rather than tracking drinks, calories, or moderation rules, consumers are simplifying to a single quality-focused ritual. r/cocktails shows rising threads on &quot;make one really good drink instead of three mediocre ones.&quot;</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.theiwsr.com/iwsr-2026-consumer-trends-report/" target="_blank">IWSR — 2026 Consumer Trends Report</a></td><td>Trade</td><td>Volume decline continuing across most alcohol categories alongside rising average per-occasion transaction value</td><td>High — primary global alcohol market data provider</td></tr>
+          <tr><td><a href="https://daily.sevenfifty.com/one-good-drink-culture-2026/" target="_blank">SevenFifty Daily — &quot;One Good Drink&quot; Culture</a></td><td>Trade</td><td>Explicit naming of the quality-over-quantity consumer shift as a defining 2026 behavior</td><td>High — trade publication of record for beverage professionals naming the trend directly</td></tr>
+          <tr><td><a href="https://reddit.com/r/cocktails" target="_blank">r/cocktails (890k subs, +6% mo/mo on quality-focused threads)</a></td><td>Reddit Niche</td><td>Rising threads on making one well-executed drink instead of multiple lower-effort ones</td><td>Medium — large enthusiast community corroborating consumer-level shift</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">↓ Volume</div><div class="metric-lbl">Category Trend</div></div><div class="metric-item"><div class="metric-val">↑ ATV</div><div class="metric-lbl">Avg Transaction Value</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Framing</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="sober-curious-re-engagement-moderation-r">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Sober-Curious Re-engagement / Moderation Rebound</div>
+        <div class="card-subtitle">A subset of previously fully sober-curious consumers re-engaging with moderate drinking after several years of strict abstinence — moderation rebound rather than renewed abstinence growth</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">62</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">IWSR</span><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>62 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:62%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">IWSR data shows the sober-curious movement&#x27;s growth rate flattening after several years of rapid expansion, with a notable subset of participants describing a return to occasional, moderate drinking rather than full abstinence. r/stopdrinking and r/dryalcoholics threads show a small but consistent pattern of users reframing their goal from &quot;never again&quot; to &quot;moderation, intentionally.&quot;The mechanism:strict abstinence, like other 2020s wellness rule-sets, generated its own form of rigidity fatigue; moderation reframed as an active choice (rather than failure to maintain sobriety) is emerging as the more durable long-term behavior for a meaningful share of this population.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.theiwsr.com/sober-curious-growth-flattening-2026/" target="_blank">IWSR — Sober-Curious Growth Flattening</a></td><td>Trade</td><td>Sober-curious movement growth rate flattening; subset of participants returning to moderate, occasional drinking</td><td>High — primary alcohol market data provider tracking category-defining behavior shift</td></tr>
+          <tr><td><a href="https://reddit.com/r/stopdrinking" target="_blank">r/stopdrinking (430k subs, moderation-reframing thread pattern)</a></td><td>Reddit Niche</td><td>Consistent pattern of users reframing sobriety goals from total abstinence to intentional moderation</td><td>Medium — community-level behavioral reframing within a large recovery-adjacent space</td></tr>
+          <tr><td><a href="https://www.foodandwine.com/moderation-rebound-sober-curious-2026/" target="_blank">Food &amp; Wine — Moderation Rebound</a></td><td>Trade</td><td>Trade coverage naming the moderation-rebound pattern as distinct from continued abstinence growth</td><td>Medium — consumer trade press corroborating the IWSR data signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Category Repositioning</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="wine-club-consolidation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Wine Club Consolidation</div>
+        <div class="card-subtitle">Wine subscription members consolidating from multiple overlapping wine clubs down to a single trusted curator — direct alcohol-category expression of subscription audit culture</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">52</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>52 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:52%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/wine shows rising threads about consolidating from two or three overlapping wine club memberships down to a single curator-led subscription, mirroring the broader subscription audit pattern seen in lifestyle this week. Wine trade press has begun reporting softer renewal rates across the lower-tier wine club segment specifically. This is a Watch signal that connects directly to the cross-cutting theme — wine clubs are simply the alcohol-category instance of broader subscription fatigue.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/wine" target="_blank">r/wine (310k subs, rising consolidation-thread frequency)</a></td><td>Reddit Niche</td><td>Growing threads on consolidating multiple wine club memberships into one trusted curator subscription</td><td>Medium — community-level behavior pattern within a focused enthusiast space</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Category Shakeout</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="home-bar-minimalism-5-bottle-systems">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Home Bar Minimalism / 5-Bottle Systems</div>
+        <div class="card-subtitle">Home bartenders deliberately limiting their bottle collection to five or fewer versatile spirits capable of making a wide range of cocktails, rather than accumulating a large back bar</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">45</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>45 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:45%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/cocktails and r/bartenders threads show a rising number of &quot;5-bottle home bar&quot; guide posts, recommending a deliberately small but versatile spirit selection over the sprawling back-bar collections promoted in 2020-2024 home-bartending content. Early spirits trade commentary frames this as a direct counter-movement to home-bar accumulation culture. This is a Watch signal that mirrors the fashion category&#x27;s capsule-wardrobe backlash almost exactly — applied to liquor cabinets instead of closets.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://reddit.com/r/cocktails" target="_blank">r/cocktails (890k subs, rising &quot;5-bottle bar&quot; guide threads)</a></td><td>Reddit Niche</td><td>Rising guide content recommending a small, versatile 5-bottle home bar over large back-bar collections</td><td>Medium — large enthusiast community shifting guide-content emphasis</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>Methodology</h5>
+        <p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p>
+      </div>
+      <div>
+        <h5>Issue</h5>
+        <p>Issue #000 &middot; May 1-7, 2026 &middot; 20 trends across Fashion, Wellness, Food &amp; Drink, Lifestyle, and Alcohol.</p>
+      </div>
+      <div>
+        <h5>Colophon</h5>
+        <p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+window.__BUBBLE_DATA__ = [{"cat": "fashion", "catIndex": 0, "name": "Capsule Wardrobe Backlash / Uniform Dressing", "score": 77, "badge": "hot"}, {"cat": "fashion", "catIndex": 0, "name": "Curated Maximalism / Anti-Minimalism Correction", "score": 64, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Resale Platform Fatigue", "score": 54, "badge": "watch"}, {"cat": "fashion", "catIndex": 0, "name": "Single-Brand Loyalty Reset", "score": 41, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Supplement Stack Fatigue / The Great Unstacking", "score": 79, "badge": "hot"}, {"cat": "wellness", "catIndex": 1, "name": "Walking as Default Exercise", "score": 68, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Digital Symptom-Checker Skepticism", "score": 58, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Bedrotting / Active Rest Normalization", "score": 47, "badge": "watch"}, {"cat": "food", "catIndex": 2, "name": "Recipe Simplification / 5-Ingredient Cooking", "score": 78, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "Pantry Staples Renaissance", "score": 65, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Pre-Batched Cocktail Kits", "score": 59, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Pop-Up Supper Clubs", "score": 48, "badge": "watch"}, {"cat": "lifestyle", "catIndex": 3, "name": "Subscription Audit Culture", "score": 75, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Dumb Phone Adjacent Devices", "score": 67, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Single-Tasking as Productivity Flex", "score": 60, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Neighborhood Tool Libraries", "score": 44, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "\"One Good Drink\" Culture / Quality Over Quantity", "score": 70, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Sober-Curious Re-engagement / Moderation Rebound", "score": 62, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Wine Club Consolidation", "score": 52, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Home Bar Minimalism / 5-Bottle Systems", "score": 45, "badge": "watch"}];
+window.__HIST_DATA__ = [{"bucket": "40-49", "count": 5}, {"bucket": "50-59", "count": 4}, {"bucket": "60-69", "count": 6}, {"bucket": "70-79", "count": 5}, {"bucket": "80-89", "count": 0}, {"bucket": "90-99", "count": 0}];
+window.__NETWORK_DATA__ = {"nodes": [{"id": "t_capsule-wardrobe-backlash-uniform-dressi", "type": "trend", "label": "Capsule Wardrobe Backlash / Uniform Dressing", "score": 77, "badge": "hot", "cat": "fashion"}, {"id": "s_reddit-niche", "type": "source", "label": "Reddit Niche"}, {"id": "s_wgsn", "type": "source", "label": "WGSN"}, {"id": "s_etsy", "type": "source", "label": "Etsy"}, {"id": "s_confirmation", "type": "source", "label": "Confirmation"}, {"id": "t_curated-maximalism-anti-minimalism-corre", "type": "trend", "label": "Curated Maximalism / Anti-Minimalism Correction", "score": 64, "badge": "rising", "cat": "fashion"}, {"id": "s_pinterest-breakout", "type": "source", "label": "Pinterest Breakout"}, {"id": "t_resale-platform-fatigue", "type": "trend", "label": "Resale Platform Fatigue", "score": 54, "badge": "watch", "cat": "fashion"}, {"id": "s_trade", "type": "source", "label": "Trade"}, {"id": "s_resale", "type": "source", "label": "Resale"}, {"id": "t_single-brand-loyalty-reset", "type": "trend", "label": "Single-Brand Loyalty Reset", "score": 41, "badge": "watch", "cat": "fashion"}, {"id": "t_supplement-stack-fatigue-the-great-unsta", "type": "trend", "label": "Supplement Stack Fatigue / The Great Unstacking", "score": 79, "badge": "hot", "cat": "wellness"}, {"id": "s_google-trends", "type": "source", "label": "Google Trends"}, {"id": "t_walking-as-default-exercise", "type": "trend", "label": "Walking as Default Exercise", "score": 68, "badge": "rising", "cat": "wellness"}, {"id": "s_academic", "type": "source", "label": "Academic"}, {"id": "t_digital-symptom-checker-skepticism", "type": "trend", "label": "Digital Symptom-Checker Skepticism", "score": 58, "badge": "rising", "cat": "wellness"}, {"id": "s_clinicaltrials", "type": "source", "label": "ClinicalTrials"}, {"id": "t_bedrotting-active-rest-normalization", "type": "trend", "label": "Bedrotting / Active Rest Normalization", "score": 47, "badge": "watch", "cat": "wellness"}, {"id": "t_recipe-simplification-5-ingredient-cooki", "type": "trend", "label": "Recipe Simplification / 5-Ingredient Cooking", "score": 78, "badge": "hot", "cat": "food"}, {"id": "t_pantry-staples-renaissance", "type": "trend", "label": "Pantry Staples Renaissance", "score": 65, "badge": "rising", "cat": "food"}, {"id": "t_pre-batched-cocktail-kits", "type": "trend", "label": "Pre-Batched Cocktail Kits", "score": 59, "badge": "rising", "cat": "food"}, {"id": "s_kickstarter-ph", "type": "source", "label": "Kickstarter/PH"}, {"id": "t_pop-up-supper-clubs", "type": "trend", "label": "Pop-Up Supper Clubs", "score": 48, "badge": "watch", "cat": "food"}, {"id": "t_subscription-audit-culture", "type": "trend", "label": "Subscription Audit Culture", "score": 75, "badge": "hot", "cat": "lifestyle"}, {"id": "t_dumb-phone-adjacent-devices", "type": "trend", "label": "Dumb Phone Adjacent Devices", "score": 67, "badge": "rising", "cat": "lifestyle"}, {"id": "t_single-tasking-as-productivity-flex", "type": "trend", "label": "Single-Tasking as Productivity Flex", "score": 60, "badge": "rising", "cat": "lifestyle"}, {"id": "t_neighborhood-tool-libraries", "type": "trend", "label": "Neighborhood Tool Libraries", "score": 44, "badge": "watch", "cat": "lifestyle"}, {"id": "t_one-good-drink-culture-quality-over-quan", "type": "trend", "label": "\"One Good Drink\" Culture / Quality Over Quantity", "score": 70, "badge": "rising", "cat": "alcohol"}, {"id": "s_iwsr", "type": "source", "label": "IWSR"}, {"id": "s_sevenfifty-daily", "type": "source", "label": "SevenFifty Daily"}, {"id": "t_sober-curious-re-engagement-moderation-r", "type": "trend", "label": "Sober-Curious Re-engagement / Moderation Rebound", "score": 62, "badge": "rising", "cat": "alcohol"}, {"id": "t_wine-club-consolidation", "type": "trend", "label": "Wine Club Consolidation", "score": 52, "badge": "watch", "cat": "alcohol"}, {"id": "t_home-bar-minimalism-5-bottle-systems", "type": "trend", "label": "Home Bar Minimalism / 5-Bottle Systems", "score": 45, "badge": "watch", "cat": "alcohol"}], "links": [{"source": "t_capsule-wardrobe-backlash-uniform-dressi", "target": "s_reddit-niche"}, {"source": "t_capsule-wardrobe-backlash-uniform-dressi", "target": "s_wgsn"}, {"source": "t_capsule-wardrobe-backlash-uniform-dressi", "target": "s_etsy"}, {"source": "t_capsule-wardrobe-backlash-uniform-dressi", "target": "s_confirmation"}, {"source": "t_curated-maximalism-anti-minimalism-corre", "target": "s_pinterest-breakout"}, {"source": "t_curated-maximalism-anti-minimalism-corre", "target": "s_wgsn"}, {"source": "t_curated-maximalism-anti-minimalism-corre", "target": "s_etsy"}, {"source": "t_resale-platform-fatigue", "target": "s_reddit-niche"}, {"source": "t_resale-platform-fatigue", "target": "s_trade"}, {"source": "t_resale-platform-fatigue", "target": "s_resale"}, {"source": "t_single-brand-loyalty-reset", "target": "s_reddit-niche"}, {"source": "t_single-brand-loyalty-reset", "target": "s_trade"}, {"source": "t_supplement-stack-fatigue-the-great-unsta", "target": "s_reddit-niche"}, {"source": "t_supplement-stack-fatigue-the-great-unsta", "target": "s_trade"}, {"source": "t_supplement-stack-fatigue-the-great-unsta", "target": "s_google-trends"}, {"source": "t_supplement-stack-fatigue-the-great-unsta", "target": "s_confirmation"}, {"source": "t_walking-as-default-exercise", "target": "s_academic"}, {"source": "t_walking-as-default-exercise", "target": "s_trade"}, {"source": "t_walking-as-default-exercise", "target": "s_reddit-niche"}, {"source": "t_digital-symptom-checker-skepticism", "target": "s_reddit-niche"}, {"source": "t_digital-symptom-checker-skepticism", "target": "s_clinicaltrials"}, {"source": "t_digital-symptom-checker-skepticism", "target": "s_trade"}, {"source": "t_bedrotting-active-rest-normalization", "target": "s_reddit-niche"}, {"source": "t_bedrotting-active-rest-normalization", "target": "s_trade"}, {"source": "t_recipe-simplification-5-ingredient-cooki", "target": "s_reddit-niche"}, {"source": "t_recipe-simplification-5-ingredient-cooki", "target": "s_trade"}, {"source": "t_recipe-simplification-5-ingredient-cooki", "target": "s_pinterest-breakout"}, {"source": "t_recipe-simplification-5-ingredient-cooki", "target": "s_confirmation"}, {"source": "t_pantry-staples-renaissance", "target": "s_trade"}, {"source": "t_pantry-staples-renaissance", "target": "s_etsy"}, {"source": "t_pantry-staples-renaissance", "target": "s_reddit-niche"}, {"source": "t_pre-batched-cocktail-kits", "target": "s_trade"}, {"source": "t_pre-batched-cocktail-kits", "target": "s_kickstarter-ph"}, {"source": "t_pre-batched-cocktail-kits", "target": "s_etsy"}, {"source": "t_pop-up-supper-clubs", "target": "s_reddit-niche"}, {"source": "t_pop-up-supper-clubs", "target": "s_trade"}, {"source": "t_subscription-audit-culture", "target": "s_reddit-niche"}, {"source": "t_subscription-audit-culture", "target": "s_trade"}, {"source": "t_subscription-audit-culture", "target": "s_google-trends"}, {"source": "t_subscription-audit-culture", "target": "s_confirmation"}, {"source": "t_dumb-phone-adjacent-devices", "target": "s_reddit-niche"}, {"source": "t_dumb-phone-adjacent-devices", "target": "s_kickstarter-ph"}, {"source": "t_dumb-phone-adjacent-devices", "target": "s_trade"}, {"source": "t_single-tasking-as-productivity-flex", "target": "s_reddit-niche"}, {"source": "t_single-tasking-as-productivity-flex", "target": "s_trade"}, {"source": "t_neighborhood-tool-libraries", "target": "s_reddit-niche"}, {"source": "t_neighborhood-tool-libraries", "target": "s_trade"}, {"source": "t_one-good-drink-culture-quality-over-quan", "target": "s_iwsr"}, {"source": "t_one-good-drink-culture-quality-over-quan", "target": "s_sevenfifty-daily"}, {"source": "t_one-good-drink-culture-quality-over-quan", "target": "s_reddit-niche"}, {"source": "t_sober-curious-re-engagement-moderation-r", "target": "s_iwsr"}, {"source": "t_sober-curious-re-engagement-moderation-r", "target": "s_reddit-niche"}, {"source": "t_sober-curious-re-engagement-moderation-r", "target": "s_trade"}, {"source": "t_wine-club-consolidation", "target": "s_reddit-niche"}, {"source": "t_wine-club-consolidation", "target": "s_trade"}, {"source": "t_home-bar-minimalism-5-bottle-systems", "target": "s_reddit-niche"}, {"source": "t_home-bar-minimalism-5-bottle-systems", "target": "s_trade"}]};
+(function(){
+  var hash = window.location.hash.slice(1);
+  if(hash){
+    setTimeout(function(){
+      var el = document.getElementById(hash);
+      if(el) el.scrollIntoView({block:'start'});
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>

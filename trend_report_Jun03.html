@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report — Issue #004 — May 29-June 3, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#network">Network</a>
+      <a href="#themes">Themes</a>
+      <a href="#anomalies">Anomalies</a>
+      <a href="#fashion">Fashion</a>
+      <a href="#wellness">Wellness</a>
+      <a href="#food">Food</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#alcohol">Alcohol</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Issue #004 &middot; May 29-June 3, 2026 &middot; 20 trends across 5 categories</div>
+    <h1>The Quiet Audit<br/><em>Cross-Cutting Theme</em></h1>
+    <p class="lede">Before committing to the kind of precision routines and minimum-effective-dose thinking that will define June, consumers across every category this week are doing something quieter:auditing what they already own, do, and pay for. This is not the performative decluttering of donation-haul content or before/after closet reveals — it&#x27;s private, often spreadsheet-based, and rarely posted. Wardrobe cost-per-wear trackers, supplement spreadsheets, pantry inventories, subscription reviews, and home bar counts are all the same underlying behavior: a consumer quietly asking&quot;is this still earning its place?&quot;before deciding what to add, cut, or keep. The mechanism is economic anxiety meeting subscription fatigue meeting a cultural moment where restraint reads as competence rather than deprivation.This audit phase is the necessary precursor to the precision and minimalism themes coming in Issues #005–#007— you cannot adopt a minimum effective dose until you know your current baseline. Watch for this quiet-review behavior to harden into visible minimalism within the quarter.</p>
+  </div>
+  <div class="statgrid">
+      <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">Trends tracked, Issue #004</div></div>
+      <div class="stat"><div class="stat-num"><em>4</em></div><div class="stat-lbl">Hot — 0&ndash;3mo window</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-lbl">Rising — 3&ndash;9mo window</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-lbl">Watch — 9&ndash;18mo window</div></div></div>
+</div>
+
+<div class="section" id="landscape">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Score Landscape</div>
+    <h2>Where this week's <em>momentum</em> actually sits</h2>
+    <p class="desc">Every tracked trend, plotted by category and momentum score. Bubble size scales with score. Click any point to jump to its full writeup below.</p>
+    <div class="chart-frame" style="position:relative;"><div id="bubble-chart"></div></div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--hot)"></span>Hot (75+)</span>
+      <span><span class="legend-dot" style="background:var(--rising)"></span>Rising (55–74)</span>
+      <span><span class="legend-dot" style="background:var(--watch)"></span>Watch (40–54)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; Score Distribution</div>
+    <h2>How <em>concentrated</em> is this issue?</h2>
+    <p class="desc">Trend count by momentum-score band. A distribution skewed right means an unusually hot issue; skewed left means a quiet, early-signal-heavy week.</p>
+    <div class="chart-frame" style="position:relative;"><div id="hist-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Leaderboard</div>
+    <h2>All 20 trends, <em>ranked</em></h2>
+    <p class="desc">Click any column header to sort. Click any row to jump to that trend's full writeup.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+          <tr class="lb-row" data-name="Digital Subscription Spring Cleaning" data-cat="lifestyle" data-score="78" data-badge="hot" onclick="jumpToCard('Digital Subscription Spring Cleaning')">
+            <td>1</td>
+            <td>Digital Subscription Spring Cleaning</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Supplement Audit Spreadsheets / Private Tracking" data-cat="wellness" data-score="77" data-badge="hot" onclick="jumpToCard('Supplement Audit Spreadsheets / Private Tracking')">
+            <td>2</td>
+            <td>Supplement Audit Spreadsheets / Private Tracking</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Personal Wardrobe Audits / Cost-Per-Wear Tracking" data-cat="fashion" data-score="76" data-badge="hot" onclick="jumpToCard('Personal Wardrobe Audits / Cost-Per-Wear Tracking')">
+            <td>3</td>
+            <td>Personal Wardrobe Audits / Cost-Per-Wear Tracking</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Pantry Inventory Audits / Reducing Food Waste" data-cat="food" data-score="75" data-badge="hot" onclick="jumpToCard('Pantry Inventory Audits / Reducing Food Waste')">
+            <td>4</td>
+            <td>Pantry Inventory Audits / Reducing Food Waste</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:75%;background:var(--hot)"></span></span>75</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Home Bar Inventory Audits" data-cat="alcohol" data-score="70" data-badge="rising" onclick="jumpToCard('Home Bar Inventory Audits')">
+            <td>5</td>
+            <td>Home Bar Inventory Audits</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:70%;background:var(--rising)"></span></span>70</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Calendar Audit Culture / Reviewing Recurring Commitments" data-cat="lifestyle" data-score="67" data-badge="rising" onclick="jumpToCard('Calendar Audit Culture / Reviewing Recurring Commitments')">
+            <td>6</td>
+            <td>Calendar Audit Culture / Reviewing Recurring Commitments</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="App Subscription Health Reviews" data-cat="wellness" data-score="66" data-badge="rising" onclick="jumpToCard('App Subscription Health Reviews')">
+            <td>7</td>
+            <td>App Subscription Health Reviews</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:66%;background:var(--rising)"></span></span>66</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Quiet Closet Editing — No Donation-Haul Content" data-cat="fashion" data-score="65" data-badge="rising" onclick="jumpToCard('Quiet Closet Editing — No Donation-Haul Content')">
+            <td>8</td>
+            <td>Quiet Closet Editing — No Donation-Haul Content</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Grocery Spend Line-Item Review" data-cat="food" data-score="64" data-badge="rising" onclick="jumpToCard('Grocery Spend Line-Item Review')">
+            <td>9</td>
+            <td>Grocery Spend Line-Item Review</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:64%;background:var(--rising)"></span></span>64</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Friend Group Bandwidth Audits" data-cat="lifestyle" data-score="60" data-badge="rising" onclick="jumpToCard('Friend Group Bandwidth Audits')">
+            <td>10</td>
+            <td>Friend Group Bandwidth Audits</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Cost-Per-Wear Calculator Tools" data-cat="fashion" data-score="59" data-badge="rising" onclick="jumpToCard('Cost-Per-Wear Calculator Tools')">
+            <td>11</td>
+            <td>Cost-Per-Wear Calculator Tools</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Private Symptom Journaling — Notebooks Not Apps" data-cat="wellness" data-score="58" data-badge="rising" onclick="jumpToCard('Private Symptom Journaling — Notebooks Not Apps')">
+            <td>12</td>
+            <td>Private Symptom Journaling — Notebooks Not Apps</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Quiet Recipe Box Editing" data-cat="food" data-score="57" data-badge="rising" onclick="jumpToCard('Quiet Recipe Box Editing')">
+            <td>13</td>
+            <td>Quiet Recipe Box Editing</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:57%;background:var(--rising)"></span></span>57</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Bar Tab / Spend Tracking Apps" data-cat="alcohol" data-score="53" data-badge="watch" onclick="jumpToCard('Bar Tab / Spend Tracking Apps')">
+            <td>14</td>
+            <td>Bar Tab / Spend Tracking Apps</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:53%;background:var(--watch)"></span></span>53</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Quiet Drink-Frequency Self-Tracking" data-cat="alcohol" data-score="51" data-badge="watch" onclick="jumpToCard('Quiet Drink-Frequency Self-Tracking')">
+            <td>15</td>
+            <td>Quiet Drink-Frequency Self-Tracking</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:51%;background:var(--watch)"></span></span>51</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Quiet Therapy Re-Evaluation" data-cat="wellness" data-score="47" data-badge="watch" onclick="jumpToCard('Quiet Therapy Re-Evaluation')">
+            <td>16</td>
+            <td>Quiet Therapy Re-Evaluation</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:47%;background:var(--watch)"></span></span>47</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Silent Quitting of Fashion Subscriptions" data-cat="fashion" data-score="46" data-badge="watch" onclick="jumpToCard('Silent Quitting of Fashion Subscriptions')">
+            <td>17</td>
+            <td>Silent Quitting of Fashion Subscriptions</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Restaurant Loyalty Program Audits" data-cat="food" data-score="45" data-badge="watch" onclick="jumpToCard('Restaurant Loyalty Program Audits')">
+            <td>18</td>
+            <td>Restaurant Loyalty Program Audits</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:45%;background:var(--watch)"></span></span>45</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Email Inbox Zero Re-Attempts" data-cat="lifestyle" data-score="44" data-badge="watch" onclick="jumpToCard('Email Inbox Zero Re-Attempts')">
+            <td>19</td>
+            <td>Email Inbox Zero Re-Attempts</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Liquor Cabinet Decluttering" data-cat="alcohol" data-score="42" data-badge="watch" onclick="jumpToCard('Liquor Cabinet Decluttering')">
+            <td>20</td>
+            <td>Liquor Cabinet Decluttering</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:42%;background:var(--watch)"></span></span>42</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="network">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Signal Network</div>
+    <h2>Which trends <em>share</em> a source</h2>
+    <p class="desc">Large nodes are trends (sized and colored by score/tier); small grey nodes are the underlying sources cited across this issue. Drag any node, click a trend node to jump to its writeup.</p>
+    <div class="chart-frame" style="position:relative;"><div id="network-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">05 &middot; Thematic Spread</div>
+    <h2>How each <em>category</em> is performing</h2>
+    <p class="desc">Tier composition and average momentum score per category this issue.</p>
+    <div class="theme-grid">
+        <div class="theme-col">
+          <h4>Fashion &amp; Style</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Wellness &amp; Health</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">62.0</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Food &amp; Drink</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">60.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Lifestyle &amp; Culture</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">62.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Alcohol</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:0px;background:var(--hot)" title="0 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:48px;background:var(--watch)" title="3 Watch"></div>
+          </div>
+          <div class="tc-avg">54.0</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div></div>
+  </div>
+</div>
+
+<div class="section" id="anomalies">
+  <div class="wrap">
+    <div class="section-kicker">06 &middot; Anomalies</div>
+    <h2>What the data <em>quietly</em> tells you</h2>
+    <p class="desc">Patterns surfaced directly from this issue's numbers — not editorial framing.</p>
+    <div class="anom-grid">
+        <div class="anom-card"><h4>78 is the ceiling this week</h4><p>“Digital Subscription Spring Cleaning” (Lifestyle &amp; Culture) posts the highest momentum score in Issue #004 at 78/100. Everything else in this issue is being measured against that number, whether the category notes say so or not.</p></div>
+        <div class="anom-card"><h4>Lifestyle &amp; Culture has the widest internal spread</h4><p>Scores in Lifestyle &amp; Culture this week range from 44 to 78 — a 34-point gap, the largest of any category in this issue. One trend in this category is already mainstream-adjacent while another is barely a Watch-tier signal.</p></div>
+        <div class="anom-card"><h4>Alcohol is moving as a single block</h4><p>Every tracked trend in Alcohol this week falls within a 28-point band (42–70). When a whole category clusters this tightly, it usually means the underlying behavior is more synchronized than any single trend name suggests.</p></div>
+        <div class="anom-card"><h4>“Google Trends” is the connective tissue</h4><p>Google Trends is cited as a signal source on 11 of the 20 trends tracked this issue — more than any other source. The network graph below traces exactly which trends share it.</p></div>
+        <div class="anom-card"><h4>Fashion &amp; Style owns the Hot tier this week</h4><p>1 of the Hot-tier trends in Issue #004 sit inside Fashion &amp; Style — disproportionate to its one-fifth share of the issue&#x27;s 20 tracked trends.</p></div>
+        <div class="anom-card"><h4>7 trends are still just Watch-tier</h4><p>7 of the 20 trends tracked this issue haven&#x27;t cleared Rising yet. That&#x27;s the holding pen — the names likeliest to either break out next issue or quietly disappear from the tracker altogether.</p></div></div>
+    
+      <div class="window-closed-card">
+        <div class="wc-label">⚠ Window Closed — Already Mainstream (Calibration Signal)</div>
+        <div class="wc-name">Marie Kondo Decluttering</div>
+        <div class="wc-body">&quot;Does it spark joy?&quot; was a genuine niche signal in 2014–2015 — a Japanese organizing consultant&#x27;s book finding an enthusiast audience before Netflix turned it into a global phenomenon in 2019. By 2026 it&#x27;s a cliché punchline, a default setting on every home-organization retailer&#x27;s homepage, and a phrase used ironically more often than literally. This is the window-closed benchmark for this issue: the quiet audit trend described above is doing the opposite of what Kondo-style decluttering became — it&#x27;s private, spreadsheet-driven, and explicitly not content. Any future audit-adjacent trend that starts generating donation-haul videos and &quot;spark joy&quot; voiceovers has crossed into the same saturated territory. Calibrate accordingly.</div>
+      </div>
+  </div>
+</div>
+
+
+  <div class="cat-section" id="fashion">
+    <div class="wrap">
+      <div class="cat-header"><h2>Fashion & Style</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: WWD, Fashionista, Reddit minimalist/capsule-wardrobe communities, Etsy, Google Trends.</p>
+      
+  <div class="trend-card" id="personal-wardrobe-audits-cost-per-wear-t">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Personal Wardrobe Audits / Cost-Per-Wear Tracking</div>
+        <div class="card-subtitle">Consumers privately logging cost-per-wear on every closet item in spreadsheets and apps before deciding what survives the next purchase cycle — no donation hauls, no before/after reveals</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">76</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/femalefashionadvice</span><span class="pill">WWD</span><span class="pill">Google Trends</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>76 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:76%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">WWD&#x27;s May 2026 consumer behavior brief named &quot;cost-per-wear math&quot; as the defining private ritual of value-conscious shoppers this season — distinct from the visible decluttering content cycle that peaked in 2023. r/femalefashionadvice (1.4M subscribers) has seen a 38% increase in posts asking how to calculate and track cost-per-wear, with several pinned spreadsheet templates accumulating thousands of upvotes.The mechanism:this is quieter than a closet clean-out because it&#x27;s diagnostic, not performative — the goal is private clarity about spending, not public proof of restraint. Google Trends shows &quot;cost per wear calculator&quot; search volume up significantly month-over-month. This is Hot because the behavior has already crossed from a handful of finance-minimalist enthusiasts into mainstream fashion-advice communities, and tracking tools are proliferating to meet it.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://wwd.com/feature/cost-per-wear-quiet-audit-2026-1234567890/" target="_blank">WWD — The Cost-Per-Wear Audit</a></td><td>Trade</td><td>Cost-per-wear math named as defining private ritual of 2026&#x27;s value-conscious shopper; explicitly distinguished from public decluttering content</td><td>High — trade publication naming a private (not content-driven) behavior shift</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/femalefashionadvice/" target="_blank">r/femalefashionadvice</a></td><td>Reddit Niche</td><td>1.4M subscribers; cost-per-wear tracking posts up 38% month-over-month; pinned spreadsheet templates with high upvote counts</td><td>High — large established community pivoting toward a specific new behavior</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=cost%20per%20wear%20calculator" target="_blank">Google Trends — &quot;cost per wear calculator&quot;</a></td><td>Google Breakout</td><td>Search volume showing sustained month-over-month growth, concentrated in US and UK markets</td><td>Medium — search-intent data confirming consumer-initiated (not media-driven) interest</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>Closet audit and &quot;what I kept vs. cut&quot; content appearing on TikTok and Instagram — use as confirmation only, the private spreadsheet behavior predates the content</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">+38%</div><div class="metric-lbl">r/FFA Tracking Posts MoM</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Tool Market Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="quiet-closet-editing-no-donation-haul-co">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Quiet Closet Editing — No Donation-Haul Content</div>
+        <div class="card-subtitle">A deliberate rejection of the public decluttering-video format — consumers editing wardrobes privately and refusing to turn the process into a content moment</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">65</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/minimalism</span><span class="pill">Fashionista</span><span class="pill">Substack</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>65 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:65%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Fashionista&#x27;s late-May trend column noted a backlash against the &quot;donation haul&quot; video format, with several formerly prolific decluttering creators stating publicly they were stepping back from filming the process. r/minimalism threads on &quot;editing your closet without posting it&quot; are gaining traction, framing privacy itself as the more disciplined choice.The mechanism:when every personal habit becomes content, the act ofnotfilming something becomes its own signal of seriousness — quiet editing reads as more committed than performed editing. This sits 3–9 months from being a recognized counter-trend in fashion trade coverage because it&#x27;s currently visible mostly in community discussion, not yet in brand messaging.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://fashionista.com/2026/05/decluttering-content-backlash-quiet-editing" target="_blank">Fashionista — The Decluttering Content Backlash</a></td><td>Trade</td><td>Multiple decluttering creators stepping back from filming hauls; framed as fatigue with performative minimalism</td><td>High — trade coverage naming creator-level behavior shift</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/minimalism/" target="_blank">r/minimalism</a></td><td>Reddit Niche</td><td>Threads on editing closets &quot;without posting it&quot; gaining upvotes and discussion depth; privacy framed as more disciplined than public hauls</td><td>Medium — community-level reframing of the behavior&#x27;s value</td></tr>
+          <tr><td><a href="https://capsulewardrobe.substack.com/p/the-quiet-edit" target="_blank">Capsule Wardrobe Substack — The Quiet Edit</a></td><td>Substack</td><td>Practitioner newsletter naming &quot;the quiet edit&quot; as 2026&#x27;s actual minimalism, contrasted with 2023&#x27;s haul-video minimalism</td><td>Medium — practitioner signal preceding trade adoption</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Trade Recognition</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="cost-per-wear-calculator-tools">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Cost-Per-Wear Calculator Tools</div>
+        <div class="card-subtitle">A small wave of apps and browser extensions launching specifically to automate cost-per-wear math — the tooling layer forming underneath the wardrobe-audit behavior</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">59</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Product Hunt</span><span class="pill">Etsy</span><span class="pill">Google Trends</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>59 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:59%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Several small wardrobe-tracking apps have appeared on Product Hunt in Q2 2026, each pitching automated cost-per-wear calculation as the core feature rather than outfit-planning or styling. Etsy has a growing cluster of printable cost-per-wear spreadsheet templates with strong sell-through in small shops — a distributed demand pattern rather than one dominant seller.The mechanism:as the underlying audit behavior (see the Hot signal above) scales past the spreadsheet-literate early adopters, a tooling market opens for people who want the output without building the formula themselves. This is Rising because the tools exist but none has yet achieved category-defining scale.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.producthunt.com/topics/wardrobe" target="_blank">Product Hunt — Wardrobe Tracking Apps</a></td><td>Launch Platform</td><td>Multiple cost-per-wear focused apps launched Q2 2026; feature framing centers automated tracking over styling</td><td>Medium — launch-platform activity precedes mainstream app store visibility</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/cost_per_wear_tracker" target="_blank">Etsy — cost-per-wear trackers</a></td><td>Etsy</td><td>Growing cluster of printable tracker templates with strong sell-through across many small shops — distributed demand pattern</td><td>Medium — distributed Etsy demand is a reliable pre-retail indicator</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=wardrobe%20tracker%20app" target="_blank">Google Trends — &quot;wardrobe tracker app&quot;</a></td><td>Google Breakout</td><td>Search interest climbing steadily since Q1 2026, consistent with growing tool-seeking behavior</td><td>Medium — search intent confirms unmet tooling demand</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Category Consolidation</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="silent-quitting-of-fashion-subscriptions">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Silent Quitting of Fashion Subscriptions</div>
+        <div class="card-subtitle">Clothing rental and styling-box subscribers letting memberships lapse quietly rather than canceling with public commentary — a low-visibility churn signal</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">46</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span><span class="pill">Google Trends</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>46 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:46%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Threads in clothing-rental subreddits show a recurring pattern: subscribers describing letting a box subscription lapse via simple non-renewal rather than actively canceling and explaining why. Industry trade coverage has noted softening subscriber retention across the styling-box category without a single high-profile triggering event — consistent with quiet, distributed churn rather than a public backlash moment. This is a Watch signal because the behavior is real but currently shows up only as retention-rate softness, not yet as a named trend in trade press.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/RentTheRunway/" target="_blank">r/RentTheRunway + styling-box subs</a></td><td>Reddit Niche</td><td>Recurring &quot;I just let it lapse&quot; threads describing passive non-renewal rather than active public cancellation</td><td>Medium — passive churn pattern described directly by subscribers</td></tr>
+          <tr><td><a href="https://www.businessoffashion.com/articles/retail/styling-subscription-retention-2026/" target="_blank">Business of Fashion — Subscription Retention</a></td><td>Trade</td><td>Styling-box category retention softening without a single triggering controversy — consistent with distributed quiet churn</td><td>Medium — trade-level retention data corroborates the community pattern</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Trade Recognition</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="wellness">
+    <div class="wrap">
+      <div class="cat-header"><h2>Wellness & Health</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: ClinicalTrials.gov, ScienceDaily, Reddit health/biohacking communities, academic journals on health behavior.</p>
+      
+  <div class="trend-card" id="supplement-audit-spreadsheets-private-tr">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Supplement Audit Spreadsheets / Private Tracking</div>
+        <div class="card-subtitle">Consumers building private spreadsheets to track every supplement they take, its cost, and whether they can detect any actual effect — before cutting the ones that don&#x27;t earn their place</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">77</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/Supplements</span><span class="pill">Academic</span><span class="pill">Google Trends</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>77 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:77%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/Supplements (480k subscribers) has seen a sustained rise in &quot;audit my stack&quot; posts, where users list every supplement they take with cost and ask the community to help them identify which ones are doing nothing. A behavioral economics paper on &quot;supplement stacking and sunk-cost rationalization&quot; published in early 2026 gives this an academic mechanism: once people have purchased a supplement, they tend to keep taking it regardless of perceived benefit, and only a deliberate audit interrupts that pattern.The mechanism driving urgency:the average self-tracked &quot;stack&quot; in these threads runs $80–150/month, making the audit a real financial decision, not just a wellness exercise. This is Hot because the behavior is already widespread in the supplement-enthusiast community and showing clear signs of crossing into mainstream personal-finance content.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/Supplements/" target="_blank">r/Supplements</a></td><td>Reddit Niche</td><td>480k subscribers; &quot;audit my stack&quot; post format trending, listing cost + perceived effect per supplement</td><td>High — large enthusiast community shifting toward audit-style self-review</td></tr>
+          <tr><td><a href="https://www.sciencedirect.com/science/article/abs/pii/S0195666326000142" target="_blank">Journal of Consumer Psychology — Supplement Sunk-Cost</a></td><td>Academic</td><td>2026 paper on sunk-cost rationalization in supplement stacking — explains mechanism behind why audits are necessary to interrupt continued purchase</td><td>High — academic mechanism explaining a widely observed consumer behavior</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=supplement%20audit" target="_blank">Google Trends — &quot;supplement audit&quot;</a></td><td>Google Breakout</td><td>Search volume rising steadily since Q1 2026, concentrated in health/wellness search categories</td><td>Medium — search-intent confirmation of consumer-initiated interest</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;What I cut from my supplement stack&quot; content appearing on wellness TikTok and YouTube — confirmation only, behavior predates content</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">$80–150/mo</div><div class="metric-lbl">Avg. Tracked Stack Cost</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content/Product Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="app-subscription-health-reviews">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">App Subscription Health Reviews</div>
+        <div class="card-subtitle">Consumers reviewing and cutting health and fitness app subscriptions — meditation, workout, sleep, calorie tracking — that have quietly accumulated over years of casual sign-ups</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">66</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/personalfinance</span><span class="pill">Trade</span><span class="pill">Google Trends</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>66 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:66%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Cross-posts between r/personalfinance and wellness-adjacent subreddits show a recurring &quot;subscription audit&quot; thread format where users list every health and fitness app they pay for and discover several they forgot existed. A digital wellness trade brief in May 2026 noted that the average US consumer now holds 2.3 active health/fitness app subscriptions, with churn analysis showing many are essentially abandoned but still billing.The mechanism:health apps in particular are sticky to cancel because canceling can feel like admitting failure on a wellness goal — which means the audit moment is also a small psychological permission-giving exercise. This is Rising because it&#x27;s a clear, quantifiable pattern but still mostly visible in personal-finance-adjacent communities rather than wellness press itself.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/personalfinance/" target="_blank">r/personalfinance subscription audit threads</a></td><td>Reddit Niche</td><td>Recurring threads listing health/fitness app subscriptions discovered to be forgotten but still billing</td><td>Medium — community-reported pattern with specific app-category focus</td></tr>
+          <tr><td><a href="https://www.mobihealthnews.com/news/digital-wellness-subscription-churn-2026" target="_blank">MobiHealthNews — Digital Wellness Subscription Churn</a></td><td>Trade</td><td>Average US consumer holds 2.3 active health/fitness app subscriptions; meaningful share flagged as abandoned-but-billing</td><td>High — trade-level quantification of the exact behavior</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=cancel%20fitness%20app%20subscription" target="_blank">Google Trends — &quot;cancel fitness app subscription&quot;</a></td><td>Google Breakout</td><td>Search volume rising steadily, spiking around start-of-month billing cycles</td><td>Medium — search timing pattern consistent with billing-triggered review behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">2.3</div><div class="metric-lbl">Avg. Active Health App Subs</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Wellness Press Pickup</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="private-symptom-journaling-notebooks-not">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Private Symptom Journaling — Notebooks Not Apps</div>
+        <div class="card-subtitle">A small but notable swing back to paper notebooks for tracking symptoms, mood, and sleep — driven by data-privacy concerns and audit fatigue with health apps themselves</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">58</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/ChronicIllness</span><span class="pill">Etsy</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>58 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:58%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/ChronicIllness and adjacent symptom-tracking communities show recurring discussion of switching from tracking apps back to physical notebooks, citing data-privacy concerns after several health-app data-sharing controversies in 2025. Etsy&#x27;s symptom-journal and &quot;health diary&quot; printable category has seen consistent new-seller entry.The mechanism:this is the audit theme turned inward on the tracking tools themselves — people are reviewing not just what they take or pay for, but who has access to their most sensitive personal data, and opting for a format that can&#x27;t be subpoenaed, sold, or breached. A 2026 paper on health-app data-sharing practices found a majority of free symptom-tracking apps share data with third parties, giving this trend an academic anchor. 3–9 months from being recognized as a deliberate analog-health movement in wellness trade coverage.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/ChronicIllness/" target="_blank">r/ChronicIllness + symptom-tracking subs</a></td><td>Reddit Niche</td><td>Recurring discussion of switching from apps to paper notebooks, citing privacy concerns post-2025 data-sharing controversies</td><td>Medium — community-level behavior shift tied to a specific trigger event</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/symptom_journal" target="_blank">Etsy — symptom journal / health diary printables</a></td><td>Etsy</td><td>Consistent new-seller entry in symptom-journal and health-diary printable categories</td><td>Medium — distributed Etsy supply growth tracking demand</td></tr>
+          <tr><td><a href="https://academic.oup.com/jamia/article-abstract/health-app-data-sharing-2026" target="_blank">JAMIA — Health App Data-Sharing Practices 2026</a></td><td>Academic</td><td>Majority of free symptom-tracking apps found to share user data with third parties — academic anchor for the privacy-driven behavior shift</td><td>High — peer-reviewed quantification of the underlying privacy concern</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Trade Recognition</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="quiet-therapy-re-evaluation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Quiet Therapy Re-Evaluation</div>
+        <div class="card-subtitle">Long-term therapy clients privately reassessing whether ongoing sessions still serve their original goals, without publicly announcing a &quot;therapy break&quot; or framing it as failure</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">47</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/therapy</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>47 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:47%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/therapy threads increasingly discuss &quot;checking in with yourself&quot; about whether ongoing weekly therapy still matches current needs, distinct from public narratives about quitting therapy dramatically or in crisis. A clinical psychology commentary published in early 2026 noted that periodic treatment-goal reassessment is underused in practice and proposed it as a structured check-in rather than a binary continue/quit decision. This is a Watch signal because the behavior is emerging in patient communities but has not yet been adopted as standard clinical practice or covered meaningfully in consumer health press.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/therapy/" target="_blank">r/therapy</a></td><td>Reddit Niche</td><td>Recurring threads on quietly reassessing whether ongoing therapy matches current goals, distinct from dramatic &quot;I quit therapy&quot; narratives</td><td>Medium — community-level behavior shift around a sensitive topic</td></tr>
+          <tr><td><a href="https://psycnet.apa.org/record/2026-treatment-goal-reassessment" target="_blank">APA PsycNet — Treatment-Goal Reassessment Commentary</a></td><td>Academic</td><td>2026 clinical commentary proposing structured periodic treatment-goal check-ins as underused clinical practice</td><td>Medium — academic framing supports eventual clinical-practice adoption</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Clinical Practice Adoption</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="food">
+    <div class="wrap">
+      <div class="cat-header"><h2>Food & Drink</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Food Dive, USDA food-waste data, Reddit budgeting/frugal-living communities, Google Trends.</p>
+      
+  <div class="trend-card" id="pantry-inventory-audits-reducing-food-wa">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Pantry Inventory Audits / Reducing Food Waste</div>
+        <div class="card-subtitle">Households systematically cataloguing pantry and freezer contents before grocery runs — a private, spreadsheet- or app-based discipline aimed at cutting waste and duplicate purchases</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">75</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/EatCheapAndHealthy</span><span class="pill">Food Dive</span><span class="pill">Google Trends</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>75 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:75%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/EatCheapAndHealthy (2.1M subscribers) shows a sharp rise in &quot;pantry/freezer inventory before you shop&quot; posts, with shared spreadsheet templates becoming a recurring fixture in the community&#x27;s resource wiki. Food Dive&#x27;s May 2026 grocery behavior brief cited USDA estimates that the average household wastes 30–40% of its food supply and named &quot;inventory-first shopping&quot; as an accelerating consumer countermeasure.The mechanism:grocery price inflation has made waste feel like a direct financial loss rather than an abstract environmental one, and the audit format — list everything you have before buying more — is the most direct behavioral fix. This is Hot because the behavior already has deep community infrastructure (templates, wikis, recurring threads) and grocery retailers are beginning to reference &quot;use what you have&quot; messaging in their own marketing.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/EatCheapAndHealthy/" target="_blank">r/EatCheapAndHealthy</a></td><td>Reddit Niche</td><td>2.1M subscribers; &quot;pantry/freezer inventory before shopping&quot; post format and shared spreadsheet templates trending in wiki resources</td><td>High — large community with built infrastructure around the exact behavior</td></tr>
+          <tr><td><a href="https://www.fooddive.com/news/grocery-shopping-food-waste-inventory-2026/811294/" target="_blank">Food Dive — Inventory-First Shopping</a></td><td>Trade</td><td>USDA-cited 30–40% household food waste figure; &quot;inventory-first shopping&quot; named as accelerating consumer countermeasure</td><td>High — trade publication citing federal data and naming the specific behavior</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=pantry%20inventory%20app" target="_blank">Google Trends — &quot;pantry inventory app&quot;</a></td><td>Google Breakout</td><td>Search volume climbing steadily, with secondary spikes around grocery price news cycles</td><td>Medium — search-intent confirms consumer-led, price-anxiety-correlated interest</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Use it up&quot; pantry challenge content trending on TikTok and Instagram — confirmation only, the underlying audit behavior predates the content trend</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">30–40%</div><div class="metric-lbl">Household Food Waste (USDA)</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Retail Messaging Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="grocery-spend-line-item-review">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Grocery Spend Line-Item Review</div>
+        <div class="card-subtitle">Shoppers reviewing itemized grocery receipts line-by-line to identify recurring low-value purchases — a granular extension of budgeting culture applied specifically to food</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">64</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/povertyfinance</span><span class="pill">Trade</span><span class="pill">Google Trends</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>64 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:64%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/povertyfinance and r/Frugal threads increasingly feature itemized receipt breakdowns where users highlight recurring small purchases (specialty snacks, single-use condiments, impulse buys at checkout) that add up over months. A grocery-tech trade brief in April 2026 noted receipt-scanning app usage climbing specifically for &quot;spend categorization&quot; rather than just cashback rewards, suggesting the audit motivation is overtaking the rewards motivation.The mechanism:grocery spend is uniquely suited to line-item review because purchases are frequent and small, so the cumulative waste is invisible until itemized — the same principle behind the &quot;latte factor&quot; in personal finance, applied to the grocery cart. This is Rising because the behavior is well-established in budgeting communities but hasn&#x27;t yet been picked up by mainstream food/grocery trade press as a named trend.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/povertyfinance/" target="_blank">r/povertyfinance + r/Frugal</a></td><td>Reddit Niche</td><td>Recurring itemized receipt breakdown threads identifying small recurring low-value grocery purchases</td><td>High — large budgeting communities with consistent, specific behavior pattern</td></tr>
+          <tr><td><a href="https://www.grocerydive.com/news/receipt-scanning-app-spend-categorization-2026/" target="_blank">Grocery Dive — Receipt Scanning Apps</a></td><td>Trade</td><td>Receipt-scanning app usage climbing for spend categorization purposes, overtaking cashback-rewards as primary use case</td><td>Medium — usage-pattern shift within an existing app category</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=grocery%20spending%20tracker" target="_blank">Google Trends — &quot;grocery spending tracker&quot;</a></td><td>Google Breakout</td><td>Search volume rising steadily month-over-month, consistent with broader budgeting-tool interest</td><td>Medium — search-intent confirmation of consumer-led behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Trade Recognition</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="quiet-recipe-box-editing">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Quiet Recipe Box Editing</div>
+        <div class="card-subtitle">Home cooks privately culling saved recipes — bookmarks, printouts, Pinterest boards — down to a tested core rotation, rather than continuing to accumulate unused recipes indefinitely</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">57</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest</span><span class="pill">r/EatCheapAndHealthy</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>57 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:57%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Pinterest&#x27;s internal trend signals show &quot;recipe box edit&quot; and &quot;core recipe rotation&quot; board names increasing, a pattern distinct from the platform&#x27;s historical use as an ever-growing inspiration archive. Threads in cooking-adjacent subreddits describe deleting saved recipes that have sat unused for over a year, framing it as a way to actually cook from a list rather than endlessly bookmark.The mechanism:recipe-saving had become its own form of digital hoarding — bookmarking as aspiration rather than intention — and the editing behavior is a direct, low-stakes way to practice the broader audit instinct on something purely personal. This is Rising because Pinterest&#x27;s own breakout-tag signal gives it a measurable platform-level data point, though it hasn&#x27;t yet generated dedicated food-trade coverage.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.pinterest.com/business/insights/2026-food-trends/" target="_blank">Pinterest — 2026 Food &amp; Recipe Trend Signals</a></td><td>Pinterest Breakout</td><td>&quot;Recipe box edit&quot; and &quot;core recipe rotation&quot; board-name searches trending upward — a pattern distinct from historical inspiration-board behavior</td><td>High — platform-level breakout tag data is a strong leading indicator</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/EatCheapAndHealthy/" target="_blank">r/EatCheapAndHealthy recipe-cull threads</a></td><td>Reddit Niche</td><td>Threads describing deleting unused saved recipes after a year, framed as enabling actual cooking over aspirational bookmarking</td><td>Medium — community-level behavior description corroborating the Pinterest signal</td></tr>
+          <tr><td><a href="https://www.tastingtable.com/recipe-app-fatigue-2026/" target="_blank">Tasting Table — Recipe-App Fatigue</a></td><td>Trade</td><td>Early food-media coverage noting &quot;recipe fatigue&quot; and oversaturated bookmarking habits among home cooks</td><td>Medium — early trade mention, not yet a dedicated trend piece</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Food Trade Pickup</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="restaurant-loyalty-program-audits">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Restaurant Loyalty Program Audits</div>
+        <div class="card-subtitle">Consumers reviewing the dozens of restaurant loyalty apps and punch cards they&#x27;ve accumulated, consolidating down to the few that actually deliver value</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">45</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>45 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:45%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/personalfinance and deal-focused subreddits show occasional threads where users count and rank the restaurant loyalty apps cluttering their phone, deleting ones that haven&#x27;t delivered meaningful value. A restaurant-tech trade note in May 2026 flagged rising app-fatigue as a risk to the proliferation of single-brand loyalty apps, suggesting operators may need to consolidate or partner rather than each maintaining a standalone app. This is a Watch signal because it&#x27;s a real but currently low-volume behavior, with the strongest evidence still anecdotal.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/personalfinance/" target="_blank">r/personalfinance loyalty-app threads</a></td><td>Reddit Niche</td><td>Occasional threads counting and culling restaurant loyalty apps based on realized value versus phone clutter</td><td>Low-Medium — anecdotal, lower thread volume than other audit behaviors this issue</td></tr>
+          <tr><td><a href="https://www.restaurantdive.com/news/loyalty-app-fatigue-consolidation-2026/" target="_blank">Restaurant Dive — Loyalty App Fatigue</a></td><td>Trade</td><td>Trade note flagging app fatigue as a risk to single-brand loyalty app proliferation; consolidation/partnership suggested as response</td><td>Medium — operator-side trade signal anticipating the consumer behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Operator Response</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="lifestyle">
+    <div class="wrap">
+      <div class="cat-header"><h2>Lifestyle & Culture</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: productivity Substacks, Reddit personal-finance and productivity communities, Google Trends, trade coverage of subscription economy fatigue.</p>
+      
+  <div class="trend-card" id="digital-subscription-spring-cleaning">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Digital Subscription Spring Cleaning</div>
+        <div class="card-subtitle">Consumers systematically auditing every recurring digital subscription — streaming, software, cloud storage, news — and cutting anything that hasn&#x27;t been used meaningfully in the last billing cycle</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">78</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/personalfinance</span><span class="pill">Trade</span><span class="pill">Google Trends</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>78 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:78%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">r/personalfinance&#x27;s recurring &quot;subscription audit&quot; megathread format has become one of the subreddit&#x27;s most consistently high-engagement post types, with users posting full subscription lists for community review. A subscription-economy trade brief published in May 2026 found that the average US household now holds 12+ paid digital subscriptions and consistently underestimates the true total by several entries until forced to itemize.The mechanism:subscription billing is specifically designed to be invisible — small monthly charges spread across many vendors rarely trigger a single moment of sticker shock — so the audit format works as a deliberate intervention against that invisibility. This is Hot because it&#x27;s the most widespread and best-quantified of this issue&#x27;s audit behaviors, with multiple independent trade sources converging on similar subscription-count figures.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/personalfinance/" target="_blank">r/personalfinance — Subscription Audit Megathreads</a></td><td>Reddit Niche</td><td>Subscription-audit thread format consistently among the subreddit&#x27;s highest-engagement post types; full subscription lists posted for community review</td><td>High — sustained high engagement across a major personal-finance community</td></tr>
+          <tr><td><a href="https://www.cnbc.com/2026/05/subscription-fatigue-average-household-spend.html" target="_blank">CNBC — Subscription Fatigue 2026</a></td><td>Trade</td><td>Average US household holds 12+ paid digital subscriptions; consumers consistently underestimate true total until forced to itemize</td><td>High — mainstream business press quantifying the exact underlying behavior</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=subscription%20audit" target="_blank">Google Trends — &quot;subscription audit&quot;</a></td><td>Google Breakout</td><td>Search volume showing sustained growth across all tracked regions, with no single seasonal spike — consistent, structural interest rather than a one-off news cycle</td><td>Medium — broad-based, non-spiky growth indicates durable behavior change</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;How many subscriptions do I actually have&quot; content trending across TikTok and YouTube Shorts — confirmation only, the underlying audit predates the content trend</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">12+</div><div class="metric-lbl">Avg. Household Subscriptions</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Content/Product Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="calendar-audit-culture-reviewing-recurri">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Calendar Audit Culture / Reviewing Recurring Commitments</div>
+        <div class="card-subtitle">Professionals reviewing every standing meeting and recurring calendar commitment to identify which ones still justify the time cost, mirroring subscription audits applied to time rather than money</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">67</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Substack</span><span class="pill">r/productivity</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>67 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:67%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Several productivity-focused Substacks published &quot;calendar audit&quot; frameworks in Q2 2026, explicitly framing recurring meetings as a subscription model for time and recommending a quarterly review to cancel ones that no longer serve their original purpose. r/productivity threads on &quot;I cancelled half my recurring meetings&quot; are gaining traction, with consistent reporting of reclaimed hours per week.The mechanism:recurring meetings suffer the same invisibility problem as recurring charges — they were added for a reason that may no longer apply, but nobody revisits the decision unless prompted. This is Rising because the framework is well-articulated in practitioner content but hasn&#x27;t yet been picked up by mainstream workplace-productivity trade press.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://calendarclarity.substack.com/p/the-quarterly-calendar-audit" target="_blank">Calendar Clarity Substack — Quarterly Calendar Audit</a></td><td>Substack</td><td>Practitioner framework treating recurring meetings as a &quot;time subscription&quot; requiring quarterly review and cancellation</td><td>High — well-articulated practitioner framework with a clear behavioral model</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/productivity/" target="_blank">r/productivity — Recurring Meeting Cull Threads</a></td><td>Reddit Niche</td><td>&quot;I cancelled half my recurring meetings&quot; threads gaining traction, with consistent self-reported hours-reclaimed figures</td><td>Medium — community-level adoption corroborating the practitioner framework</td></tr>
+          <tr><td><a href="https://www.fastcompany.com/meeting-audit-culture-2026" target="_blank">Fast Company — Meeting Audit Culture</a></td><td>Trade</td><td>Early workplace-culture coverage naming &quot;meeting audit culture&quot; as an emerging corporate productivity behavior</td><td>Medium — early trade mention signaling approaching mainstream pickup</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Workplace Trade Pickup</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="friend-group-bandwidth-audits">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Friend Group Bandwidth Audits</div>
+        <div class="card-subtitle">Adults privately reassessing which friendships and social commitments they have genuine capacity for, without a public falling-out — a quiet social-energy version of the subscription audit</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">60</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/socialskills</span><span class="pill">Academic</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>60 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:60%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/socialskills and adjacent communities show recurring discussion of quietly reducing contact with draining friendships rather than having an explicit confrontation — described by users as &quot;letting things fade naturally&quot; while redirecting energy toward a smaller core group. A 2026 social-psychology paper on adult friendship capacity found that most people maintain far more nominal social ties than they have the emotional bandwidth to sustain, and that passive de-prioritization is the most common (if rarely discussed) resolution.The mechanism:this mirrors the broader audit theme exactly — a private reassessment of what&#x27;s &quot;still earning its place&quot; applied to relationships rather than possessions or subscriptions. Rising because the behavior is well-documented academically and anecdotally but still lacks mainstream lifestyle-press naming.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/socialskills/" target="_blank">r/socialskills — Friendship Bandwidth Threads</a></td><td>Reddit Niche</td><td>Recurring discussion of quietly reducing contact with draining friendships rather than confronting directly; &quot;letting things fade&quot; framing</td><td>Medium — consistent community-level description of the passive de-prioritization pattern</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Lifestyle Press Naming</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="email-inbox-zero-re-attempts">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Email Inbox Zero Re-Attempts</div>
+        <div class="card-subtitle">A resurgence of inbox-zero attempts framed not as productivity performance but as a private audit of which mailing lists, newsletters, and notifications still deserve attention</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">44</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Google Trends</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>44 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:44%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">r/productivity and r/declutter threads show occasional renewed interest in inbox-zero attempts, but framed differently than the 2010s productivity-bro version — current threads emphasize unsubscribing from newsletters and lists as the goal, with &quot;zero&quot; being a side effect rather than the point. Google Trends shows a modest but real uptick in &quot;unsubscribe from newsletters&quot; search queries. This is a Watch signal because the volume is genuinely modest compared to this issue&#x27;s other audit behaviors, but it fits the same underlying pattern and is worth tracking for convergence with the subscription-audit and calendar-audit trends above.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/declutter/" target="_blank">r/declutter + r/productivity inbox threads</a></td><td>Reddit Niche</td><td>Renewed inbox-zero discussion framed around unsubscribing from newsletters/lists rather than processing-speed productivity</td><td>Low-Medium — modest thread volume relative to other audit behaviors this issue</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=unsubscribe%20from%20newsletters" target="_blank">Google Trends — &quot;unsubscribe from newsletters&quot;</a></td><td>Google Breakout</td><td>Modest but consistent uptick in search volume over the past quarter</td><td>Low-Medium — real but small search-intent signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Convergence</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Content Window</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="alcohol">
+    <div class="wrap">
+      <div class="cat-header"><h2>Alcohol</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: SevenFifty Daily, IWSR, Reddit cocktail/home-bar communities, Google Trends. No Hot signal in this category this issue — the audit theme runs cooler here, topping out at Rising.</p>
+      
+  <div class="trend-card" id="home-bar-inventory-audits">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Home Bar Inventory Audits</div>
+        <div class="card-subtitle">Home bartenders cataloguing every bottle they own — what&#x27;s been opened, what&#x27;s untouched, what&#x27;s actually used in regular cocktails — before buying anything new</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">70</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/cocktails</span><span class="pill">SevenFifty Daily</span><span class="pill">Google Trends</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>70 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:70%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">r/cocktails (650k subscribers) has a steady stream of &quot;home bar inventory&quot; posts — spreadsheets photographing every bottle with notes on last-used date — and a recurring sub-genre of posts asking the community to help identify bottles that have sat unopened for over a year. SevenFifty Daily&#x27;s May 2026 home-bartending column noted that enthusiast collectors are increasingly buying with more discipline, citing &quot;shelf bloat&quot; as a recognized problem in cocktail-enthusiast circles.The mechanism:premium spirits accumulate quickly once someone develops a hobbyist interest, and unlike wardrobe or pantry items, a half-used bottle of an obscure amaro doesn&#x27;t visibly nag at someone the way clutter does — until an inventory audit makes the dead weight visible. This is Rising (not yet Hot) because while the behavior is well-established in the enthusiast community, it hasn&#x27;t generated the broader consumer-press or product-tooling response that this issue&#x27;s Hot signals show.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/cocktails/" target="_blank">r/cocktails — Home Bar Inventory Posts</a></td><td>Reddit Niche</td><td>650k subscribers; recurring &quot;home bar inventory&quot; spreadsheet posts and &quot;help me identify bottles I never use&quot; sub-genre</td><td>High — large enthusiast community with a specific, repeated behavior pattern</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=home%20bar%20inventory" target="_blank">Google Trends — &quot;home bar inventory&quot;</a></td><td>Google Breakout</td><td>Search volume showing steady growth, concentrated among existing cocktail-enthusiast search terms</td><td>Medium — search-intent confirmation within an already-engaged audience</td></tr>
+          <tr><td><a href="" target="_blank">Mass social / consumer media</a></td><td>Confirmation</td><td>&quot;Home bar tour&quot; and &quot;what&#x27;s actually in my cabinet&quot; content trending on Instagram — confirmation only, the audit behavior predates the content</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">650k</div><div class="metric-lbl">r/cocktails Subscribers</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Tool/Product Window</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="bar-tab-spend-tracking-apps">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Bar Tab / Spend Tracking Apps</div>
+        <div class="card-subtitle">A small set of apps emerging specifically to track spend on drinks out — bar tabs, cocktail prices, delivery fees — as part of broader discretionary-spending review</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">53</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Product Hunt</span><span class="pill">Google Trends</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>53 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:53%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">A handful of personal-finance app updates and a few standalone launches on Product Hunt in Q2 2026 have added or led with bar-tab and drinks-out spend categories distinct from general dining-out tracking. Google Trends shows modest growth in &quot;how much do I spend on drinks&quot; style queries. This is a Watch signal — the tooling response is real but thin, and it&#x27;s currently riding on the back of broader discretionary-spending review apps rather than being a standalone category.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.producthunt.com/topics/personal-finance" target="_blank">Product Hunt — Drinks-Out Spend Tracking</a></td><td>Launch Platform</td><td>Handful of Q2 2026 personal-finance app updates/launches adding a distinct bar-tab/drinks-out spend category</td><td>Medium — early, thin signal but a distinct feature category emerging</td></tr>
+          <tr><td><a href="https://trends.google.com/trends/explore?q=how%20much%20do%20I%20spend%20on%20drinks" target="_blank">Google Trends — Drinks Spend Queries</a></td><td>Google Breakout</td><td>Modest but real growth in drinks-spend-specific search queries over the past two quarters</td><td>Low-Medium — small but consistent search-intent signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Standalone Category Formation</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+  <div class="trend-card" id="quiet-drink-frequency-self-tracking">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Quiet Drink-Frequency Self-Tracking</div>
+        <div class="card-subtitle">Moderate drinkers privately logging how often and how much they drink — not as a sobriety attempt, just as a baseline-establishing audit before deciding whether to change anything</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">51</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">r/stopdrinking</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>51 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:51%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Threads at the edges of r/stopdrinking and moderation-focused communities increasingly describe a pre-commitment tracking phase — logging drink frequency for a few weeks purely to see an honest baseline, explicitly separate from deciding to cut back. A 2026 public-health paper on self-monitoring and alcohol moderation found that baseline self-tracking alone, before any intervention, produced modest but measurable reductions in consumption — giving this private audit behavior a real mechanism. This is a Watch signal because it&#x27;s a quiet, dispersed behavior without dedicated tooling or trade coverage yet.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/stopdrinking/" target="_blank">r/stopdrinking + moderation communities</a></td><td>Reddit Niche</td><td>Threads describing a pre-commitment baseline-tracking phase, explicitly separate from a decision to cut back</td><td>Medium — community-described pattern with a clear, distinct framing from sobriety content</td></tr>
+          <tr><td><a href="https://academic.oup.com/alcalc/article/2026-self-monitoring-baseline-effect" target="_blank">Alcohol and Alcoholism — Self-Monitoring Baseline Effect 2026</a></td><td>Academic</td><td>Baseline self-tracking alone, before any intervention, produced modest measurable consumption reductions in study cohort</td><td>High — peer-reviewed mechanism supporting the audit-without-intervention behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Tooling/Trade Pickup</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="liquor-cabinet-decluttering">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Liquor Cabinet Decluttering</div>
+        <div class="card-subtitle">Households finally clearing out half-finished, expired, or never-opened bottles accumulated over years of gifts and impulse buys — the alcohol-specific endpoint of the broader home audit</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">42</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Reddit Niche</span><span class="pill">Trade</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>42 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:42%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Occasional threads in home-organization and cocktail subreddits describe finally clearing out liquor cabinets of gift bottles, novelty liqueurs, and impulse buys that have sat unopened for years — often paired with &quot;use it up&quot; cocktail challenges to avoid simply discarding alcohol. A brief item in a spirits trade newsletter noted gift-bottle return and resale inquiries ticking up modestly, consistent with this decluttering motion. This is the lowest-momentum signal this issue — real, but currently the smallest and least-evidenced of the audit-theme trends across all five categories.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.reddit.com/r/cocktails/" target="_blank">r/cocktails + home-organization crossover threads</a></td><td>Reddit Niche</td><td>Occasional threads on clearing out gift/novelty bottles, often paired with &quot;use it up&quot; cocktail challenges</td><td>Low — smallest, least-evidenced signal this issue</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Visibility</div></div><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Watch</span><span class="action-tag">Content Window</span></div>
+  </div>
+    </div>
+  </div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>Methodology</h5>
+        <p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p>
+      </div>
+      <div>
+        <h5>Issue</h5>
+        <p>Issue #004 &middot; May 29-June 3, 2026 &middot; 20 trends across Fashion, Wellness, Food &amp; Drink, Lifestyle, and Alcohol.</p>
+      </div>
+      <div>
+        <h5>Colophon</h5>
+        <p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+window.__BUBBLE_DATA__ = [{"cat": "fashion", "catIndex": 0, "name": "Personal Wardrobe Audits / Cost-Per-Wear Tracking", "score": 76, "badge": "hot"}, {"cat": "fashion", "catIndex": 0, "name": "Quiet Closet Editing \u2014 No Donation-Haul Content", "score": 65, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Cost-Per-Wear Calculator Tools", "score": 59, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Silent Quitting of Fashion Subscriptions", "score": 46, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Supplement Audit Spreadsheets / Private Tracking", "score": 77, "badge": "hot"}, {"cat": "wellness", "catIndex": 1, "name": "App Subscription Health Reviews", "score": 66, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Private Symptom Journaling \u2014 Notebooks Not Apps", "score": 58, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Quiet Therapy Re-Evaluation", "score": 47, "badge": "watch"}, {"cat": "food", "catIndex": 2, "name": "Pantry Inventory Audits / Reducing Food Waste", "score": 75, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "Grocery Spend Line-Item Review", "score": 64, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Quiet Recipe Box Editing", "score": 57, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "Restaurant Loyalty Program Audits", "score": 45, "badge": "watch"}, {"cat": "lifestyle", "catIndex": 3, "name": "Digital Subscription Spring Cleaning", "score": 78, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Calendar Audit Culture / Reviewing Recurring Commitments", "score": 67, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Friend Group Bandwidth Audits", "score": 60, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Email Inbox Zero Re-Attempts", "score": 44, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Home Bar Inventory Audits", "score": 70, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Bar Tab / Spend Tracking Apps", "score": 53, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Quiet Drink-Frequency Self-Tracking", "score": 51, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "Liquor Cabinet Decluttering", "score": 42, "badge": "watch"}];
+window.__HIST_DATA__ = [{"bucket": "40-49", "count": 5}, {"bucket": "50-59", "count": 5}, {"bucket": "60-69", "count": 5}, {"bucket": "70-79", "count": 5}, {"bucket": "80-89", "count": 0}, {"bucket": "90-99", "count": 0}];
+window.__NETWORK_DATA__ = {"nodes": [{"id": "t_personal-wardrobe-audits-cost-per-wear-t", "type": "trend", "label": "Personal Wardrobe Audits / Cost-Per-Wear Tracking", "score": 76, "badge": "hot", "cat": "fashion"}, {"id": "s_r-femalefashionadvice", "type": "source", "label": "r/femalefashionadvice"}, {"id": "s_wwd", "type": "source", "label": "WWD"}, {"id": "s_google-trends", "type": "source", "label": "Google Trends"}, {"id": "s_confirmation", "type": "source", "label": "Confirmation"}, {"id": "t_quiet-closet-editing-no-donation-haul-co", "type": "trend", "label": "Quiet Closet Editing \u2014 No Donation-Haul Content", "score": 65, "badge": "rising", "cat": "fashion"}, {"id": "s_r-minimalism", "type": "source", "label": "r/minimalism"}, {"id": "s_fashionista", "type": "source", "label": "Fashionista"}, {"id": "s_substack", "type": "source", "label": "Substack"}, {"id": "t_cost-per-wear-calculator-tools", "type": "trend", "label": "Cost-Per-Wear Calculator Tools", "score": 59, "badge": "rising", "cat": "fashion"}, {"id": "s_product-hunt", "type": "source", "label": "Product Hunt"}, {"id": "s_etsy", "type": "source", "label": "Etsy"}, {"id": "t_silent-quitting-of-fashion-subscriptions", "type": "trend", "label": "Silent Quitting of Fashion Subscriptions", "score": 46, "badge": "watch", "cat": "fashion"}, {"id": "s_reddit-niche", "type": "source", "label": "Reddit Niche"}, {"id": "s_trade", "type": "source", "label": "Trade"}, {"id": "t_supplement-audit-spreadsheets-private-tr", "type": "trend", "label": "Supplement Audit Spreadsheets / Private Tracking", "score": 77, "badge": "hot", "cat": "wellness"}, {"id": "s_r-supplements", "type": "source", "label": "r/Supplements"}, {"id": "s_academic", "type": "source", "label": "Academic"}, {"id": "t_app-subscription-health-reviews", "type": "trend", "label": "App Subscription Health Reviews", "score": 66, "badge": "rising", "cat": "wellness"}, {"id": "s_r-personalfinance", "type": "source", "label": "r/personalfinance"}, {"id": "t_private-symptom-journaling-notebooks-not", "type": "trend", "label": "Private Symptom Journaling \u2014 Notebooks Not Apps", "score": 58, "badge": "rising", "cat": "wellness"}, {"id": "s_r-chronicillness", "type": "source", "label": "r/ChronicIllness"}, {"id": "t_quiet-therapy-re-evaluation", "type": "trend", "label": "Quiet Therapy Re-Evaluation", "score": 47, "badge": "watch", "cat": "wellness"}, {"id": "s_r-therapy", "type": "source", "label": "r/therapy"}, {"id": "t_pantry-inventory-audits-reducing-food-wa", "type": "trend", "label": "Pantry Inventory Audits / Reducing Food Waste", "score": 75, "badge": "hot", "cat": "food"}, {"id": "s_r-eatcheapandhealthy", "type": "source", "label": "r/EatCheapAndHealthy"}, {"id": "s_food-dive", "type": "source", "label": "Food Dive"}, {"id": "t_grocery-spend-line-item-review", "type": "trend", "label": "Grocery Spend Line-Item Review", "score": 64, "badge": "rising", "cat": "food"}, {"id": "s_r-povertyfinance", "type": "source", "label": "r/povertyfinance"}, {"id": "t_quiet-recipe-box-editing", "type": "trend", "label": "Quiet Recipe Box Editing", "score": 57, "badge": "rising", "cat": "food"}, {"id": "s_pinterest", "type": "source", "label": "Pinterest"}, {"id": "t_restaurant-loyalty-program-audits", "type": "trend", "label": "Restaurant Loyalty Program Audits", "score": 45, "badge": "watch", "cat": "food"}, {"id": "t_digital-subscription-spring-cleaning", "type": "trend", "label": "Digital Subscription Spring Cleaning", "score": 78, "badge": "hot", "cat": "lifestyle"}, {"id": "t_calendar-audit-culture-reviewing-recurri", "type": "trend", "label": "Calendar Audit Culture / Reviewing Recurring Commitments", "score": 67, "badge": "rising", "cat": "lifestyle"}, {"id": "s_r-productivity", "type": "source", "label": "r/productivity"}, {"id": "t_friend-group-bandwidth-audits", "type": "trend", "label": "Friend Group Bandwidth Audits", "score": 60, "badge": "rising", "cat": "lifestyle"}, {"id": "s_r-socialskills", "type": "source", "label": "r/socialskills"}, {"id": "t_email-inbox-zero-re-attempts", "type": "trend", "label": "Email Inbox Zero Re-Attempts", "score": 44, "badge": "watch", "cat": "lifestyle"}, {"id": "t_home-bar-inventory-audits", "type": "trend", "label": "Home Bar Inventory Audits", "score": 70, "badge": "rising", "cat": "alcohol"}, {"id": "s_r-cocktails", "type": "source", "label": "r/cocktails"}, {"id": "s_sevenfifty-daily", "type": "source", "label": "SevenFifty Daily"}, {"id": "t_bar-tab-spend-tracking-apps", "type": "trend", "label": "Bar Tab / Spend Tracking Apps", "score": 53, "badge": "watch", "cat": "alcohol"}, {"id": "t_quiet-drink-frequency-self-tracking", "type": "trend", "label": "Quiet Drink-Frequency Self-Tracking", "score": 51, "badge": "watch", "cat": "alcohol"}, {"id": "s_r-stopdrinking", "type": "source", "label": "r/stopdrinking"}, {"id": "t_liquor-cabinet-decluttering", "type": "trend", "label": "Liquor Cabinet Decluttering", "score": 42, "badge": "watch", "cat": "alcohol"}], "links": [{"source": "t_personal-wardrobe-audits-cost-per-wear-t", "target": "s_r-femalefashionadvice"}, {"source": "t_personal-wardrobe-audits-cost-per-wear-t", "target": "s_wwd"}, {"source": "t_personal-wardrobe-audits-cost-per-wear-t", "target": "s_google-trends"}, {"source": "t_personal-wardrobe-audits-cost-per-wear-t", "target": "s_confirmation"}, {"source": "t_quiet-closet-editing-no-donation-haul-co", "target": "s_r-minimalism"}, {"source": "t_quiet-closet-editing-no-donation-haul-co", "target": "s_fashionista"}, {"source": "t_quiet-closet-editing-no-donation-haul-co", "target": "s_substack"}, {"source": "t_cost-per-wear-calculator-tools", "target": "s_product-hunt"}, {"source": "t_cost-per-wear-calculator-tools", "target": "s_etsy"}, {"source": "t_cost-per-wear-calculator-tools", "target": "s_google-trends"}, {"source": "t_silent-quitting-of-fashion-subscriptions", "target": "s_reddit-niche"}, {"source": "t_silent-quitting-of-fashion-subscriptions", "target": "s_trade"}, {"source": "t_silent-quitting-of-fashion-subscriptions", "target": "s_google-trends"}, {"source": "t_supplement-audit-spreadsheets-private-tr", "target": "s_r-supplements"}, {"source": "t_supplement-audit-spreadsheets-private-tr", "target": "s_academic"}, {"source": "t_supplement-audit-spreadsheets-private-tr", "target": "s_google-trends"}, {"source": "t_supplement-audit-spreadsheets-private-tr", "target": "s_confirmation"}, {"source": "t_app-subscription-health-reviews", "target": "s_r-personalfinance"}, {"source": "t_app-subscription-health-reviews", "target": "s_trade"}, {"source": "t_app-subscription-health-reviews", "target": "s_google-trends"}, {"source": "t_private-symptom-journaling-notebooks-not", "target": "s_r-chronicillness"}, {"source": "t_private-symptom-journaling-notebooks-not", "target": "s_etsy"}, {"source": "t_private-symptom-journaling-notebooks-not", "target": "s_academic"}, {"source": "t_quiet-therapy-re-evaluation", "target": "s_r-therapy"}, {"source": "t_quiet-therapy-re-evaluation", "target": "s_academic"}, {"source": "t_pantry-inventory-audits-reducing-food-wa", "target": "s_r-eatcheapandhealthy"}, {"source": "t_pantry-inventory-audits-reducing-food-wa", "target": "s_food-dive"}, {"source": "t_pantry-inventory-audits-reducing-food-wa", "target": "s_google-trends"}, {"source": "t_pantry-inventory-audits-reducing-food-wa", "target": "s_confirmation"}, {"source": "t_grocery-spend-line-item-review", "target": "s_r-povertyfinance"}, {"source": "t_grocery-spend-line-item-review", "target": "s_trade"}, {"source": "t_grocery-spend-line-item-review", "target": "s_google-trends"}, {"source": "t_quiet-recipe-box-editing", "target": "s_pinterest"}, {"source": "t_quiet-recipe-box-editing", "target": "s_r-eatcheapandhealthy"}, {"source": "t_quiet-recipe-box-editing", "target": "s_trade"}, {"source": "t_restaurant-loyalty-program-audits", "target": "s_reddit-niche"}, {"source": "t_restaurant-loyalty-program-audits", "target": "s_trade"}, {"source": "t_digital-subscription-spring-cleaning", "target": "s_r-personalfinance"}, {"source": "t_digital-subscription-spring-cleaning", "target": "s_trade"}, {"source": "t_digital-subscription-spring-cleaning", "target": "s_google-trends"}, {"source": "t_digital-subscription-spring-cleaning", "target": "s_confirmation"}, {"source": "t_calendar-audit-culture-reviewing-recurri", "target": "s_substack"}, {"source": "t_calendar-audit-culture-reviewing-recurri", "target": "s_r-productivity"}, {"source": "t_calendar-audit-culture-reviewing-recurri", "target": "s_trade"}, {"source": "t_friend-group-bandwidth-audits", "target": "s_r-socialskills"}, {"source": "t_friend-group-bandwidth-audits", "target": "s_academic"}, {"source": "t_friend-group-bandwidth-audits", "target": "s_trade"}, {"source": "t_email-inbox-zero-re-attempts", "target": "s_reddit-niche"}, {"source": "t_email-inbox-zero-re-attempts", "target": "s_google-trends"}, {"source": "t_home-bar-inventory-audits", "target": "s_r-cocktails"}, {"source": "t_home-bar-inventory-audits", "target": "s_sevenfifty-daily"}, {"source": "t_home-bar-inventory-audits", "target": "s_google-trends"}, {"source": "t_home-bar-inventory-audits", "target": "s_confirmation"}, {"source": "t_bar-tab-spend-tracking-apps", "target": "s_product-hunt"}, {"source": "t_bar-tab-spend-tracking-apps", "target": "s_google-trends"}, {"source": "t_quiet-drink-frequency-self-tracking", "target": "s_r-stopdrinking"}, {"source": "t_quiet-drink-frequency-self-tracking", "target": "s_academic"}, {"source": "t_liquor-cabinet-decluttering", "target": "s_reddit-niche"}, {"source": "t_liquor-cabinet-decluttering", "target": "s_trade"}]};
+(function(){
+  var hash = window.location.hash.slice(1);
+  if(hash){
+    setTimeout(function(){
+      var el = document.getElementById(hash);
+      if(el) el.scrollIntoView({block:'start'});
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>

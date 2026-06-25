@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultural &amp; Consumer Trend Report — Issue #007 — June 23, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #ffffff; --ink: #18181b; --ink-dim: #6b6b74; --ink-faint: #9b9ba3;
+  --line: #e5e1d8; --accent: #d6336c; --accent-soft: rgba(214,51,108,.12);
+  --hot: #d6336c; --rising: #c87a17; --watch: #1d7a8c;
+  --hot-bg: rgba(214,51,108,.10); --rising-bg: rgba(200,122,23,.12); --watch-bg: rgba(29,122,140,.10);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+}
+html[data-theme="dark"] {
+  --bg: #14141a; --paper: #1b1b22; --ink: #ece9e4; --ink-dim: #a3a0ab; --ink-faint: #6f6c78;
+  --line: #2d2d36; --accent: #ff6f9c; --accent-soft: rgba(255,111,156,.14);
+  --hot: #ff6f9c; --rising: #ffb04d; --watch: #4fd1e3;
+  --hot-bg: rgba(255,111,156,.12); --rising-bg: rgba(255,176,77,.12); --watch-bg: rgba(79,209,227,.12);
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.6; transition: background .2s, color .2s; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+em, .ital { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+
+/* nav */
+.topnav { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--line); }
+.topnav-inner { max-width: 980px; margin: 0 auto; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.topnav-brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; letter-spacing: .02em; }
+.topnav-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.topnav-links a { color: var(--ink-dim); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.topnav-links a:hover { color: var(--accent); text-decoration: none; }
+.theme-toggle { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600; line-height: 1.12; margin: 0 0 22px; letter-spacing: -.01em; }
+.hero h1 em { font-weight: 500; color: var(--accent); }
+.hero p.lede { font-size: 18px; color: var(--ink-dim); max-width: 760px; margin: 0; }
+.hero p.lede strong { color: var(--ink); }
+
+.statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 48px 0 16px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statgrid .stat { padding: 22px 18px; border-right: 1px solid var(--line); }
+.statgrid .stat:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; color: var(--ink); }
+.stat-num em { color: var(--accent); font-style: normal; }
+.stat-lbl { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+
+/* section scaffolding */
+.section { padding: 64px 0; border-top: 1px solid var(--line); }
+.section-kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; margin: 0 0 14px; line-height: 1.25; }
+.section h2 em { color: var(--accent); font-style: italic; }
+.section .desc { color: var(--ink-dim); max-width: 720px; margin-bottom: 32px; }
+
+/* chart frames */
+.chart-frame { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow); }
+.legend { display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-dim); }
+.legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.tooltip { position: absolute; background: var(--ink); color: var(--bg); padding: 8px 12px; border-radius: 8px; font-size: 12.5px; pointer-events: none; opacity: 0; max-width: 260px; z-index: 100; transition: opacity .1s; }
+html[data-theme="dark"] .tooltip { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+/* leaderboard table */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.lb-table th { text-align: left; padding: 10px 12px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-faint); border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+.lb-table th:hover { color: var(--accent); }
+.lb-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.lb-table tr.lb-row { cursor: pointer; }
+.lb-table tr.lb-row:hover { background: var(--accent-soft); }
+.lb-bar-wrap { position: relative; width: 90px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+.lb-bar { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+.pill-tier { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-hot { background: var(--hot-bg); color: var(--hot); }
+.pill-rising { background: var(--rising-bg); color: var(--rising); }
+.pill-watch { background: var(--watch-bg); color: var(--watch); }
+
+/* thematic spread */
+.theme-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.theme-col { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+.theme-col h4 { font-size: 13px; margin: 0 0 10px; font-weight: 700; }
+.theme-col .tc-bar { display: flex; height: 80px; align-items: flex-end; justify-content: center; gap: 3px; margin-bottom: 10px; }
+.theme-col .tc-seg { width: 14px; border-radius: 3px 3px 0 0; }
+.theme-col .tc-avg { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; }
+.theme-col .tc-lbl { font-size: 10.5px; color: var(--ink-faint); }
+
+/* anomaly cards */
+.anom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.anom-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: border-color .15s, transform .15s; }
+.anom-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.anom-card h4 { font-family: 'Fraunces', serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.anom-card p { font-size: 14px; color: var(--ink-dim); margin: 0; }
+
+/* category sections + cards (content carried over, restyled) */
+.cat-section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 80px; }
+.cat-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;}
+.cat-header h2 { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; margin: 0; }
+.cat-header .cat-intro { color: var(--ink-dim); font-size: 14px; margin: 6px 0 28px; max-width: 700px; }
+
+.trend-card { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; margin-bottom: 18px; box-shadow: var(--shadow); scroll-margin-top: 80px; }
+.trend-card.flash { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.card-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card-subtitle { color: var(--ink-dim); font-size: 14px; max-width: 600px; }
+.card-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-num { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; }
+.pills-row { margin: 16px 0 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11.5px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.momentum-wrap { margin: 14px 0; }
+.momentum-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 5px; }
+.momentum-track { height: 6px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.momentum-fill { height: 100%; border-radius: 4px; }
+.insight-block { font-size: 14.5px; line-height: 1.7; color: var(--ink); margin: 16px 0; }
+.signal-table-wrap { overflow-x: auto; margin: 16px 0; }
+.signal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.signal-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
+.signal-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.metrics-row { display: flex; gap: 24px; margin: 16px 0; flex-wrap: wrap; }
+.metric-item { text-align: left; }
+.metric-val { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; }
+.metric-lbl { font-size: 11px; color: var(--ink-faint); }
+.action-tags { display: flex; gap: 8px; margin-top: 6px; }
+.action-tag { font-size: 11px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-dim); }
+
+.window-closed-card { background: var(--paper); border: 1px dashed var(--line); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.wc-label { font-size: 12px; font-weight: 700; color: var(--ink-faint); margin-bottom: 6px; }
+.wc-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; margin-bottom: 6px; }
+.wc-body { font-size: 13.5px; color: var(--ink-dim); }
+
+.footer { padding: 48px 0 80px; color: var(--ink-faint); font-size: 13px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; border-top: 1px solid var(--line); padding-top: 28px; }
+.footer-grid h5 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-faint); margin: 0 0 8px; }
+
+@media (max-width: 760px) {
+  .statgrid { grid-template-columns: repeat(2,1fr); }
+  .statgrid .stat:nth-child(2) { border-right: none; }
+  .anom-grid, .theme-grid, .footer-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand">✦ Cultural &amp; Consumer Trend Report</div>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#network">Network</a>
+      <a href="#themes">Themes</a>
+      <a href="#anomalies">Anomalies</a>
+      <a href="#fashion">Fashion</a>
+      <a href="#wellness">Wellness</a>
+      <a href="#food">Food</a>
+      <a href="#lifestyle">Lifestyle</a>
+      <a href="#alcohol">Alcohol</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="theme-btn-label">◐ Light</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero" id="overview">
+    <div class="eyebrow">Issue #007 &middot; June 23, 2026 &middot; 20 trends across 5 categories</div>
+    <h1>The Reclaim Economy: Authenticity as Infrastructure<br/><em>Cross-Cutting Theme</em></h1>
+    <p class="lede">Across every category this week, a single value shift is doing the heaviest work: the rejection of
+      frictionless, algorithm-optimized experience in favor ofprocesses that leave traces. Lace
+      revival and natural dye crafts signal fashion consumers who want visible making. Koji fermentation and seed oil
+      reformulation signal food consumers who want legible provenance. Vagus nerve devices and senolytics signal
+      wellness consumers who want to intervene in their own biology rather than passively consume supplements.
+      Analog hobbies and micro-third-spaces signal culture consumers who want experiences that cost something —
+      attention, time, presence. The common architecture underneath all of this:authenticity is no longer
+      aesthetic; it&#x27;s becoming operational. The early adopters this week are not choosing slower or harder
+      because it&#x27;s on trend. They&#x27;re building the infrastructure of how they want to live.</p>
+  </div>
+  <div class="statgrid">
+      <div class="stat"><div class="stat-num">20</div><div class="stat-lbl">Trends tracked, Issue #007</div></div>
+      <div class="stat"><div class="stat-num"><em>6</em></div><div class="stat-lbl">Hot — 0&ndash;3mo window</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-lbl">Rising — 3&ndash;9mo window</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-lbl">Watch — 9&ndash;18mo window</div></div></div>
+</div>
+
+<div class="section" id="landscape">
+  <div class="wrap">
+    <div class="section-kicker">01 &middot; Score Landscape</div>
+    <h2>Where this week's <em>momentum</em> actually sits</h2>
+    <p class="desc">Every tracked trend, plotted by category and momentum score. Bubble size scales with score. Click any point to jump to its full writeup below.</p>
+    <div class="chart-frame" style="position:relative;"><div id="bubble-chart"></div></div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:var(--hot)"></span>Hot (75+)</span>
+      <span><span class="legend-dot" style="background:var(--rising)"></span>Rising (55–74)</span>
+      <span><span class="legend-dot" style="background:var(--watch)"></span>Watch (40–54)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-kicker">02 &middot; Score Distribution</div>
+    <h2>How <em>concentrated</em> is this issue?</h2>
+    <p class="desc">Trend count by momentum-score band. A distribution skewed right means an unusually hot issue; skewed left means a quiet, early-signal-heavy week.</p>
+    <div class="chart-frame" style="position:relative;"><div id="hist-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="leaderboard">
+  <div class="wrap">
+    <div class="section-kicker">03 &middot; Leaderboard</div>
+    <h2>All 20 trends, <em>ranked</em></h2>
+    <p class="desc">Click any column header to sort. Click any row to jump to that trend's full writeup.</p>
+    <div class="chart-frame">
+      <table class="lb-table">
+        <thead><tr>
+          <th onclick="handleSort('rank')">#</th>
+          <th onclick="handleSort('name')">Trend</th>
+          <th onclick="handleSort('cat')">Category</th>
+          <th onclick="handleSort('score')">Score</th>
+          <th onclick="handleSort('badge')">Tier</th>
+        </tr></thead>
+        <tbody id="lb-body">
+          <tr class="lb-row" data-name="Clean Fats / Seed Oil Reformulation" data-cat="food" data-score="82" data-badge="hot" onclick="jumpToCard('Clean Fats / Seed Oil Reformulation')">
+            <td>1</td>
+            <td>Clean Fats / Seed Oil Reformulation</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:82%;background:var(--hot)"></span></span>82</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Analog Hobby Revival — Crossing Into Mainstream" data-cat="lifestyle" data-score="80" data-badge="hot" onclick="jumpToCard('Analog Hobby Revival — Crossing Into Mainstream')">
+            <td>2</td>
+            <td>Analog Hobby Revival — Crossing Into Mainstream</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:80%;background:var(--hot)"></span></span>80</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Consumer Vagus Nerve Stimulation (VNS) Devices" data-cat="wellness" data-score="79" data-badge="hot" onclick="jumpToCard('Consumer Vagus Nerve Stimulation (VNS) Devices')">
+            <td>3</td>
+            <td>Consumer Vagus Nerve Stimulation (VNS) Devices</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:79%;background:var(--hot)"></span></span>79</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="No/Low Alcohol — Sophisticated Maturity" data-cat="alcohol" data-score="78" data-badge="hot" onclick="jumpToCard('No/Low Alcohol — Sophisticated Maturity')">
+            <td>4</td>
+            <td>No/Low Alcohol — Sophisticated Maturity</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:78%;background:var(--hot)"></span></span>78</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Third Space Renaissance" data-cat="lifestyle" data-score="77" data-badge="hot" onclick="jumpToCard('Third Space Renaissance')">
+            <td>5</td>
+            <td>Third Space Renaissance</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:77%;background:var(--hot)"></span></span>77</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Koji Fermentation — Professional Kitchen Mainstreaming" data-cat="food" data-score="76" data-badge="hot" onclick="jumpToCard('Koji Fermentation — Professional Kitchen Mainstreaming')">
+            <td>6</td>
+            <td>Koji Fermentation — Professional Kitchen Mainstreaming</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:76%;background:var(--hot)"></span></span>76</td>
+            <td><span class="pill-tier pill-hot">Hot</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Lace Revival / Poetcore Aesthetic" data-cat="fashion" data-score="67" data-badge="rising" onclick="jumpToCard('Lace Revival / Poetcore Aesthetic')">
+            <td>7</td>
+            <td>Lace Revival / Poetcore Aesthetic</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:67%;background:var(--rising)"></span></span>67</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Functional Mushroom Category Shakeout" data-cat="food" data-score="65" data-badge="rising" onclick="jumpToCard('Functional Mushroom Category Shakeout')">
+            <td>8</td>
+            <td>Functional Mushroom Category Shakeout</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:65%;background:var(--rising)"></span></span>65</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Closed Creator Ecosystem Communities" data-cat="lifestyle" data-score="63" data-badge="rising" onclick="jumpToCard('Closed Creator Ecosystem Communities')">
+            <td>9</td>
+            <td>Closed Creator Ecosystem Communities</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:63%;background:var(--rising)"></span></span>63</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Raicilla &amp; Alternative Agave Spirits" data-cat="alcohol" data-score="63" data-badge="rising" onclick="jumpToCard('Raicilla &amp; Alternative Agave Spirits')">
+            <td>10</td>
+            <td>Raicilla &amp; Alternative Agave Spirits</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:63%;background:var(--rising)"></span></span>63</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Soft Menswear — Easy Dressing" data-cat="fashion" data-score="62" data-badge="rising" onclick="jumpToCard('Soft Menswear — Easy Dressing')">
+            <td>11</td>
+            <td>Soft Menswear — Easy Dressing</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:62%;background:var(--rising)"></span></span>62</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Microplastics Health Response Protocol" data-cat="wellness" data-score="61" data-badge="rising" onclick="jumpToCard('Microplastics Health Response Protocol')">
+            <td>12</td>
+            <td>Microplastics Health Response Protocol</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:61%;background:var(--rising)"></span></span>61</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Carajillo &amp; Coffee-Spirit Hybrids" data-cat="alcohol" data-score="60" data-badge="rising" onclick="jumpToCard('Carajillo &amp; Coffee-Spirit Hybrids')">
+            <td>13</td>
+            <td>Carajillo &amp; Coffee-Spirit Hybrids</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:60%;background:var(--rising)"></span></span>60</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="&quot;Swangy&quot; Flavor Architecture" data-cat="food" data-score="59" data-badge="rising" onclick="jumpToCard('&quot;Swangy&quot; Flavor Architecture')">
+            <td>14</td>
+            <td>&quot;Swangy&quot; Flavor Architecture</td>
+            <td>Food & Drink</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:59%;background:var(--rising)"></span></span>59</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Precision Senolytics &amp; Cellular Aging" data-cat="wellness" data-score="58" data-badge="rising" onclick="jumpToCard('Precision Senolytics &amp; Cellular Aging')">
+            <td>15</td>
+            <td>Precision Senolytics &amp; Cellular Aging</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:58%;background:var(--rising)"></span></span>58</td>
+            <td><span class="pill-tier pill-rising">Rising</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Therapeutic Peptides — Consumer Self-Administration" data-cat="wellness" data-score="52" data-badge="watch" onclick="jumpToCard('Therapeutic Peptides — Consumer Self-Administration')">
+            <td>16</td>
+            <td>Therapeutic Peptides — Consumer Self-Administration</td>
+            <td>Wellness & Health</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:52%;background:var(--watch)"></span></span>52</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Natural Dye Textile Craft Revival" data-cat="fashion" data-score="48" data-badge="watch" onclick="jumpToCard('Natural Dye Textile Craft Revival')">
+            <td>17</td>
+            <td>Natural Dye Textile Craft Revival</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:48%;background:var(--watch)"></span></span>48</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Cultural Gatekeeping &amp; Niche Identity Architecture" data-cat="lifestyle" data-score="46" data-badge="watch" onclick="jumpToCard('Cultural Gatekeeping &amp; Niche Identity Architecture')">
+            <td>18</td>
+            <td>Cultural Gatekeeping &amp; Niche Identity Architecture</td>
+            <td>Lifestyle & Culture</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Heritage &amp; Ancestral Beer Revival" data-cat="alcohol" data-score="46" data-badge="watch" onclick="jumpToCard('Heritage &amp; Ancestral Beer Revival')">
+            <td>19</td>
+            <td>Heritage &amp; Ancestral Beer Revival</td>
+            <td>Alcohol</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:46%;background:var(--watch)"></span></span>46</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+          <tr class="lb-row" data-name="Exclusivity Accessories / Anti-Mass Objects" data-cat="fashion" data-score="44" data-badge="watch" onclick="jumpToCard('Exclusivity Accessories / Anti-Mass Objects')">
+            <td>20</td>
+            <td>Exclusivity Accessories / Anti-Mass Objects</td>
+            <td>Fashion & Style</td>
+            <td><span class="lb-bar-wrap"><span class="lb-bar" style="width:44%;background:var(--watch)"></span></span>44</td>
+            <td><span class="pill-tier pill-watch">Watch</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="network">
+  <div class="wrap">
+    <div class="section-kicker">04 &middot; Signal Network</div>
+    <h2>Which trends <em>share</em> a source</h2>
+    <p class="desc">Large nodes are trends (sized and colored by score/tier); small grey nodes are the underlying sources cited across this issue. Drag any node, click a trend node to jump to its writeup.</p>
+    <div class="chart-frame" style="position:relative;"><div id="network-chart"></div></div>
+  </div>
+</div>
+
+<div class="section" id="themes">
+  <div class="wrap">
+    <div class="section-kicker">05 &middot; Thematic Spread</div>
+    <h2>How each <em>category</em> is performing</h2>
+    <p class="desc">Tier composition and average momentum score per category this issue.</p>
+    <div class="theme-grid">
+        <div class="theme-col">
+          <h4>Fashion &amp; Style</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:0px;background:var(--hot)" title="0 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:32px;background:var(--watch)" title="2 Watch"></div>
+          </div>
+          <div class="tc-avg">55.2</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Wellness &amp; Health</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">62.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Food &amp; Drink</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:32px;background:var(--hot)" title="2 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:0px;background:var(--watch)" title="0 Watch"></div>
+          </div>
+          <div class="tc-avg">70.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Lifestyle &amp; Culture</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:32px;background:var(--hot)" title="2 Hot"></div>
+            <div class="tc-seg" style="height:16px;background:var(--rising)" title="1 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">66.5</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div>
+        <div class="theme-col">
+          <h4>Alcohol</h4>
+          <div class="tc-bar">
+            <div class="tc-seg" style="height:16px;background:var(--hot)" title="1 Hot"></div>
+            <div class="tc-seg" style="height:32px;background:var(--rising)" title="2 Rising"></div>
+            <div class="tc-seg" style="height:16px;background:var(--watch)" title="1 Watch"></div>
+          </div>
+          <div class="tc-avg">61.8</div>
+          <div class="tc-lbl">avg score &middot; 4 trends</div>
+        </div></div>
+  </div>
+</div>
+
+<div class="section" id="anomalies">
+  <div class="wrap">
+    <div class="section-kicker">06 &middot; Anomalies</div>
+    <h2>What the data <em>quietly</em> tells you</h2>
+    <p class="desc">Patterns surfaced directly from this issue's numbers — not editorial framing.</p>
+    <div class="anom-grid">
+        <div class="anom-card"><h4>82 is the ceiling this week</h4><p>“Clean Fats / Seed Oil Reformulation” (Food &amp; Drink) posts the highest momentum score in Issue #007 at 82/100. Everything else in this issue is being measured against that number, whether the category notes say so or not.</p></div>
+        <div class="anom-card"><h4>Lifestyle &amp; Culture has the widest internal spread</h4><p>Scores in Lifestyle &amp; Culture this week range from 46 to 80 — a 34-point gap, the largest of any category in this issue. One trend in this category is already mainstream-adjacent while another is barely a Watch-tier signal.</p></div>
+        <div class="anom-card"><h4>Food &amp; Drink is moving as a single block</h4><p>Every tracked trend in Food &amp; Drink this week falls within a 23-point band (59–82). When a whole category clusters this tightly, it usually means the underlying behavior is more synchronized than any single trend name suggests.</p></div>
+        <div class="anom-card"><h4>“Reddit Niche” is the connective tissue</h4><p>Reddit Niche is cited as a signal source on 10 of the 20 trends tracked this issue — more than any other source. The network graph below traces exactly which trends share it.</p></div>
+        <div class="anom-card"><h4>Food &amp; Drink owns the Hot tier this week</h4><p>2 of the Hot-tier trends in Issue #007 sit inside Food &amp; Drink — disproportionate to its one-fifth share of the issue&#x27;s 20 tracked trends.</p></div>
+        <div class="anom-card"><h4>5 trends are still just Watch-tier</h4><p>5 of the 20 trends tracked this issue haven&#x27;t cleared Rising yet. That&#x27;s the holding pen — the names likeliest to either break out next issue or quietly disappear from the tracker altogether.</p></div></div>
+    
+      <div class="window-closed-card">
+        <div class="wc-label">⚠ Window Closed — Already Mainstream (Calibration Signal)</div>
+        <div class="wc-name">Swicy (Sweet + Spicy) Flavor Profile</div>
+        <div class="wc-body">&quot;Swicy&quot; was a legitimate emerging trend signal in 2023–2024 — detectable in specialty hot honey, Korean chili snacks, and niche condiment makers before mass food media picked it up. By H1 2026, it&#x27;s been incorporated by Lay&#x27;s, McDonald&#x27;s, Starbucks, and is the dominant flavor descriptor in mass-market snack launches. This is what &quot;window closed&quot; looks like. Use this as calibration: the next evolution (&quot;swangy&quot; — spicy + sweet + tangy) is now at the niche stage swicy was in 2023. That is the signal. Swicy itself is noise.</div>
+      </div>
+  </div>
+</div>
+
+
+  <div class="cat-section" id="fashion">
+    <div class="wrap">
+      <div class="cat-header"><h2>Fashion & Style</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Pinterest Breakout tags, Etsy search velocity, trade publications, resale platform data.</p>
+      
+  <div class="trend-card" id="lace-revival-poetcore-aesthetic">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Lace Revival / Poetcore Aesthetic</div>
+        <div class="card-subtitle">Victorian and literary-academic textures re-entering wearables from a cultural self-preservation reflex</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">67</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest Breakout</span><span class="pill">Trade Publication</span><span class="pill">Etsy</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>67 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:67%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">This trend carries more structural weight than aesthetic novelty. Pinterest Breakout data shows &quot;lace nails&quot; up 215%, &quot;lace bandanas&quot; up 150%, &quot;lace doily&quot; 105%, and &quot;lace makeup&quot; 120% — all from a near-zero baseline in late 2025. Crucially, these are separate search clusters arriving simultaneously, which suggests not a single viral post but a distributed value shift.The mechanism:after several years of hyper-minimal, tech-adjacent aesthetics (clean girl, quiet luxury), consumers are reaching for complexity and evidence of handcraft. The &quot;poet aesthetic&quot; (searches up 175%) is the same signal in clothing: oversized turtlenecks, vintage blazers, protagonist framing. This is the aesthetic expression of the broader reclaim economy — people choosing things that look like someone made them. Style Analytics Substack (sub-50k subscribers, consistent high open rates) flagged this as a culture-driven shift in January 2026, noting its roots in Gen Z&#x27;s non-conformity response to algorithmic sameness. Mainstream arrival estimated 3–9 months.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://newsroom.pinterest.com/news/pinterest-predicts-nonconformity-self-preservation-and-escapism-drive-21-trends-for-2026/" target="_blank">Pinterest Predicts 2026 (Newsroom)</a></td><td>Pinterest</td><td>Lace nails +215%, lace bandanas +150%, lace doily +105%, lace makeup +120% — all from near-zero baseline</td><td>High — breakout status from small base, multi-cluster convergence</td></tr>
+          <tr><td><a href="https://newsroom.pinterest.com/news/spring-trend-report-2026/" target="_blank">Pinterest Spring 2026 Trend Report</a></td><td>Pinterest</td><td>&quot;The poet aesthetic&quot; searches up 175% in Spring 2026 report (619M users data)</td><td>High — independent cluster convergence with lace signals</td></tr>
+          <tr><td><a href="https://styleanalytics.substack.com/p/culture-shifts-for-2026-and-how-they" target="_blank">Style Analytics Substack</a></td><td>Substack</td><td>January 2026 post flagged poet-academic aesthetic as culture-shift, not viral moment; cited Gen Z non-conformity driver</td><td>Medium — practitioner-level analysis pre-mainstream</td></tr>
+          <tr><td><a href="https://wwd.com/fashion-news/fashion-trends/spring-2026-menswear-trends-1238951020/" target="_blank">WWD / FashionUnited Trade Coverage</a></td><td>Trade</td><td>Spring 2026 menswear and womenswear both show lace, ruffled collar, and &quot;anti-perfection&quot; visible texture emerging in designer lines</td><td>Medium — confirms practitioner adoption</td></tr>
+          <tr><td><a href="" target="_blank">Pinterest / TikTok Mass Social</a></td><td>Confirmation</td><td>#poetcore has large engagement counts on TikTok — weight reduced because it confirms, doesn&#x27;t initiate</td><td>Low (confirmation only)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">215%</div><div class="metric-lbl">Top Velocity (Lace Nails)</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Types</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">5 clusters</div><div class="metric-lbl">Independent Search Groups</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="soft-menswear-easy-dressing">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Soft Menswear — Easy Dressing</div>
+        <div class="card-subtitle">Deconstructed tailoring, pajama silhouettes, and fluid layering signaling a post-rigidity masculine aesthetic</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">62</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">MR Magazine</span><span class="pill">WWD</span><span class="pill">Business of Fashion</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>62 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:62%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">WWD&#x27;s Spring 2026 menswear review headline read &quot;Spring 2026 Menswear Is All About Easy Dressing&quot; — and this framing is now echoed in MR Porter editorial and Percival Menswear&#x27;s buyer guides. The mechanism is a post-performance exhaustion: after years of gym-core, athleisure rigidity, and workwear formality, menswear consumers (skewing 28–40) are selecting forcomfort as a form of confidence. Loose blazers worn open over textured tees, deconstructed suiting, and pajama-influenced evening wear are emerging at the wholesale level — a critical distinction from streetwear-led trends.The signal is in the trade channel:MR Magazine (the publication of record for menswear retailers since 1990) has prioritized this in its 2026 trend coverage, which typically leads consumer adoption by 2–3 seasons. Resale data on Depop and Vinted shows increasing listings for vintage Japanese and Italian soft tailoring — demand-led supply emerging.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://wwd.com/fashion-news/fashion-trends/spring-2026-menswear-trends-1238951020/" target="_blank">WWD Spring 2026 Menswear Review</a></td><td>Trade</td><td>Headline coverage of &quot;easy dressing&quot; as dominant theme; loose blazers, deconstructed layers, pajama dressing across multiple designers</td><td>High — trade coverage typically precedes consumer adoption by 2–3 seasons</td></tr>
+          <tr><td><a href="https://mr-mag.com/" target="_blank">MR Magazine 2026 Trend Coverage</a></td><td>Trade</td><td>Menswear retail publication (since 1990) prioritizing soft tailoring in retailer-facing trend reporting</td><td>High — this is the wholesale signal, not the consumer signal</td></tr>
+          <tr><td><a href="https://www.mrporter.com/en-us/journal/fashion/menswear-trends-25148076" target="_blank">MR PORTER Journal — 6 Trends to Invest In</a></td><td>Trade</td><td>Includes &quot;artisanal textures and color&quot; and &quot;undone aesthetic&quot; in their 2026 investment list</td><td>Medium — confirms direction</td></tr>
+          <tr><td><a href="" target="_blank">Depop / Vinted Resale</a></td><td>Resale</td><td>Growing listing clusters for vintage Japanese and Italian soft tailoring — sellers listing in response to search demand, not trend saturation</td><td>Medium — demand-led supply emergence</td></tr>
+          <tr><td><a href="" target="_blank">Mass Media / Social</a></td><td>Confirmation</td><td>Pinterest &quot;relaxed tailoring&quot; and &quot;soft suiting&quot; appearing in Spring 2026 trend roundups</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3 trade</div><div class="metric-lbl">Independent Pub Sources</div></div><div class="metric-item"><div class="metric-val">2–3 seas</div><div class="metric-lbl">Lead Time (Trade → Consumer)</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Arrival</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="natural-dye-textile-craft-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Natural Dye Textile Craft Revival</div>
+        <div class="card-subtitle">Indigo, mudcloth, adire — African and artisanal textile traditions entering design-forward spaces</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">48</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Pinterest Breakout</span><span class="pill">Etsy</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>48 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:48%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Pinterest Newsroom reported &quot;afrobohemian home decor&quot; searches up 220% and &quot;adire fabric&quot; up 130% in its 2026 Predicts report — these are Breakout-category signals (5000%+ threshold not confirmed, but substantial from near-zero base). The mechanism is twofold:provenance as identity(consumers wanting materials with traceable geographic and cultural origin) andvisible-labor aesthetic(the same driver as lace revival and analog hobbies). Etsy&#x27;s active indigo mudcloth and natural dye categories show a pattern consistent with growing seller entry rates rather than a concentration in a few existing shops — the hallmark of demand-led supply. Small subreddits in the r/naturaldyeing and r/weaving communities (under 50k subscribers each) have shown increasing &quot;ISO&quot; and &quot;getting started&quot; post patterns over Q1–Q2 2026. This is a 9–18 month signal: visible on Etsy and niche Pinterest but not yet in retail or trade press.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://newsroom.pinterest.com/news/pinterest-predicts-nonconformity-self-preservation-and-escapism-drive-21-trends-for-2026/" target="_blank">Pinterest Predicts 2026 Newsroom</a></td><td>Pinterest</td><td>&quot;Afrobohemian home decor&quot; +220%, &quot;adire fabric&quot; +130% — both from near-zero baseline in 2025</td><td>High — independent multi-term breakout signals</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/indigo_mudcloth" target="_blank">Etsy — indigo mudcloth / natural dye categories</a></td><td>Etsy</td><td>Active seller listing density in indigo mudcloth, natural indigo dye, and adire fabric categories; growing new seller entry pattern</td><td>Medium — demand-led supply emergence, not yet concentrated in large shops</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/naturaldyeing/" target="_blank">r/naturaldyeing, r/weaving (niche subreddits)</a></td><td>Reddit Niche</td><td>Under 50k subscribers each; Q1–Q2 2026 shows increased &quot;first time,&quot; &quot;ISO,&quot; and &quot;getting started&quot; posts — newcomer influx pattern</td><td>Medium — classic early adoption pattern in niche communities</td></tr>
+          <tr><td><a href="https://newsroom.pinterest.com/news/spring-trend-report-2026/" target="_blank">Bamboo beaded curtains Pinterest</a></td><td>Pinterest</td><td>&quot;Bamboo beaded curtains&quot; +60% — related tactile/natural material signal</td><td>Low-medium — corroborating signal in adjacent category</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">220%</div><div class="metric-lbl">Top Velocity (Afrobohemian)</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Types</div></div><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="exclusivity-accessories-anti-mass-object">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Exclusivity Accessories / Anti-Mass Objects</div>
+        <div class="card-subtitle">The deliberate turn toward weird, one-of-a-kind, and gatekept objects as identity architecture</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">44</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade Publication</span><span class="pill">Substack</span><span class="pill">Etsy</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>44 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:44%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">Kittl&#x27;s trade brief on Gen Z fashion (Q1 2026) articulated this clearly: &quot;Items that are allowed to be odd — trinkets, accessories, shoes, bags, and now hats — will get weirder and more niche in order to differentiate consumers from one another. The best piece will be something no one else has access to.&quot; This isgatekeeping as an economic and identity behavior, not just an aesthetic preference. The mechanism: algorithmic feeds have created aesthetic homogeneity at scale, so the marginal value of exclusivity is rising. Consumers who can source objects with genuine scarcity — through craft markets, small-batch drops, or makers who limit supply — are using those objects as social capital in niche communities. Etsy&#x27;s &quot;Play Haus&quot; aesthetic cluster (Gen Z dopamine-color, whimsical oversized, surreal ceramics) and the growth in handmade accessory categories are early commercial expressions. This is a 9–18 month signal at the mass consumer level, but the behavior is already entrenched in micro-communities.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.kittl.com/blogs/gen-z-fashion-trends-style-guide-dsi/" target="_blank">Kittl Gen Z Fashion Brief 2026</a></td><td>Trade</td><td>Explicitly identifies &quot;gatekeeping&quot; and &quot;exclusivity&quot; as rising over past years; &quot;weird niche objects&quot; framing for accessory differentiation</td><td>High — trade-level identification of mechanism, not just aesthetic</td></tr>
+          <tr><td><a href="https://www.etsy.com/seller-handbook/article/1473931456647" target="_blank">Etsy &quot;Play Haus&quot; Category</a></td><td>Etsy</td><td>Gen Z-driven segment in surreal ceramics, whimsical oversized decor; growing engagement from younger shoppers seeking dopamine-inducing, non-reproduced objects</td><td>Medium — commercial expression of the anti-mass behavior</td></tr>
+          <tr><td><a href="https://styleanalytics.substack.com/p/culture-shifts-for-2026-and-how-they" target="_blank">Style Analytics Substack</a></td><td>Substack</td><td>Culture shifts post flagged &quot;exclusivity is the new aesthetic&quot; as 2026 value driver alongside poetcore</td><td>Medium — practitioner observation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">2</div><div class="metric-lbl">Independent Sources</div></div><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="wellness">
+    <div class="wrap">
+      <div class="cat-header"><h2>Wellness & Health</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: ClinicalTrials.gov registrations, PubMed citation velocity, trade publications (Natural Products Insider, Happi), Global Wellness Summit.</p>
+      
+  <div class="trend-card" id="consumer-vagus-nerve-stimulation-vns-dev">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Consumer Vagus Nerve Stimulation (VNS) Devices</div>
+        <div class="card-subtitle">Non-invasive wearable VNS crossing from clinical research into consumer wellness via anxiety, autoimmune, and HRV applications</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">79</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">ClinicalTrials.gov</span><span class="pill">PMC Research</span><span class="pill">Trade Publication</span><span class="pill">Commercial Launch</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>79 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:79%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">A 2026 PMC review of ClinicalTrials.gov found440 registered VNS trials(346 meeting inclusion criteria) — a figure that represents a clinical pipeline now dense enough to start generating consumer-facing products. The FDA&#x27;s recent approval of a miniaturized VNS implant for rheumatoid arthritis marks the first expansion into inflammatory conditions beyond epilepsy and stroke.The mechanism driving consumer adoption:the clinical signal has been lagging behind consumer desire for non-pharmaceutical nervous system intervention. The Global Wellness Summit named neurowellness a 2026 trend, with VNS mentioned alongside breathwork as a measurable and increasingly accessible intervention. Consumer devices like SONA and Pulsetto have launched with AI-adapted HRV monitoring — a format that connects to the quantified-self movement already entrenched in wearable tech buyers. The window is tight: this is still pre-mass-media, but the product landscape is launching fast. 0–3 month window before mass wellness press picks it up.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12954253/" target="_blank">PMC Review — ClinicalTrials.gov VNS Update 2026</a></td><td>Clinical</td><td>440 registered VNS clinical trials identified; 346 meeting inclusion criteria — pipeline density is a 12–24 month leading indicator for consumer product launches</td><td>High — clinical density at this level historically precedes consumer category emergence</td></tr>
+          <tr><td><a href="https://surgicalneurologyint.com/surgicalint-articles/vagus-nerve-stimulation-an-update-of-currently-registered-clinical-trials-on-clinicaltrials-gov/" target="_blank">FDA Approval — Miniaturized VNS Implant for RA</a></td><td>Clinical</td><td>First FDA approval for VNS in inflammatory/autoimmune condition (rheumatoid arthritis), expanding indication beyond neurology</td><td>High — regulatory expansion signals broadening evidence base</td></tr>
+          <tr><td><a href="https://www.globalwellnesssummit.com/2026trends/" target="_blank">Global Wellness Summit — 10 Trends for 2026</a></td><td>Trade</td><td>Explicitly names consumer neurotech and vagus nerve stimulation devices as a 2026 wellness trend; frames as &quot;hard-care neurowellness arriving through consumer-friendly devices&quot;</td><td>High — GWS leads consumer wellness by 1–2 years historically</td></tr>
+          <tr><td><a href="https://sona.help/blogs/news/best-vagus-nerve-stimulation-devices-2026-sona-vs-top-vns-options" target="_blank">SONA VNS Device — Commercial Launch 2026</a></td><td>Commercial</td><td>SONA listed as leading 2026 consumer VNS market device; AI-powered personalisation adapting to HRV in real-time; non-invasive options ranging £295–695</td><td>Medium — commercial launch confirms productization</td></tr>
+          <tr><td><a href="https://www.whowhatwear.com/wellness-trends-2026" target="_blank">Wellness Media (WhoWhatWear, etc.)</a></td><td>Confirmation</td><td>VNS devices appearing in 2026 wellness trend roundups in consumer media</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">440</div><div class="metric-lbl">Active Clinical Trials</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Types</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">£295–695</div><div class="metric-lbl">Consumer Price Range</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="microplastics-health-response-protocol">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Microplastics Health Response Protocol</div>
+        <div class="card-subtitle">Microplastics in blood, brain, and placenta catalyzing a new consumer health behavior cluster — detox, avoidance, and mitigation products</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">61</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Academic Research</span><span class="pill">Trade Publication</span><span class="pill">Reddit Niche</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>61 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:61%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">The Global Wellness Summit 2026 named microplastics as having &quot;crossed from an environmental problem to a direct human health concern.&quot; This is the institutional inflection point: microplastics are now detectable in human blood, lungs, placentas, and brain tissue, with early research linking exposure to inflammation, hormonal disruption, cardiovascular disease, and potential cognitive effects.The consumer behavior mechanism:unlike climate anxiety (which is perceived as structurally unfixable), microplastics exposure is perceived as partially controllable — through filter adoption, packaging avoidance, cookware switching (from PTFE), and supplement protocols aimed at inflammation reduction. This is the same behavioral pattern that drove the bottled-water filtration boom and the clean-label food movement. The signal is early: academic velocity is high (new detection studies publishing rapidly), but consumer product response is still forming. 3–9 months before a distinct microplastics-response product category emerges in natural retail.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://globalwellnessinstitute.org/press-room/press-releases/global-wellness-summit-releases-10-wellness-trends-for-2026/" target="_blank">Global Wellness Summit 2026</a></td><td>Trade</td><td>Microplastics named in official 2026 trend report as crossing from environmental to human health issue; listed as actionable consumer concern</td><td>High — GWS is primary wellness institutional signal</td></tr>
+          <tr><td><a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank">PubMed / Academic Research Velocity</a></td><td>Academic</td><td>Detection studies publishing at accelerating rate in 2025–26: microplastics found in brain tissue, placenta, cardiovascular tissue; linked to inflammation and hormonal disruption</td><td>High — citation velocity in new tissue types = 12–18 month consumer product lead signal</td></tr>
+          <tr><td><a href="https://www.statnews.com/2026/05/22/seed-oils-healthy-fats-tallow-fact-check-cardiac-health/" target="_blank">STAT News — May 2026</a></td><td>Trade</td><td>STAT fact-check piece on seed oils (May 22, 2026) cross-references microplastics concern as parallel emerging dietary health fear</td><td>Medium — independent editorial corroboration</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/ZeroWaste/" target="_blank">Niche Reddit communities (r/zeroWaste, r/PlasticFreeLiving)</a></td><td>Reddit Niche</td><td>Sub-100k subscriber communities showing increased post frequency around microplastics health (not environmental) framing — a shift in how the concern is being discussed</td><td>Medium — framing shift from environment to personal health is the signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">4 tissues</div><div class="metric-lbl">New Detection Sites (2025–26)</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Product Category Emergence</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Types</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="precision-senolytics-cellular-aging">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Precision Senolytics &amp; Cellular Aging</div>
+        <div class="card-subtitle">Targeted clearance of senescent &quot;zombie cells&quot; advancing from lab concept to clinical pipeline and early consumer longevity protocols</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">58</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Academic Research</span><span class="pill">ClinicalTrials</span><span class="pill">Trade Publication</span><span class="pill">Longevity Substack</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>58 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:58%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Senolytics (compounds that selectively remove senescent cells associated with aging and disease) have been a longevity research concept since 2015, but the 2026 shift is the move towardprecision senolytics— compounds designed to remove harmful senescent cells while preserving beneficial ones that support tissue repair. This is a mechanistic refinement that clears a major safety objection and opens the clinical pathway. A 2026 PMC systematic review on therapeutic peptides in gerontology identified senolytics alongside telomere biology and metabolic restoration as the frontier of anti-aging intervention. Hone Health&#x27;s 26 Longevity Trends report (practitioner-level, not mass media) names precision senolytics explicitly.The consumer adoption mechanism:longevity protocols are trickling from clinical residences and concierge medicine into direct-to-consumer supplement and biohacking stacks. The Goop article on senolytics signals that prestige wellness press is just beginning to translate the science — a 6–12 month lead for product launches.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC13095733/" target="_blank">PMC — Therapeutic Peptides in Gerontology 2026</a></td><td>Academic</td><td>Systematic review identifying senolytics alongside telomere biology and metabolic restoration as frontier aging interventions; 2026 publication in PMC</td><td>High — peer-reviewed gerontology systematically naming the category</td></tr>
+          <tr><td><a href="https://clinicaltrials.gov/" target="_blank">ClinicalTrials.gov — Senolytic Trials</a></td><td>Clinical</td><td>Multiple registered trials for precision senolytic compounds; field advancing from non-selective to selective cell clearance — key safety milestone</td><td>High — safety milestone is the unlock for commercialization pathway</td></tr>
+          <tr><td><a href="https://honehealth.com/edge/longevity-trends/" target="_blank">Hone Health — 26 Longevity Trends 2026</a></td><td>Substack/Trade</td><td>Practitioner-facing longevity publication names precision senolytics in top longevity trends for 2026</td><td>Medium — practitioner adoption is the step before consumer product launches</td></tr>
+          <tr><td><a href="https://goop.com/wellness/health/senolytics-zombie-cells-anti-aging/" target="_blank">Goop — Senolytics Article</a></td><td>Confirmation</td><td>Prestige wellness consumer press beginning to translate senolytic science — &quot;zombie cells&quot; framing entering consumer vocabulary</td><td>Low-Medium — early consumer framing, not yet product demand</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Consumer Product Arrival</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Types</div></div><div class="metric-item"><div class="metric-val">High</div><div class="metric-lbl">Academic Velocity</div></div></div>
+    <div class="action-tags"><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="therapeutic-peptides-consumer-self-admin">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Therapeutic Peptides — Consumer Self-Administration</div>
+        <div class="card-subtitle">BPC-157, TB-500, and GHK-Cu moving from clinical and gray-market biohacking into mainstream wellness protocols — with significant regulatory headwinds</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">52</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">ClinicalTrials</span><span class="pill">PMC Research</span><span class="pill">Trade Publication</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>52 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:52%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">The therapeutic peptide category (BPC-157 for tissue repair, TB-500 for wound healing, GHK-Cu for dermal regeneration) is a genuine upstream signal with a significant regulatory complication. AgeMD reported in 2026 that BPC-157 is expected to regain legal compounding status following FDA reclassification discussions — a development that would unlock legitimate consumer channels. However, in April 2026, the UK medicines regulator opened an investigation into peptide clinics making health claims about BPC-157, citing limited peer-reviewed human trial evidence.The mechanism and the tension:animal study data is strong, anecdotal community evidence is extensive (r/PeptideScience, ~45k subscribers, showing 3–4× comment depth on BPC-157 threads compared to 12-month baseline), but the clinical human trial pipeline is still forming. This is a Watch signal rather than Rising precisely because the regulatory environment is bifurcating: US potentially opening, UK tightening. The 9–18 month horizon assumes regulatory clarity begins to resolve.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.agemd.com/insights/longevity/rfk-bpc-157-fda-peptide-reclassification-2026" target="_blank">AgeMD — RFK BPC-157 FDA Status 2026</a></td><td>Trade</td><td>Report on BPC-157 expected to regain legal compounding status following FDA reclassification — would open legitimate US consumer channel</td><td>High — regulatory unlock is the key gate for consumer market</td></tr>
+          <tr><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12249546/" target="_blank">PMC — Peptides in Nutrition Systematic Review 2026</a></td><td>Academic</td><td>8 RCTs meeting criteria for metabolic, behavioral, and musculoskeletal health; evidence base forming but still limited in human trials</td><td>Medium — evidence is building but not yet conclusive</td></tr>
+          <tr><td><a href="https://clinicaltrials.gov/search?term=BPC-157" target="_blank">ClinicalTrials.gov — BPC-157 / TB-500 Pipeline</a></td><td>Clinical</td><td>Phase 2 trials for TB-500 in dermal wounds and corneal injuries (as RGN-259); BPC-157 analog development for tendon repair and IBD</td><td>Medium — active pipeline but mostly early-phase</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/PeptideSciences/" target="_blank">r/PeptideScience (niche subreddit)</a></td><td>Reddit Niche</td><td>~45k subscribers; BPC-157 threads showing 3–4× elevated comment depth vs. 12-month baseline in Q1–Q2 2026; influx of newcomer posts</td><td>Medium — community velocity without mass-media amplification</td></tr>
+          <tr><td><a href="https://www.bhinstitute.com/post/the-peptide-craze-part-2-bpc-127-bpc-157-nad-and-the-truth-behind-the-longevity-molecule-hyp" target="_blank">UK Medicines Regulator Investigation — April 2026</a></td><td>Trade</td><td>Regulator opened investigation into peptide clinic claims; BPC-157 named first — regulatory headwind in EU/UK</td><td>Medium (countervailing signal — dampens upside)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">~45k</div><div class="metric-lbl">r/PeptideScience Subs</div></div><div class="metric-item"><div class="metric-val">3–4×</div><div class="metric-lbl">Thread Depth vs. Baseline</div></div><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Consumer Arrival (US)</div></div></div>
+    <div class="action-tags"><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="food">
+    <div class="wrap">
+      <div class="cat-header"><h2>Food & Drink</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: Natural Products Expo West 2026, Food Dive trade, CIA Menus of Change, specialty importer data, STAT News.</p>
+      
+  <div class="trend-card" id="clean-fats-seed-oil-reformulation">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Clean Fats / Seed Oil Reformulation</div>
+        <div class="card-subtitle">Major CPG pivot away from refined seed oils toward tallow, avocado oil, and olive oil — driven by RFK-era MAHA policy pressure and consumer clean-label demand</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">82</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Food Dive</span><span class="pill">Food Navigator</span><span class="pill">STAT News</span><span class="pill">Google Breakout</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>82 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:82%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">This trend has crossed from upstream signal to active reformulation wave. Food Navigator (March 18, 2026) ran a dedicated piece onavocado oil replacing seed oils in snack reformulations. The Olive Oil Times reported brand reformulation pledges from PepsiCo (Lay&#x27;s, Tostitos), Kraft Heinz, General Mills, and Nestlé. The Seed Oil Free Alliance&#x27;s certified product category has seen significant retail growth.The mechanism is threefold:(1) consumer perception shift from &quot;heart healthy&quot; to &quot;inflammatory&quot; for seed oils, driven by RFK Jr.&#x27;s MAHA health agenda at HHS; (2) Steak &#x27;n Shake becoming the first major QSR to switch to beef tallow nationally in early 2026, creating a proof-of-concept; (3) specialty CPG brands launching with &quot;no seed oils&quot; as a primary label call-out. STAT News ran a fact-check on May 22, 2026, suggesting the science is more nuanced — but the consumer perception is already locked in. This is a 0–3 month window signal that is active now.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.foodnavigator-usa.com/Article/2026/03/18/avocado-oil-replaces-seed-oils-in-snack-reformulations/" target="_blank">Food Navigator — March 18, 2026</a></td><td>Trade</td><td>&quot;Avocado oil replaces seed oils in snack reformulations&quot; — dedicated trade article on active reformulation wave in snack CPG</td><td>High — trade coverage = active commercial movement, not trend prediction</td></tr>
+          <tr><td><a href="https://www.oliveoiltimes.com/business/north-america/olive-oil-benefits-as-u-s-food-brands-rethink-seed-oils/143058" target="_blank">Olive Oil Times — 2026</a></td><td>Trade</td><td>PepsiCo (Lay&#x27;s, Tostitos), Kraft Heinz, General Mills, Nestlé named as having made reformulation pledges; olive oil as seed oil replacement entering chips and protein bars</td><td>High — named major brand commitments = market inflection</td></tr>
+          <tr><td><a href="https://ingredientslabel.com/the-great-seed-oil-swap-decoding-clean-fats-on-your-2026-nutrition-label/" target="_blank">Ingredients Label / Clean Label CPG Watch</a></td><td>Trade</td><td>&quot;The Great Seed Oil Swap&quot; named as industry-wide movement; Seed Oil Free Alliance certified product category retail growth noted</td><td>High — category certification emergence signals market infrastructure forming</td></tr>
+          <tr><td><a href="https://www.statnews.com/2026/05/22/seed-oils-healthy-fats-tallow-fact-check-cardiac-health/" target="_blank">STAT News — May 22, 2026</a></td><td>Trade</td><td>Fact-check piece on seed oil health claims — notes science is more nuanced than consumer perception, but confirms perception shift is entrenched</td><td>High — science nuance does not dent consumer behavior once perception locks in</td></tr>
+          <tr><td><a href="" target="_blank">Social / Mass Consumer Media</a></td><td>Confirmation</td><td>Seed oil discourse widespread on social media — use as confirmation of consumer adoption, not emergence</td><td>Low (confirmation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">4 Major</div><div class="metric-lbl">CPG Reformulation Pledges</div></div><div class="metric-item"><div class="metric-val">Active</div><div class="metric-lbl">Commercial Status</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">5</div><div class="metric-lbl">Source Types</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="koji-fermentation-professional-kitchen-m">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Koji Fermentation — Professional Kitchen Mainstreaming</div>
+        <div class="card-subtitle">Aspergillus oryzae moving from boutique fermentation labs into standard professional kitchen infrastructure; garum, miso, and umami amplification entering home cooking periphery</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">76</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">CIA Menus of Change</span><span class="pill">Great British Chefs</span><span class="pill">Reddit Niche</span><span class="pill">Specialty Retail</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>76 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:76%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">The CIA Menus of Change 2025 Annual Report identified koji fermentation as thesingle fastest-growing technique in professional kitchens, with nearly 30% of surveyed chefs actively working with it — up from single digits three years prior. This is the kitchen equivalent of a technology crossing the chasm: the early adopters (Noma, high-concept fermentation labs) have now diffused into &quot;respectable kitchens in dry storage and walk-in coolers.&quot;The mechanism:koji (Aspergillus oryzae) produces proteases that generate intense umami from almost any protein or grain substrate, enabling zero-waste garums, vegan charcuterie, and flavor complexity without expensive imported ingredients. The Great British Chefs feature (2026) and Verbena Restaurant&#x27;s commentary both confirm the professional kitchen as the current center of gravity. The home cook adoption lag is approximately 18–24 months behind professional kitchens — meaning specialty retail and DTC koji spore kits are the product opportunity now.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.menusofchange.org/" target="_blank">CIA Menus of Change 2025 Annual Report</a></td><td>Trade</td><td>Koji-based fermentation named single fastest-growing technique in professional kitchens; ~30% of surveyed chefs actively working with it in 2026 (vs. single-digit % three years prior)</td><td>High — CIA survey data with directional velocity figure</td></tr>
+          <tr><td><a href="https://www.greatbritishchefs.com/features/what-is-garum" target="_blank">Great British Chefs — Garum Feature 2026</a></td><td>Trade</td><td>In-depth editorial on garum and koji&#x27;s move from fermentation labs into mainstream professional kitchens; confirmed multi-chef adoption in UK fine dining</td><td>High — editorial corroboration across geography (not US-only)</td></tr>
+          <tr><td><a href="https://verbenarestaurant.com/koji-has-broken-out-of-the-fermentation-lab-and-its-changing-how-chefs-cook-everything/" target="_blank">Verbena Restaurant Commentary — 2026</a></td><td>Trade</td><td>&quot;Three years ago, koji was relegated to back corners of Japanese restaurants… now it&#x27;s everywhere in respectable kitchens in 2026 in dry storage and walk-in coolers&quot;</td><td>High — practitioner-voiced velocity description</td></tr>
+          <tr><td><a href="https://nomaprojects.com/blogs/journal/garum-got-to-have-the-funk" target="_blank">Noma Projects — Garum Documentation</a></td><td>Trade</td><td>Noma&#x27;s public documentation of koji-garum techniques (published on their journal) has accelerated professional adoption as a reference resource</td><td>Medium — knowledge diffusion infrastructure now in place</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/fermentation/" target="_blank">r/fermentation niche subreddit</a></td><td>Reddit Niche</td><td>Community showing elevated koji thread frequency and growing newcomer posts; smaller fermentation subs cross-posting koji topics independently</td><td>Medium — home cook early adoption underway in niche community</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">~30%</div><div class="metric-lbl">Chefs Using Koji (2026)</div></div><div class="metric-item"><div class="metric-val">3× growth</div><div class="metric-lbl">Professional Adoption (3yr)</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Specialty Retail Window</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="functional-mushroom-category-shakeout">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Functional Mushroom Category Shakeout</div>
+        <div class="card-subtitle">The category is entering a credibility filter — brands with clinical backing and format innovation surviving; generic mushroom blend brands facing attrition</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">65</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Food Navigator</span><span class="pill">Expo West 2026</span><span class="pill">Whole Foods Magazine</span><span class="pill">Academic</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>65 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:65%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Food Navigator USA ran the headline &quot;Functional mushroom boom in food and beverage faces shakeout&quot; (March 20, 2026) — a trade publication calling the peak of a category is itself a signal: it means the innovation window is closing for generic entries and opening for differentiated ones. Expo West 2026 showed continued new product launches in functional mushrooms, but with a distinct shift toward format specificity: Malama Mushrooms&#x27; Matcha Coconut Latte Mix (lion&#x27;s mane + ceremonial matcha + MCT), Revive Collagen&#x27;s combination of liquid collagen with functional mushrooms, and the Kyolic Specialty Series (Sleep/Immune/Smart-specific formulations).The mechanism:the category is transitioning from novelty (&quot;mushrooms in coffee&quot;) to functional specificity (&quot;lion&#x27;s mane for cognition with a measurable dose and published research&quot;). Brands that cannot make that transition will see distribution pullback. This is a Rising signal for category winners; it&#x27;s a closure signal for generic players.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.foodnavigator-usa.com/Article/2026/03/20/functional-mushroom-boom-in-food-and-beverage-faces-shakeout/" target="_blank">Food Navigator USA — March 20, 2026</a></td><td>Trade</td><td>Headline: &quot;Functional mushroom boom in food and beverage faces shakeout&quot; — trade publication calling the category peak</td><td>High — trade calling peak is the signal for strategic repositioning window</td></tr>
+          <tr><td><a href="https://www.wholefoodsmagazine.com/articles/17956-expo-west-2026-trend-report-innovation-transparency-and-functional-wellness" target="_blank">Natural Products Expo West 2026</a></td><td>Trade</td><td>Multiple format-specific launches observed: Malama (matcha + lion&#x27;s mane + MCT), Revive Collagen (collagen + mushrooms), Kyolic (Sleep/Immune/Smart variants)</td><td>High — format specificity shift at Expo West confirms category maturation</td></tr>
+          <tr><td><a href="https://www.wholefoodsmagazine.com/blogs/1-wholefoods-magazine/post/17969-beyond-better-for-you-the-new-rules-of-natural-at-expo-west-2026" target="_blank">Whole Foods Magazine — Expo West Trend Report 2026</a></td><td>Trade</td><td>&quot;Protein, fiber, collagen and mushroom-based formulations dominated across categories&quot; with &quot;adaptogen-infused seltzers and nootropic mood-supporting tonics&quot; as growth formats</td><td>Medium — confirms beverage and multi-ingredient integration</td></tr>
+          <tr><td><a href="https://www.sialparis.com/en/trends/News/Adaptogens-enter-the-mainstream" target="_blank">SIAL Paris — Adaptogens Enter Mainstream Report</a></td><td>Trade</td><td>Report confirms adaptogens moving from niche to mainstream as functional foods evolve — mushrooms are the lead adaptogen</td><td>Medium — international trade confirmation of mainstream crossing</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">Shakeout</div><div class="metric-lbl">Category Phase</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Winner Emergence</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Investment Signal</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="swangy-flavor-architecture">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">&quot;Swangy&quot; Flavor Architecture</div>
+        <div class="card-subtitle">Sweet + spicy + tangy three-note flavor profiles emerging as the next-generation evolution of swicy, visible in specialty condiments and niche snack launches</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">59</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Food Dive</span><span class="pill">Blendtek</span><span class="pill">Specialty Condiment</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>59 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:59%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Food Dive&#x27;s flavor trend analysis (2026) named &quot;swangy&quot; (sweet + spicy + tangy) and &quot;swavory&quot; (sweet + spicy + savory) as the evolution of swicy — which has now closed as a mainstream window.This is a textbook &quot;next layer&quot; signal:once a flavor complexity pattern (sweet + heat) becomes mainstream, the early adopters who pioneered it move to the next increment of complexity (sweet + heat + acid). The mechanism is culinary literacy: as consumers become accustomed to two-note complexity, three-note combinations feel like the natural next step. Blendtek&#x27;s 2026/27 innovation report notes this as an active direction in their customer pipeline work. At the specialty condiment level, the signal is visible in new product launches featuring tamarind-chili, mango-habanero-lime, and yuzu-gochujang profiles. Use the swicy window-closed example as the calibration: swangy is now where swicy was in 2023.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.fooddive.com/news/flavor-texture-ingredient-trends-2026-food-beverage/810876/" target="_blank">Food Dive — Flavor Trends 2026</a></td><td>Trade</td><td>Names &quot;swangy&quot; (spicy+sweet+tangy) and &quot;swavory&quot; (spicy+sweet+savory) as next-tier evolutions of swicy; attributed to consumer palate complexity escalation</td><td>High — trade publication naming the mechanism and direction</td></tr>
+          <tr><td><a href="https://www.blendtek.com/5-food-beverage-trends-reshaping-innovation-in-2026-27/" target="_blank">Blendtek — F&amp;B Trends 2026/27</a></td><td>Trade</td><td>Active flavor complexity trend direction in innovation pipeline work; three-note flavor architecture confirmed as customer brief direction</td><td>High — supplier-side signal = R&amp;D pipeline 12–18 months ahead of consumer</td></tr>
+          <tr><td><a href="https://elchemy.com/blogs/food-nutrition/top-trends-of-food-and-beverage-industry-in-2026-whats-shaping-consumer-choices-and-market-innovation" target="_blank">Elchemy — Food Nutrition Blog 2026</a></td><td>Trade</td><td>&quot;Swicy evolves into swangy and swavory as consumers look for added depth and nuance within their foods&quot;</td><td>Medium — corroborating framing</td></tr>
+          <tr><td><a href="https://www.etsy.com/market/specialty_condiment" target="_blank">Specialty condiment Etsy / DTC channels</a></td><td>Etsy</td><td>Emerging listing cluster for tamarind-chili, mango-habanero-lime, yuzu-gochujang profiles in small-batch condiment makers — demand-led supply early stage</td><td>Medium — early commercial expression</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3-note</div><div class="metric-lbl">Flavor Complexity Level</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">Swicy</div><div class="metric-lbl">Window Closed Predecessor</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="lifestyle">
+    <div class="wrap">
+      <div class="cat-header"><h2>Lifestyle & Culture</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: niche subreddit velocity, Substack practitioner newsletters, academic sociology, urban design trade publications, WGSN.</p>
+      
+  <div class="trend-card" id="analog-hobby-revival-crossing-into-mains">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Analog Hobby Revival — Crossing Into Mainstream</div>
+        <div class="card-subtitle">Film photography, vinyl, letterpress, and screen-free craft signaling structural behavioral shift away from digital consumption — not a nostalgia moment</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">80</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Industry Data</span><span class="pill">Amateur Photographer</span><span class="pill">ACS Chemical &amp; Engineering News</span><span class="pill">Reddit Niche</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>80 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:80%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">US vinyl record sales topped$1.04 billion in 2025— the 19th consecutive year of growth and the first time annual vinyl revenue crossed the billion-dollar mark since 1983. This is a trend that has crossed the threshold from niche revival into a mainstream cultural behavior with its own manufacturing supply constraint (ACS C&amp;EN asked in April 2026: &quot;Film photography is coming back. Can manufacturers keep up?&quot;). The Deseret News named analog lifestyle as a 2026 defining trend in January; NYC News Service covered Gen Z&#x27;s &quot;trading screens for old-fashioned hobbies&quot; in March.The mechanism is not nostalgia — it&#x27;s analog wellness:screen-free activities (crocheting, film photography, vinyl listening, journaling) are being adopted as nervous system regulation practices, the same behavioral driver as VNS devices and breathwork in the wellness category. The meaningful signal is that this is now operating as a cross-geographic phenomenon: vinyl bars in Seoul and Shanghai, film camera communities in Kuala Lumpur, cassette listening bars in Tokyo — not a Western niche.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.riaa.com/u-s-sales-database/" target="_blank">RIAA — Vinyl Revenue 2025</a></td><td>Industry</td><td>US vinyl sales: $1.04B in 2025 — 19th consecutive year of growth; first billion-dollar year since 1983</td><td>High — billion-dollar threshold crossing with supply constraint = structural, not cyclical</td></tr>
+          <tr><td><a href="https://cen.acs.org/business/specialty-chemicals/Film-photography-coming-back-manufacturers/104/web/2026/04" target="_blank">ACS Chemical &amp; Engineering News — April 2026</a></td><td>Trade</td><td>&quot;Film photography is coming back. Can manufacturers keep up?&quot; — supply constraint signal confirming demand-led growth</td><td>High — manufacturing supply constraint = demand has outpaced niche supply infrastructure</td></tr>
+          <tr><td><a href="https://amateurphotographer.com/technique/film-photography/film-photography-is-alive-and-kicking-in-2026-analogue-in-the-age-of-digital/" target="_blank">Amateur Photographer — 2026</a></td><td>Trade</td><td>&quot;Film photography is alive and kicking in 2026&quot; — practitioner photography press confirming continued growth, not peak</td><td>High — specialist trade corroboration</td></tr>
+          <tr><td><a href="https://www.nycitynewsservice.com/2026/03/13/young-people-are-trading-screens-for-old-fashioned-hobbies/" target="_blank">NYC News Service — March 2026</a></td><td>Trade</td><td>&quot;Young People are Trading Screens for Old-Fashioned Hobbies&quot; — journalistic documentation of behavioral shift in Gen Z</td><td>Medium — journalistic confirmation signals mainstream adoption beginning</td></tr>
+          <tr><td><a href="https://radii.co/article/vinyl-bars-film-cameras-and-the-rise-of-asias-analog-revival" target="_blank">RADII — Asia Analog Revival</a></td><td>Confirmation</td><td>Vinyl bars and film camera communities documented in Seoul, Shanghai, Kuala Lumpur, Tokyo — confirms global, not Western-niche character</td><td>Medium — geographic spread signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">$1.04B</div><div class="metric-lbl">US Vinyl Revenue (2025)</div></div><div class="metric-item"><div class="metric-val">19 yrs</div><div class="metric-lbl">Consecutive Growth</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">Global</div><div class="metric-lbl">Geographic Spread</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="third-space-renaissance">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Third Space Renaissance</div>
+        <div class="card-subtitle">Intentional design of non-home, non-work community spaces — micro-local, ritual-anchored, and built for recurring human presence rather than transaction throughput</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">77</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">WGSN</span><span class="pill">ACTIU / Urban Land</span><span class="pill">Well News</span><span class="pill">Community Substack</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>77 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:77%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">WGSN named &quot;third spaces&quot; as a core brand strategy direction for 2026. The Well News called it a 2026 fitness trend: &quot;Exercise as a Third Space.&quot; ACTIU&#x27;s design brief on third space trends 2026 identifies a structural shift:organizations are deploying satellite micro-hubs distributed through urban fabricrather than single large venues, creating accessible community nodes. The mechanism is a convergence of three forces: Gen Z&#x27;s documented preference for IRL over digital community (50%+ actively limiting screen time per Mastercard&#x27;s Gen Z study), the loneliness epidemic creating structural demand for designed social infrastructure, and commercial real estate surplus enabling affordable activation of ground-floor urban space. The signal that makes this Hot rather than Rising: Pinterest shows &quot;garden inspiration ideas&quot; up 940% and &quot;balcony makeover ideas&quot; up 165% — proxy signals that small, personally owned outdoor spaces are becoming third-space substitutes for people who can&#x27;t access designed community venues. The desire is universal; the market is forming around it now.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.wgsn.com/en/new-brand-strategy-third-spaces-0" target="_blank">WGSN — New Brand Strategy: Third Spaces</a></td><td>Trade</td><td>WGSN identifies third spaces as core brand strategy direction for 2026; distinct from previous &quot;experiential marketing&quot; framing — this is infrastructure, not activation</td><td>High — WGSN is primary global trend forecasting authority</td></tr>
+          <tr><td><a href="https://www.actiu.com/en/articles/hospitality/trends-in-third-space/" target="_blank">ACTIU — Trends in Third Spaces 2026</a></td><td>Trade</td><td>Complete design guide to third space trends 2026; identifies satellite micro-hub distribution model as emerging design pattern</td><td>High — design industry documentation = commercial investment signal</td></tr>
+          <tr><td><a href="https://www.mastercard.com/global/en/news-and-trends/stories/2026/gen-z-gen-alpha-culture.html" target="_blank">Mastercard Global — Gen Z Culture Report 2026</a></td><td>Trade</td><td>50%+ of Gen Z actively exploring screen time limits; opting for &quot;real-life experiences such as rising café culture and community-building experiences like yoga classes&quot;</td><td>High — demand-side behavioral data with specific percentage</td></tr>
+          <tr><td><a href="https://newsroom.pinterest.com/news/spring-trend-report-2026/" target="_blank">Pinterest Spring 2026</a></td><td>Pinterest</td><td>&quot;Garden inspiration ideas&quot; +940%, &quot;balcony makeover ideas&quot; +165% — proxy demand for personal third-space creation where institutional third spaces are absent</td><td>Medium — proxy signal for third-space desire</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/thirdplace/" target="_blank">r/ThirdPlaces, small urban community subs</a></td><td>Reddit Niche</td><td>Growing post activity in sub-50k subreddits focused on local community spaces, run clubs, and recurring IRL rituals</td><td>Medium — community formation around the behavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">940%</div><div class="metric-lbl">Garden Inspiration Growth (Pinterest)</div></div><div class="metric-item"><div class="metric-val">&gt;50%</div><div class="metric-lbl">Gen Z Limiting Screen Time</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Commercial Activation Window</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="closed-creator-ecosystem-communities">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Closed Creator Ecosystem Communities</div>
+        <div class="card-subtitle">Paid Substacks, Discord servers, and private community platforms replacing the mass social feed as the primary cultural distribution channel for early adopters</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">63</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Substack Data</span><span class="pill">NSS G-Club</span><span class="pill">Harvard Lifestyle Research</span><span class="pill">Sociology Research</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>63 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:63%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">NSS G-Club&#x27;s cultural trend analysis for 2026 named &quot;social exit&quot; as the defining cultural behavior of the year — the movement away from public feed performance toward intimate digital ecosystems. The mechanism is not disillusionment with technology buta recalibration of what technology is for: messaging platforms, closed networks, and paid communities are replacing the algorithmic feed as the space where trust is built and influence actually moves. Truffle Culture&#x27;s Gen Z analysis notes that most Gen Z respondents say &quot;a single pop culture mainstream no longer exists&quot; — a statement about the structural fragmentation of distribution, not taste. The signal for practitioners: independent Substack newsletters with sub-50k subscribers but above-average open rates are where cultural signals now originate before they appear anywhere else. The Rolling Stone Culture Council piece on &quot;New Third Spaces&quot; (digital) and Mastercard&#x27;s Gen Z culture report both identify this shift from scrolling to shaping culture as the primary behavioral change of 2026.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.nssgclub.com/en/lifestyle/43834/social-exit-new-cultural-trends-what-will-2026-be-like" target="_blank">NSS G-Club — Social Exit 2026</a></td><td>Trade</td><td>&quot;Social exit&quot; named as defining cultural behavior of 2026; public feed losing cultural centrality; intimate digital ecosystems rising</td><td>High — cultural publication identifying the behavioral inflection</td></tr>
+          <tr><td><a href="https://www.truffleculture.com/gen-z-trends-2026-cultural-analysis/" target="_blank">Truffle Culture — Gen Z Trends 2026</a></td><td>Trade</td><td>Gen Z respondents say &quot;a single pop culture mainstream no longer exists&quot;; cultural fragmentation into hyper-niche sub-cultures confirmed</td><td>High — consumer-voice data on distribution fragmentation</td></tr>
+          <tr><td><a href="https://www.mastercard.com/global/en/news-and-trends/stories/2026/gen-z-gen-alpha-culture.html" target="_blank">Mastercard Global — Gen Z Culture Report</a></td><td>Trade</td><td>&quot;Gen Z and Gen Alpha shift from scrolling to shaping culture&quot; — confirmed behavioral shift from passive consumption to active niche participation</td><td>High — financial services trend data = commercial significance confirmed</td></tr>
+          <tr><td><a href="https://www.rollingstone.com/culture-council/articles/new-third-spaces-online-communities-rebuilding-connection-1235492208/" target="_blank">Rolling Stone Culture Council — New Third Spaces</a></td><td>Trade</td><td>Creator-led digital communities named as new third spaces; Discord, Substack, private communities rebuilding connection infrastructure online</td><td>Medium — editorial confirmation of mechanism</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div><div class="metric-item"><div class="metric-val">Structural</div><div class="metric-lbl">Trend Type</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Investment Signal</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="cultural-gatekeeping-niche-identity-arch">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Cultural Gatekeeping &amp; Niche Identity Architecture</div>
+        <div class="card-subtitle">Deliberate information and access asymmetry as social capital in micro-communities — knowing something before others, or having access others don&#x27;t, becomes a primary identity signal</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">46</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Trade Publication</span><span class="pill">Substack</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>46 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:46%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">This is the behavioral logic underneath several other trends in this report — it&#x27;s worth naming as its own signal because it&#x27;s beginning to have observable commercial expressions. Culture Pulse Hub&#x27;s analysis of 2026 cultural trends identifies gatekeeping not as pathology but aseconomic behavior in an attention-scarce, content-abundant environment: when everything is shareable and discoverable, the marginal value of knowing something before others or having access others don&#x27;t is rising. In fashion, it&#x27;s the exclusivity accessories signal (weird objects no one else has). In culture, it&#x27;s the closed community preference. In food, it&#x27;s the koji knowledge asymmetry in professional kitchens. The Watch classification reflects that this is still a mechanism operating beneath other trends rather than a standalone product or content category — but it&#x27;s the organizing principle. When this crosses into mainstream discourse (estimated 9–18 months), it will likely do so through anxiety about it (moral panic framing) rather than celebration of it.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://culturepulsehub.com/top-cultural-trends-that-will-shape-the-world-in-2026/" target="_blank">Culture Pulse Hub — Cultural Trends 2026</a></td><td>Trade</td><td>Gatekeeping identified as intentional identity behavior; &quot;those who manage to build a cultural niche today build a community that is more loyal, more participatory, and more monetizable&quot;</td><td>Medium — naming the mechanism explicitly</td></tr>
+          <tr><td><a href="https://www.kittl.com/blogs/gen-z-fashion-trends-style-guide-dsi/" target="_blank">Kittl Gen Z Fashion Brief 2026</a></td><td>Trade</td><td>&quot;Exclusivity (basically gatekeeping) will become more important than it has been the past few years&quot; — explicit commercial framing in fashion trade context</td><td>Medium — trade articulation of commercial behavior</td></tr>
+          <tr><td><a href="" target="_blank">Niche subreddit behavior patterns</a></td><td>Reddit Niche</td><td>Multiple niche communities showing resistance to crossposting and newcomer access; &quot;ISO&quot; post patterns in craft communities signal insiders controlling information asymmetry</td><td>Low-Medium — behavioral signal without direct commercial expression yet</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Mainstream Arrival</div></div><div class="metric-item"><div class="metric-val">Structural</div><div class="metric-lbl">Trend Type</div></div><div class="metric-item"><div class="metric-val">3</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+  <div class="cat-section" id="alcohol">
+    <div class="wrap">
+      <div class="cat-header"><h2>Alcohol</h2></div>
+      <p class="cat-intro">4 emerging trends tracked this week. Source emphasis: IWSR, SevenFifty Daily, Imbibe Magazine, Datassential, PSU Extension Beverage Program.</p>
+      
+  <div class="trend-card" id="no-low-alcohol-sophisticated-maturity">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">No/Low Alcohol — Sophisticated Maturity</div>
+        <div class="card-subtitle">The category crossing from wellness novelty into genuine beverage culture — complex, bartender-endorsed, and socially normalized</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--hot)">78</span>
+        <span class="pill-tier pill-hot">Hot</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">IWSR</span><span class="pill">Imbibe Magazine</span><span class="pill">Datassential</span><span class="pill">Reddit Niche</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>78 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:78%;background:var(--hot)"></div></div>
+    </div>
+    <div class="insight-block">IWSR projects the no- and low-alcohol category will grow bymore than 25% in volumeacross key markets through 2026 — the steepest growth curve in the broader beverage alcohol market. But the more important signal is qualitative: Imbibe Magazine&#x27;s 2026 Drink Trends report names no/low as a structural shift, not a diet trend, with bartenders actively engineering complex NA cocktail menus rather than treating it as an afterthought.The mechanism:78% of Gen Z now actively alternate between alcoholic and non-alcoholic rounds (&quot;zebra striping&quot;), and non-alcoholic gin alternatives are the fastest-growing sub-segment because botanical complexity translates well without alcohol. Datassential data shows functional sodas at 66% awareness / 58% interest among consumers — confirming that the demand is forcomplexity and ritual, not abstinence. The window is now: this is a 0–3 month opportunity for on-premise programs and DTC brands to own the &quot;sophisticated NA&quot; positioning before it becomes a commodity shelf segment.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.theiwsr.com/insight/six-key-drivers-shaping-beverage-alcohol-in-2026-and-beyond/" target="_blank">IWSR — Six Key Drivers 2026</a></td><td>Trade</td><td>No/low alcohol category forecast to grow 25%+ in volume across key markets through 2026 — steepest growth curve in beverage alcohol</td><td>High — IWSR is primary global beverage industry data authority</td></tr>
+          <tr><td><a href="https://imbibemagazine.com/drink-trends-for-2026/" target="_blank">Imbibe Magazine — Drink Trends 2026</a></td><td>Trade</td><td>Bartenders actively engineering complex NA cocktail menus; lower-ABV cocktails at 63% consumer awareness / 51% interest; names no/low as structural shift not diet trend</td><td>High — Imbibe is primary trade publication for bar/spirits professionals</td></tr>
+          <tr><td><a href="https://datassential.com/resource/non-alcoholic-beverage-trends/" target="_blank">Datassential — Non-Alcoholic Trends 2026</a></td><td>Trade</td><td>Functional sodas: 66% awareness, 58% interest; share of regular drinkers declined 6%; 78% of Gen Z alternating alcoholic/non-alcoholic rounds</td><td>High — consumer panel data with specific percentages</td></tr>
+          <tr><td><a href="https://www.tablemagazine.com/beverage-trends-2026-non-alcoholic-beer-spirits/" target="_blank">Table Magazine — Non-Alc Beer &amp; Spirits Rise</a></td><td>Trade</td><td>Non-alcoholic gin alternatives named fastest-growing sub-segment; Seedlip, Lyre&#x27;s, Monday Gin engineering botanical complexity without alcohol</td><td>Medium — confirms product category formation</td></tr>
+          <tr><td><a href="" target="_blank">r/Nootropics, r/DrugNerds niche subs</a></td><td>Reddit Niche</td><td>Growing crossover discussion of functional NA beverages (adaptogens, magnesium, nootropics) as alcohol substitutes — framing shift from &quot;sober&quot; to &quot;optimized&quot;</td><td>Medium — framing shift is the signal, not just sobriety discourse</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">25%+</div><div class="metric-lbl">Volume Growth Forecast</div></div><div class="metric-item"><div class="metric-val">78%</div><div class="metric-lbl">Gen Z Zebra Striping</div></div><div class="metric-item"><div class="metric-val">0–3 mo</div><div class="metric-lbl">Positioning Window</div></div><div class="metric-item"><div class="metric-val">5</div><div class="metric-lbl">Source Count</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="raicilla-alternative-agave-spirits">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Raicilla &amp; Alternative Agave Spirits</div>
+        <div class="card-subtitle">The agave category&#x27;s next frontier — Jalisco&#x27;s funky, fruity cousin to mezcal gaining traction in niche bar programs as tequila fatigue sets in among enthusiasts</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">63</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">SevenFifty Daily</span><span class="pill">IWSR</span><span class="pill">PSU Extension</span><span class="pill">Reddit Niche</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>63 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:63%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">SevenFifty Daily — the trade publication of record for beverage professionals — named raicilla and sotol as the next breakout Mexican spirits in 2026. IWSR forecasts sotol at 6% CAGR through 2027, with broader alternative agave spirits clocking a 35%+ CAGR in the US since 2019.The mechanism is enthusiast migration:tequila&#x27;s explosive mainstream growth (Casamigos, Don Julio 1942 as pop culture objects) has created a ceiling for credibility-seeking drinkers. The same pattern that drove mezcal&#x27;s rise 2015–2020 is now playing out one tier further: bartenders and spirits-literate consumers are moving to raicilla (Jalisco, fruity/floral/herbal), bacanora (Sonora), and sotol (Chihuahua) — each with distinct terroir and production traditions. Datassential measured 49% interest among aware consumers for raicilla specifically. The niche bar signal: specialty agave bars and Mexican restaurant programs in LA, NYC, and Chicago are adding raicilla SKUs to mezcal-focused lists. This is 3–9 months from broader on-premise visibility.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://daily.sevenfifty.com/is-sotol-the-next-breakout-mexican-spirit-in-the-u-s/" target="_blank">SevenFifty Daily — Sotol/Raicilla Breakout</a></td><td>Trade</td><td>Names raicilla and sotol as next breakout Mexican spirits for 2026; &quot;more seasoned drinkers champing at the bit for the next exciting thing&quot;</td><td>High — SevenFifty is primary trade publication for spirits buyers and bartenders</td></tr>
+          <tr><td><a href="https://www.theiwsr.com/radius-micro-trend-agave-spirits/" target="_blank">IWSR — Alternative Agave Spirits Report</a></td><td>Trade</td><td>Sotol forecast 6% CAGR through 2027; broader agave spirits 35%+ CAGR in US since 2019; alternative agave spirits tipped for success</td><td>High — IWSR data with specific CAGR projections</td></tr>
+          <tr><td><a href="https://extension.psu.edu/alcoholic-beverage-trends-2026" target="_blank">PSU Extension — Alcoholic Beverage Trends 2026</a></td><td>Trade</td><td>Raicilla listed as top international spirit trend for 2026; 49% interest among aware consumers; described as &quot;more diversity than tequila&quot;</td><td>High — academic extension service trend report based on Datassential consumer data</td></tr>
+          <tr><td><a href="https://spiritsselection.com/en/raicilla-jaliscos-other-agave-spirit-with-do/" target="_blank">Spirits Selection — Raicilla DO Profile</a></td><td>Trade</td><td>Raicilla Denomination of Origin established; distinct agave varieties and production methods from tequila/mezcal — credential infrastructure forming</td><td>Medium — regulatory/credential infrastructure is a precondition for mainstream growth</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/mezcal/" target="_blank">r/mezcal niche subreddit</a></td><td>Reddit Niche</td><td>Under 50k subscribers; growing thread activity specifically on raicilla, bacanora, and sotol — enthusiast migration pattern from mezcal community</td><td>Medium — enthusiast community migration is the classic pre-mainstream signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">49%</div><div class="metric-lbl">Consumer Interest (Aware)</div></div><div class="metric-item"><div class="metric-val">35%+</div><div class="metric-lbl">Agave CAGR (US, since 2019)</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">On-Premise Visibility</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Investment Signal</span></div>
+  </div>
+  <div class="trend-card" id="carajillo-coffee-spirit-hybrids">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Carajillo &amp; Coffee-Spirit Hybrids</div>
+        <div class="card-subtitle">Espresso-spirit combinations crossing from Mexican cantina tradition into mainstream bar culture — riding coffee culture, the cocktail literacy wave, and late-night dining behavior</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--rising)">60</span>
+        <span class="pill-tier pill-rising">Rising</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">Datassential</span><span class="pill">SevenFifty Daily</span><span class="pill">PSU Extension</span><span class="pill">Confirmation</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>60 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:60%;background:var(--rising)"></div></div>
+    </div>
+    <div class="insight-block">Datassential consumer research shows carajillo (espresso + Licor 43 or Kahlúa) at34% awareness and 55% interest— a significant interest-to-awareness gap that is the classic signal of an emerging category: consumers who try it want more of it, but most haven&#x27;t encountered it yet. PSU Extension named coffee-spirit hybrids and the carajillo specifically as a top 2026 trend, noting it &quot;is expected to appear on menus everywhere from casual restaurants to upscale venues.&quot;The mechanism:coffee culture and cocktail culture are converging — espresso martini&#x27;s mainstream explosion (the window has closed on that) has primed consumer palates for coffee-forward spirits, and the carajillo offers the next layer of complexity: a shorter, spirit-forward coffee drink with Mexican heritage and a different flavor profile. SevenFifty Daily&#x27;s 2026 spirits trends piece lists coffee-spirit hybrids and the carajillo specifically. The signal is still 3–6 months from full on-premise saturation.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://datassential.com/resource/beverage-trends-2026-future-of-drink-report/" target="_blank">Datassential — Future of Drink 2026</a></td><td>Trade</td><td>Carajillo: 34% awareness, 55% interest — high interest-to-awareness gap signals emerging category with strong pull-through once encountered</td><td>High — consumer panel data with specific awareness/interest percentages</td></tr>
+          <tr><td><a href="https://daily.sevenfifty.com/6-spirits-industry-and-cocktail-trends-to-watch-in-2026/" target="_blank">SevenFifty Daily — 6 Spirits Trends 2026</a></td><td>Trade</td><td>Coffee-spirit hybrids and carajillo named among 6 key spirits industry trends for 2026; noted as crossing from niche to broad menu adoption</td><td>High — trade publication naming the mechanism and direction for bar professionals</td></tr>
+          <tr><td><a href="https://extension.psu.edu/alcoholic-beverage-trends-2026" target="_blank">PSU Extension — Beverage Trends 2026</a></td><td>Trade</td><td>Carajillo &quot;expected to appear on menus everywhere from casual restaurants to upscale venues and lounges&quot; — menu diffusion prediction from academic trade source</td><td>Medium — corroborating trade signal</td></tr>
+          <tr><td><a href="https://academy.getbackbar.com/2026-spirit-cocktail-trends" target="_blank">BackBar Academy — Spirit &amp; Cocktail Trends 2026</a></td><td>Trade</td><td>Coffee liqueur and espresso-spirit combinations in top cocktail trend list for 2026; points to carajillo as the format gaining bar program traction</td><td>Medium — practitioner-facing bar education platform</td></tr>
+          <tr><td><a href="" target="_blank">Espresso Martini (window closed predecessor)</a></td><td>Calibration</td><td>Espresso martini is now at Applebee&#x27;s and Costco pre-mix — use as calibration that coffee-spirit as a category is established; carajillo is the next-tier expression</td><td>Low (calibration signal only)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">55%</div><div class="metric-lbl">Consumer Interest</div></div><div class="metric-item"><div class="metric-val">34%</div><div class="metric-lbl">Awareness (Gap = Signal)</div></div><div class="metric-item"><div class="metric-val">3–9 mo</div><div class="metric-lbl">Menu Saturation</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Product Opportunity</span><span class="action-tag">Watch</span></div>
+  </div>
+  <div class="trend-card" id="heritage-ancestral-beer-revival">
+    <div class="card-top">
+      <div class="card-title-group">
+        <div class="card-name">Heritage &amp; Ancestral Beer Revival</div>
+        <div class="card-subtitle">Obscure pre-industrial beer styles — dampfbier, roggenbier, grätzer, sahti — re-emerging in craft brewing as the next frontier beyond hazy IPAs and pastry stouts</div>
+      </div>
+      <div class="card-badges">
+        <span class="score-num" style="color:var(--watch)">46</span>
+        <span class="pill-tier pill-watch">Watch</span>
+      </div>
+    </div>
+    <div class="pills-row"><span class="pill">PSU Extension</span><span class="pill">Datassential</span><span class="pill">Reddit Niche</span><span class="pill">Homebrewing</span></div>
+    <div class="momentum-wrap">
+      <div class="momentum-label"><span>Momentum</span><span>46 / 100</span></div>
+      <div class="momentum-track"><div class="momentum-fill" style="width:46%;background:var(--watch)"></div></div>
+    </div>
+    <div class="insight-block">PSU Extension&#x27;s 2026 Alcoholic Beverage Trends report names &quot;heritage beers&quot; — specifically dampfbier (Bavarian steam beer), roggenbier (rye beer), and ancestral European styles — as an emerging trend driven by adventurous craft beer drinkers seeking authenticity beyond the now-crowded hazy IPA and pastry stout categories.The mechanism parallels raicilla:enthusiast fatigue with mainstream craft creates demand for the next layer of specificity and historical depth. The niche signal is in homebrewing communities: r/homebrewing (under 200k subscribers) and r/beertrade show increasing discussion of obscure historical styles and grain-forward fermentation techniques.This is a Watch signal— the commercial craft beer infrastructure for these styles is still forming, and most examples are single-tap rarities at specialty brewpubs. 9–18 months before meaningful on-premise or retail presence. The opportunity now is in content and enthusiast community positioning, not product.</div>
+    <div class="signal-table-wrap">
+      <table class="signal-table">
+        <thead><tr><th>Source</th><th>Type</th><th>Specific Data Point</th><th>Signal Weight</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://extension.psu.edu/alcoholic-beverage-trends-2026" target="_blank">PSU Extension — Alcoholic Beverage Trends 2026</a></td><td>Trade</td><td>Heritage beers named as 2026 trend; dampfbier and roggenbier specifically called out alongside international spirits in &quot;adventurous drinker&quot; category</td><td>High — academic extension trade report drawing on industry and consumer data</td></tr>
+          <tr><td><a href="https://datassential.com/resource/10-drink-trends-future-beverage-trends-2026/" target="_blank">Datassential — 10 Drink Trends 2026</a></td><td>Trade</td><td>Heritage/ancestral beer styles included in broader &quot;adventurous and international&quot; beverage trend cluster; consumer interest in novel beer styles growing</td><td>Medium — consumer data corroboration</td></tr>
+          <tr><td><a href="https://www.reddit.com/r/homebrewing/" target="_blank">r/homebrewing niche subreddit</a></td><td>Reddit Niche</td><td>Under 200k subscribers; increasing thread frequency on obscure historical styles (sahti, grätzer, dampfbier); newcomer posts asking about grain-forward and rye-based fermentation rising in Q1–Q2 2026</td><td>Medium — homebrewing community adoption precedes commercial craft adoption by 12–24 months</td></tr>
+          <tr><td><a href="" target="_blank">Specialty homebrew ingredient suppliers</a></td><td>Specialty Retail</td><td>Niche homebrew supply shops reporting increased demand for rye malt, smoked malt, and ancestral grain varieties used in heritage beer styles</td><td>Low-Medium — demand-led supply signal at the enthusiast infrastructure level</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="metrics-row"><div class="metric-item"><div class="metric-val">9–18 mo</div><div class="metric-lbl">Commercial Arrival</div></div><div class="metric-item"><div class="metric-val">4</div><div class="metric-lbl">Source Count</div></div><div class="metric-item"><div class="metric-val">Watch</div><div class="metric-lbl">Stage</div></div></div>
+    <div class="action-tags"><span class="action-tag">Content Window</span><span class="action-tag">Watch</span></div>
+  </div>
+    </div>
+  </div>
+
+<div class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h5>Methodology</h5>
+        <p>Each trend is scored 0–100 from a weighted signal table (source citation, signal type, datapoint, and a per-signal weight); composite scores above 75 are tier'd Hot, 55–74 Rising, and 40–54 Watch. This is a simulated weekly intelligence exercise: source citations are illustrative and attributed to real-sounding institutions for format realism, and should not be treated as live research.</p>
+      </div>
+      <div>
+        <h5>Issue</h5>
+        <p>Issue #007 &middot; June 23, 2026 &middot; 20 trends across Fashion, Wellness, Food &amp; Drink, Lifestyle, and Alcohol.</p>
+      </div>
+      <div>
+        <h5>Colophon</h5>
+        <p>Built as a single HTML file. D3 v7. Fraunces &amp; Inter. ✦</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function tier(b){ return b; }
+  function colorFor(badge){
+    var v = getComputedStyle(document.documentElement);
+    return v.getPropertyValue('--' + badge).trim();
+  }
+
+  // ---- Bubble / score landscape chart ----
+  function renderBubble(){
+    var data = window.__BUBBLE_DATA__;
+    var el = document.getElementById('bubble-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 360;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var cats = ['fashion','wellness','food','lifestyle','alcohol'];
+    var x = d3.scalePoint().domain(cats).range([margin.left, W-margin.right]).padding(0.6);
+    var y = d3.scaleLinear().domain([35,90]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x).tickFormat(function(d){
+        return {fashion:'Fashion',wellness:'Wellness',food:'Food & Drink',lifestyle:'Lifestyle',alcohol:'Alcohol'}[d];
+      })).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','12px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(5)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+    svg.selectAll('circle').data(data).enter().append('circle')
+      .attr('cx', function(d){ return x(d.cat) + (Math.random()-0.5)*28; })
+      .attr('cy', function(d){ return y(d.score); })
+      .attr('r', function(d){ return Math.max(5, d.score/7); })
+      .attr('fill', function(d){ return colorFor(d.badge); })
+      .attr('fill-opacity', 0.78)
+      .attr('stroke', function(d){ return colorFor(d.badge); })
+      .style('cursor','pointer')
+      .on('mouseover', function(e,d){
+        tooltip.style('opacity',1).html('<strong>'+d.name+'</strong><br/>Score '+d.score+' &middot; '+d.badge);
+        var rect = el.getBoundingClientRect();
+      })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ jumpToCard(d.name); });
+  }
+
+  // ---- Histogram ----
+  function renderHistogram(){
+    var data = window.__HIST_DATA__;
+    var el = document.getElementById('hist-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 280;
+    var margin = {top: 20, right: 20, bottom: 40, left: 40};
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var x = d3.scaleBand().domain(data.map(function(d){return d.bucket;})).range([margin.left, W-margin.right]).padding(0.3);
+    var y = d3.scaleLinear().domain([0, d3.max(data,function(d){return d.count;}) || 1]).range([H-margin.bottom, margin.top]);
+    svg.append('g').attr('transform','translate(0,'+(H-margin.bottom)+')')
+      .call(d3.axisBottom(x)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.append('g').attr('transform','translate('+margin.left+',0)')
+      .call(d3.axisLeft(y).ticks(4)).call(function(g){ g.selectAll('text').attr('fill','var(--ink-dim)').style('font-size','11px'); g.selectAll('path,line').attr('stroke','var(--line)'); });
+    svg.selectAll('rect').data(data).enter().append('rect')
+      .attr('x', function(d){ return x(d.bucket); }).attr('width', x.bandwidth())
+      .attr('y', function(d){ return y(d.count); }).attr('height', function(d){ return (H-margin.bottom) - y(d.count); })
+      .attr('fill', 'var(--accent)').attr('fill-opacity', 0.75).attr('rx', 4);
+  }
+
+  // ---- Network graph ----
+  function renderNetwork(){
+    var graph = window.__NETWORK_DATA__;
+    var el = document.getElementById('network-chart');
+    if(!el) return;
+    el.innerHTML = '';
+    var W = el.clientWidth || 880, H = 460;
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var tooltip = d3.select(el).append('div').attr('class','tooltip');
+
+    var sim = d3.forceSimulation(graph.nodes)
+      .force('link', d3.forceLink(graph.links).id(function(d){return d.id;}).distance(function(d){ return 60; }).strength(0.35))
+      .force('charge', d3.forceManyBody().strength(-30))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collision', d3.forceCollide().radius(function(d){ return d.type==='source' ? 10 : 6 + (d.score||50)/10; }));
+
+    var link = svg.append('g').selectAll('line').data(graph.links).enter().append('line')
+      .attr('stroke', 'var(--line)').attr('stroke-width', 1);
+
+    var node = svg.append('g').selectAll('circle').data(graph.nodes).enter().append('circle')
+      .attr('r', function(d){ return d.type==='source' ? 5 : 4 + (d.score||50)/9; })
+      .attr('fill', function(d){ return d.type==='source' ? 'var(--ink-faint)' : colorFor(d.badge); })
+      .attr('fill-opacity', function(d){ return d.type==='source' ? 0.5 : 0.85; })
+      .style('cursor','pointer')
+      .call(d3.drag()
+        .on('start', function(e,d){ if(!e.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y; })
+        .on('drag', function(e,d){ d.fx=e.x; d.fy=e.y; })
+        .on('end', function(e,d){ if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }))
+      .on('mouseover', function(e,d){ tooltip.style('opacity',1).html('<strong>'+d.label+'</strong>'+(d.type==='trend' ? ' &middot; '+d.score : ' &middot; source')); })
+      .on('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        tooltip.style('left', (e.clientX-rect.left+12)+'px').style('top', (e.clientY-rect.top-10)+'px');
+      })
+      .on('mouseout', function(){ tooltip.style('opacity',0); })
+      .on('click', function(e,d){ if(d.type==='trend') jumpToCard(d.label); });
+
+    sim.on('tick', function(){
+      link.attr('x1', function(d){return d.source.x;}).attr('y1', function(d){return d.source.y;})
+          .attr('x2', function(d){return d.target.x;}).attr('y2', function(d){return d.target.y;});
+      node.attr('cx', function(d){return d.x;}).attr('cy', function(d){return d.y;});
+    });
+  }
+
+  function jumpToCard(name){
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,40);
+    var card = document.getElementById(slug);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('flash');
+      setTimeout(function(){ card.classList.remove('flash'); }, 1600);
+    }
+  }
+  window.jumpToCard = jumpToCard;
+
+  function sortLeaderboard(key, dir){
+    var tbody = document.getElementById('lb-body');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      var av = a.dataset[key], bv = b.dataset[key];
+      if(key==='score'){ av=+av; bv=+bv; }
+      if(av<bv) return -1*dir; if(av>bv) return 1*dir; return 0;
+    });
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+  window.__sortLeaderboard = sortLeaderboard;
+  window.__lbDir = {};
+  window.handleSort = function(key){
+    window.__lbDir[key] = (window.__lbDir[key] || 1) * -1;
+    sortLeaderboard(key, window.__lbDir[key]);
+  };
+
+  function renderAll(){
+    if(window.d3){ renderBubble(); renderHistogram(); renderNetwork(); }
+  }
+  window.__renderCharts = renderAll;
+  if(document.readyState === 'complete' || document.readyState === 'interactive'){
+    setTimeout(renderAll, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', renderAll);
+  }
+  window.addEventListener('resize', function(){ clearTimeout(window.__rt); window.__rt = setTimeout(renderAll, 200); });
+})();
+
+function toggleTheme(){
+  var html = document.documentElement;
+  var cur = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('trendreport-theme', next);
+  document.getElementById('theme-btn-label').textContent = next === 'dark' ? '◑ Dark' : '◐ Light';
+  setTimeout(function(){ if(window.__renderCharts) window.__renderCharts(); }, 50);
+}
+(function(){
+  var saved = localStorage.getItem('trendreport-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+<script>
+window.__BUBBLE_DATA__ = [{"cat": "fashion", "catIndex": 0, "name": "Lace Revival / Poetcore Aesthetic", "score": 67, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Soft Menswear \u2014 Easy Dressing", "score": 62, "badge": "rising"}, {"cat": "fashion", "catIndex": 0, "name": "Natural Dye Textile Craft Revival", "score": 48, "badge": "watch"}, {"cat": "fashion", "catIndex": 0, "name": "Exclusivity Accessories / Anti-Mass Objects", "score": 44, "badge": "watch"}, {"cat": "wellness", "catIndex": 1, "name": "Consumer Vagus Nerve Stimulation (VNS) Devices", "score": 79, "badge": "hot"}, {"cat": "wellness", "catIndex": 1, "name": "Microplastics Health Response Protocol", "score": 61, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Precision Senolytics & Cellular Aging", "score": 58, "badge": "rising"}, {"cat": "wellness", "catIndex": 1, "name": "Therapeutic Peptides \u2014 Consumer Self-Administration", "score": 52, "badge": "watch"}, {"cat": "food", "catIndex": 2, "name": "Clean Fats / Seed Oil Reformulation", "score": 82, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "Koji Fermentation \u2014 Professional Kitchen Mainstreaming", "score": 76, "badge": "hot"}, {"cat": "food", "catIndex": 2, "name": "Functional Mushroom Category Shakeout", "score": 65, "badge": "rising"}, {"cat": "food", "catIndex": 2, "name": "\"Swangy\" Flavor Architecture", "score": 59, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Analog Hobby Revival \u2014 Crossing Into Mainstream", "score": 80, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Third Space Renaissance", "score": 77, "badge": "hot"}, {"cat": "lifestyle", "catIndex": 3, "name": "Closed Creator Ecosystem Communities", "score": 63, "badge": "rising"}, {"cat": "lifestyle", "catIndex": 3, "name": "Cultural Gatekeeping & Niche Identity Architecture", "score": 46, "badge": "watch"}, {"cat": "alcohol", "catIndex": 4, "name": "No/Low Alcohol \u2014 Sophisticated Maturity", "score": 78, "badge": "hot"}, {"cat": "alcohol", "catIndex": 4, "name": "Raicilla & Alternative Agave Spirits", "score": 63, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Carajillo & Coffee-Spirit Hybrids", "score": 60, "badge": "rising"}, {"cat": "alcohol", "catIndex": 4, "name": "Heritage & Ancestral Beer Revival", "score": 46, "badge": "watch"}];
+window.__HIST_DATA__ = [{"bucket": "40-49", "count": 4}, {"bucket": "50-59", "count": 3}, {"bucket": "60-69", "count": 7}, {"bucket": "70-79", "count": 4}, {"bucket": "80-89", "count": 2}, {"bucket": "90-99", "count": 0}];
+window.__NETWORK_DATA__ = {"nodes": [{"id": "t_lace-revival-poetcore-aesthetic", "type": "trend", "label": "Lace Revival / Poetcore Aesthetic", "score": 67, "badge": "rising", "cat": "fashion"}, {"id": "s_pinterest-breakout", "type": "source", "label": "Pinterest Breakout"}, {"id": "s_trade-publication", "type": "source", "label": "Trade Publication"}, {"id": "s_etsy", "type": "source", "label": "Etsy"}, {"id": "s_confirmation", "type": "source", "label": "Confirmation"}, {"id": "t_soft-menswear-easy-dressing", "type": "trend", "label": "Soft Menswear \u2014 Easy Dressing", "score": 62, "badge": "rising", "cat": "fashion"}, {"id": "s_mr-magazine", "type": "source", "label": "MR Magazine"}, {"id": "s_wwd", "type": "source", "label": "WWD"}, {"id": "s_business-of-fashion", "type": "source", "label": "Business of Fashion"}, {"id": "t_natural-dye-textile-craft-revival", "type": "trend", "label": "Natural Dye Textile Craft Revival", "score": 48, "badge": "watch", "cat": "fashion"}, {"id": "s_reddit-niche", "type": "source", "label": "Reddit Niche"}, {"id": "t_exclusivity-accessories-anti-mass-object", "type": "trend", "label": "Exclusivity Accessories / Anti-Mass Objects", "score": 44, "badge": "watch", "cat": "fashion"}, {"id": "s_substack", "type": "source", "label": "Substack"}, {"id": "t_consumer-vagus-nerve-stimulation-vns-dev", "type": "trend", "label": "Consumer Vagus Nerve Stimulation (VNS) Devices", "score": 79, "badge": "hot", "cat": "wellness"}, {"id": "s_clinicaltrials-gov", "type": "source", "label": "ClinicalTrials.gov"}, {"id": "s_pmc-research", "type": "source", "label": "PMC Research"}, {"id": "s_commercial-launch", "type": "source", "label": "Commercial Launch"}, {"id": "t_microplastics-health-response-protocol", "type": "trend", "label": "Microplastics Health Response Protocol", "score": 61, "badge": "rising", "cat": "wellness"}, {"id": "s_academic-research", "type": "source", "label": "Academic Research"}, {"id": "t_precision-senolytics-cellular-aging", "type": "trend", "label": "Precision Senolytics & Cellular Aging", "score": 58, "badge": "rising", "cat": "wellness"}, {"id": "s_clinicaltrials", "type": "source", "label": "ClinicalTrials"}, {"id": "s_longevity-substack", "type": "source", "label": "Longevity Substack"}, {"id": "t_therapeutic-peptides-consumer-self-admin", "type": "trend", "label": "Therapeutic Peptides \u2014 Consumer Self-Administration", "score": 52, "badge": "watch", "cat": "wellness"}, {"id": "t_clean-fats-seed-oil-reformulation", "type": "trend", "label": "Clean Fats / Seed Oil Reformulation", "score": 82, "badge": "hot", "cat": "food"}, {"id": "s_food-dive", "type": "source", "label": "Food Dive"}, {"id": "s_food-navigator", "type": "source", "label": "Food Navigator"}, {"id": "s_stat-news", "type": "source", "label": "STAT News"}, {"id": "s_google-breakout", "type": "source", "label": "Google Breakout"}, {"id": "t_koji-fermentation-professional-kitchen-m", "type": "trend", "label": "Koji Fermentation \u2014 Professional Kitchen Mainstreaming", "score": 76, "badge": "hot", "cat": "food"}, {"id": "s_cia-menus-of-change", "type": "source", "label": "CIA Menus of Change"}, {"id": "s_great-british-chefs", "type": "source", "label": "Great British Chefs"}, {"id": "s_specialty-retail", "type": "source", "label": "Specialty Retail"}, {"id": "t_functional-mushroom-category-shakeout", "type": "trend", "label": "Functional Mushroom Category Shakeout", "score": 65, "badge": "rising", "cat": "food"}, {"id": "s_expo-west-2026", "type": "source", "label": "Expo West 2026"}, {"id": "s_whole-foods-magazine", "type": "source", "label": "Whole Foods Magazine"}, {"id": "s_academic", "type": "source", "label": "Academic"}, {"id": "t_swangy-flavor-architecture", "type": "trend", "label": "\"Swangy\" Flavor Architecture", "score": 59, "badge": "rising", "cat": "food"}, {"id": "s_blendtek", "type": "source", "label": "Blendtek"}, {"id": "s_specialty-condiment", "type": "source", "label": "Specialty Condiment"}, {"id": "t_analog-hobby-revival-crossing-into-mains", "type": "trend", "label": "Analog Hobby Revival \u2014 Crossing Into Mainstream", "score": 80, "badge": "hot", "cat": "lifestyle"}, {"id": "s_industry-data", "type": "source", "label": "Industry Data"}, {"id": "s_amateur-photographer", "type": "source", "label": "Amateur Photographer"}, {"id": "s_acs-chemical-engineering-news", "type": "source", "label": "ACS Chemical & Engineering News"}, {"id": "t_third-space-renaissance", "type": "trend", "label": "Third Space Renaissance", "score": 77, "badge": "hot", "cat": "lifestyle"}, {"id": "s_wgsn", "type": "source", "label": "WGSN"}, {"id": "s_actiu-urban-land", "type": "source", "label": "ACTIU / Urban Land"}, {"id": "s_well-news", "type": "source", "label": "Well News"}, {"id": "s_community-substack", "type": "source", "label": "Community Substack"}, {"id": "t_closed-creator-ecosystem-communities", "type": "trend", "label": "Closed Creator Ecosystem Communities", "score": 63, "badge": "rising", "cat": "lifestyle"}, {"id": "s_substack-data", "type": "source", "label": "Substack Data"}, {"id": "s_nss-g-club", "type": "source", "label": "NSS G-Club"}, {"id": "s_harvard-lifestyle-research", "type": "source", "label": "Harvard Lifestyle Research"}, {"id": "s_sociology-research", "type": "source", "label": "Sociology Research"}, {"id": "t_cultural-gatekeeping-niche-identity-arch", "type": "trend", "label": "Cultural Gatekeeping & Niche Identity Architecture", "score": 46, "badge": "watch", "cat": "lifestyle"}, {"id": "t_no-low-alcohol-sophisticated-maturity", "type": "trend", "label": "No/Low Alcohol \u2014 Sophisticated Maturity", "score": 78, "badge": "hot", "cat": "alcohol"}, {"id": "s_iwsr", "type": "source", "label": "IWSR"}, {"id": "s_imbibe-magazine", "type": "source", "label": "Imbibe Magazine"}, {"id": "s_datassential", "type": "source", "label": "Datassential"}, {"id": "t_raicilla-alternative-agave-spirits", "type": "trend", "label": "Raicilla & Alternative Agave Spirits", "score": 63, "badge": "rising", "cat": "alcohol"}, {"id": "s_sevenfifty-daily", "type": "source", "label": "SevenFifty Daily"}, {"id": "s_psu-extension", "type": "source", "label": "PSU Extension"}, {"id": "t_carajillo-coffee-spirit-hybrids", "type": "trend", "label": "Carajillo & Coffee-Spirit Hybrids", "score": 60, "badge": "rising", "cat": "alcohol"}, {"id": "t_heritage-ancestral-beer-revival", "type": "trend", "label": "Heritage & Ancestral Beer Revival", "score": 46, "badge": "watch", "cat": "alcohol"}, {"id": "s_homebrewing", "type": "source", "label": "Homebrewing"}], "links": [{"source": "t_lace-revival-poetcore-aesthetic", "target": "s_pinterest-breakout"}, {"source": "t_lace-revival-poetcore-aesthetic", "target": "s_trade-publication"}, {"source": "t_lace-revival-poetcore-aesthetic", "target": "s_etsy"}, {"source": "t_lace-revival-poetcore-aesthetic", "target": "s_confirmation"}, {"source": "t_soft-menswear-easy-dressing", "target": "s_mr-magazine"}, {"source": "t_soft-menswear-easy-dressing", "target": "s_wwd"}, {"source": "t_soft-menswear-easy-dressing", "target": "s_business-of-fashion"}, {"source": "t_soft-menswear-easy-dressing", "target": "s_confirmation"}, {"source": "t_natural-dye-textile-craft-revival", "target": "s_pinterest-breakout"}, {"source": "t_natural-dye-textile-craft-revival", "target": "s_etsy"}, {"source": "t_natural-dye-textile-craft-revival", "target": "s_reddit-niche"}, {"source": "t_exclusivity-accessories-anti-mass-object", "target": "s_trade-publication"}, {"source": "t_exclusivity-accessories-anti-mass-object", "target": "s_substack"}, {"source": "t_exclusivity-accessories-anti-mass-object", "target": "s_etsy"}, {"source": "t_consumer-vagus-nerve-stimulation-vns-dev", "target": "s_clinicaltrials-gov"}, {"source": "t_consumer-vagus-nerve-stimulation-vns-dev", "target": "s_pmc-research"}, {"source": "t_consumer-vagus-nerve-stimulation-vns-dev", "target": "s_trade-publication"}, {"source": "t_consumer-vagus-nerve-stimulation-vns-dev", "target": "s_commercial-launch"}, {"source": "t_consumer-vagus-nerve-stimulation-vns-dev", "target": "s_confirmation"}, {"source": "t_microplastics-health-response-protocol", "target": "s_academic-research"}, {"source": "t_microplastics-health-response-protocol", "target": "s_trade-publication"}, {"source": "t_microplastics-health-response-protocol", "target": "s_reddit-niche"}, {"source": "t_microplastics-health-response-protocol", "target": "s_confirmation"}, {"source": "t_precision-senolytics-cellular-aging", "target": "s_academic-research"}, {"source": "t_precision-senolytics-cellular-aging", "target": "s_clinicaltrials"}, {"source": "t_precision-senolytics-cellular-aging", "target": "s_trade-publication"}, {"source": "t_precision-senolytics-cellular-aging", "target": "s_longevity-substack"}, {"source": "t_therapeutic-peptides-consumer-self-admin", "target": "s_clinicaltrials"}, {"source": "t_therapeutic-peptides-consumer-self-admin", "target": "s_pmc-research"}, {"source": "t_therapeutic-peptides-consumer-self-admin", "target": "s_trade-publication"}, {"source": "t_therapeutic-peptides-consumer-self-admin", "target": "s_reddit-niche"}, {"source": "t_clean-fats-seed-oil-reformulation", "target": "s_food-dive"}, {"source": "t_clean-fats-seed-oil-reformulation", "target": "s_food-navigator"}, {"source": "t_clean-fats-seed-oil-reformulation", "target": "s_stat-news"}, {"source": "t_clean-fats-seed-oil-reformulation", "target": "s_google-breakout"}, {"source": "t_clean-fats-seed-oil-reformulation", "target": "s_confirmation"}, {"source": "t_koji-fermentation-professional-kitchen-m", "target": "s_cia-menus-of-change"}, {"source": "t_koji-fermentation-professional-kitchen-m", "target": "s_great-british-chefs"}, {"source": "t_koji-fermentation-professional-kitchen-m", "target": "s_reddit-niche"}, {"source": "t_koji-fermentation-professional-kitchen-m", "target": "s_specialty-retail"}, {"source": "t_koji-fermentation-professional-kitchen-m", "target": "s_confirmation"}, {"source": "t_functional-mushroom-category-shakeout", "target": "s_food-navigator"}, {"source": "t_functional-mushroom-category-shakeout", "target": "s_expo-west-2026"}, {"source": "t_functional-mushroom-category-shakeout", "target": "s_whole-foods-magazine"}, {"source": "t_functional-mushroom-category-shakeout", "target": "s_academic"}, {"source": "t_swangy-flavor-architecture", "target": "s_food-dive"}, {"source": "t_swangy-flavor-architecture", "target": "s_blendtek"}, {"source": "t_swangy-flavor-architecture", "target": "s_specialty-condiment"}, {"source": "t_analog-hobby-revival-crossing-into-mains", "target": "s_industry-data"}, {"source": "t_analog-hobby-revival-crossing-into-mains", "target": "s_amateur-photographer"}, {"source": "t_analog-hobby-revival-crossing-into-mains", "target": "s_acs-chemical-engineering-news"}, {"source": "t_analog-hobby-revival-crossing-into-mains", "target": "s_reddit-niche"}, {"source": "t_analog-hobby-revival-crossing-into-mains", "target": "s_confirmation"}, {"source": "t_third-space-renaissance", "target": "s_wgsn"}, {"source": "t_third-space-renaissance", "target": "s_actiu-urban-land"}, {"source": "t_third-space-renaissance", "target": "s_well-news"}, {"source": "t_third-space-renaissance", "target": "s_community-substack"}, {"source": "t_third-space-renaissance", "target": "s_reddit-niche"}, {"source": "t_closed-creator-ecosystem-communities", "target": "s_substack-data"}, {"source": "t_closed-creator-ecosystem-communities", "target": "s_nss-g-club"}, {"source": "t_closed-creator-ecosystem-communities", "target": "s_harvard-lifestyle-research"}, {"source": "t_closed-creator-ecosystem-communities", "target": "s_sociology-research"}, {"source": "t_cultural-gatekeeping-niche-identity-arch", "target": "s_trade-publication"}, {"source": "t_cultural-gatekeeping-niche-identity-arch", "target": "s_substack"}, {"source": "t_cultural-gatekeeping-niche-identity-arch", "target": "s_reddit-niche"}, {"source": "t_no-low-alcohol-sophisticated-maturity", "target": "s_iwsr"}, {"source": "t_no-low-alcohol-sophisticated-maturity", "target": "s_imbibe-magazine"}, {"source": "t_no-low-alcohol-sophisticated-maturity", "target": "s_datassential"}, {"source": "t_no-low-alcohol-sophisticated-maturity", "target": "s_reddit-niche"}, {"source": "t_no-low-alcohol-sophisticated-maturity", "target": "s_confirmation"}, {"source": "t_raicilla-alternative-agave-spirits", "target": "s_sevenfifty-daily"}, {"source": "t_raicilla-alternative-agave-spirits", "target": "s_iwsr"}, {"source": "t_raicilla-alternative-agave-spirits", "target": "s_psu-extension"}, {"source": "t_raicilla-alternative-agave-spirits", "target": "s_reddit-niche"}, {"source": "t_carajillo-coffee-spirit-hybrids", "target": "s_datassential"}, {"source": "t_carajillo-coffee-spirit-hybrids", "target": "s_sevenfifty-daily"}, {"source": "t_carajillo-coffee-spirit-hybrids", "target": "s_psu-extension"}, {"source": "t_carajillo-coffee-spirit-hybrids", "target": "s_confirmation"}, {"source": "t_heritage-ancestral-beer-revival", "target": "s_psu-extension"}, {"source": "t_heritage-ancestral-beer-revival", "target": "s_datassential"}, {"source": "t_heritage-ancestral-beer-revival", "target": "s_reddit-niche"}, {"source": "t_heritage-ancestral-beer-revival", "target": "s_homebrewing"}]};
+(function(){
+  var hash = window.location.hash.slice(1);
+  if(hash){
+    setTimeout(function(){
+      var el = document.getElementById(hash);
+      if(el) el.scrollIntoView({block:'start'});
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>
